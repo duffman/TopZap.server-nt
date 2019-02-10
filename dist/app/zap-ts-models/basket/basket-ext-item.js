@@ -1,0 +1,1 @@
+'use strict';Object.defineProperty(exports,'__esModule',{value:true});class GameBasketItem{constructor(id=-1,platformName='',publisher='',releaseDate=''){this.id=id;this.platformName=platformName;this.publisher=publisher;this.releaseDate=releaseDate;}}exports.GameBasketItem=GameBasketItem;

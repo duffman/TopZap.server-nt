@@ -1,0 +1,1 @@
+'use strict';Object.defineProperty(exports,'__esModule',{value:true});class DbVarUtils{static isDefined(value){return value===null||value===undefined;}}exports.DbVarUtils=DbVarUtils;

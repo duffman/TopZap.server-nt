@@ -1,0 +1,1 @@
+'use strict';Object.defineProperty(exports,'__esModule',{value:true});class HtmlUtilities{static stripTags(htmlData){return htmlData.replace(/(<([^>]+)>)/ig,'');}}exports.HtmlUtilities=HtmlUtilities;

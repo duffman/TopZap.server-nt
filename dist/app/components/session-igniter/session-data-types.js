@@ -1,0 +1,1 @@
+'use strict';Object.defineProperty(exports,'__esModule',{value:true});var SessionDataTypes;(function(SessionDataTypes){SessionDataTypes['String']='string';}(SessionDataTypes=exports.SessionDataTypes||(exports.SessionDataTypes={})));

@@ -1,0 +1,105 @@
+/**
+ * Copyright (c) Patrik Forsberg <patrik.forsberg@coldmind.com> - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly prohibited
+ * Proprietary and confidential
+ */
+
+import {IgniterServerSocket} from '@igniter/coldmind/socket-io.server';
+import {IgniterSettings} from '@igniter/igniter.settings';
+import {IgniterClientSocket} from '@igniter/coldmind/socket-io.client';
+import {MessageType} from '@igniter/messaging/message-types';
+import {IMessage} from '@igniter/messaging/igniter-messages';
+import {ZapMessageType} from '@zapModels/zap-message-types';
+
+
+function custLog(prefix: string, mess: string, data: any = null): void {
+	let message = prefix + " ::: " + mess;
+	if (data !== null) {
+		console.log(message, data);
+	} else {
+		console.log(message);
+	}
+}
+
+function c(mess: string, data: any = null): void {
+	custLog("CLIENT", mess, data);
+}
+
+function s(mess: string, data: any = null): void {
+	custLog("SERVER", mess, data);
+}
+
+export class MessageTest {
+	server: IgniterServerSocket;
+	client: IgniterClientSocket;
+
+	constructor() {
+		this.server = new IgniterServerSocket(false);
+		this.client = new IgniterClientSocket();
+
+		/******************************
+		 *
+		 *
+		 *   CLIENT
+		 *
+		 */
+
+		this.client.onConnect(() => {
+			c("Connected to Server");
+			this.startTest();
+		});
+
+		this.client.onMessage((message) => {
+			c("New Message Arrived ::", message);
+		});
+
+		/******************************
+		 *
+		 *
+		 *   SERVER
+		 *
+		 */
+		this.server.onServerStarted((port) => {
+			s("EVENT :: Server Started on Port ::", port);
+			this.client.connect(); // <-- Connect the client to the now listening server
+		});
+
+		this.server.onServerStartError((err) => {
+			s("EVENT :: Server Start FAIL ::", err);
+		});
+
+		this.server.onMessage((message: IMessage) => {
+			s("Message ::", message.type);
+
+			//
+			if (message.type === MessageType.Action) {
+				s("AHA :: ACTION");
+				message.reply(MessageType.Action,  ZapMessageType.GetOffers, {return: "To Sender"});
+			}
+
+		});
+
+		this.server.startListen();
+	}
+
+	public startTest() {
+		console.log("<<<<< startTest >>>>>");
+
+		let messData = {
+			code: "0045496590451"
+		};
+
+		this.client.sendMessage(MessageType.Action, ZapMessageType.GetOffers, messData).then(res => {
+			console.log("startTest :: sendMessage:RESOLVE ::", res);
+
+		}).catch(err => {
+			console.log("startTest :: sendMessage:REJECT ::", err);
+		});
+	}
+}
+
+let args = process.argv.slice(2);
+
+if (args[0] === "test") {
+	let test = new MessageTest();
+}

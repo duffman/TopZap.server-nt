@@ -1,0 +1,1 @@
+'use strict';Object.defineProperty(exports,'__esModule',{value:true});class AppSettings{constructor(){}}exports.AppSettings=AppSettings;

@@ -1,0 +1,1 @@
+'use strict';Object.defineProperty(exports,'__esModule',{value:true});class BasketModel{constructor(items=new Array(),totalValue=0){this.items=items;this.totalValue=totalValue;}}exports.BasketModel=BasketModel;class VendorBasketModel extends BasketModel{constructor(vendorId){super();this.vendorId=vendorId;}}exports.VendorBasketModel=VendorBasketModel;

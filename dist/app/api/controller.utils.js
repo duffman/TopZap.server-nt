@@ -1,0 +1,1 @@
+'use strict';Object.defineProperty(exports,'__esModule',{value:true});class ApiControllerUtils{static internalError(resp,message=''){resp.writeHead(501,{'Content-Type':'text/plain'});resp.end(message);}static bogusError(resp,message=''){resp.writeHead(501,{'Content-Type':'text/plain'});resp.end(message);}}exports.ApiControllerUtils=ApiControllerUtils;

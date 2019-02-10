@@ -1,0 +1,30 @@
+[submodule "lib/putte-ts"]
+	path = lib/putte-ts
+	url = https://github.com/duffman/putte-tsnode-lib.git
+[submodule "cli"]
+	path = cli
+	url = https://github.com/duffman/zap.cli.commander.git
+[submodule "app/cli"]
+	path = app/cli
+	url = https://github.com/duffman/zap.cli.commander.git
+[submodule "lib/zynaptic-web"]
+	path = lib/zynaptic-web
+	url = https://github.com/duffman/zynaptic-web.git
+[submodule "lib/zynaptic-igniter"]
+	path = lib/zynaptic-igniter
+	url = https://github.com/duffman/zynaptic-igniter.git
+[submodule "app/zap-ts-models"]
+	path = app/zap-ts-models
+	url = https://github.com/duffman/topzap.ts-data-models.git
+[submodule "lib/igniter"]
+	path = lib/igniter
+	url = https://github.com/duffman/igniter.puppet-peer.git
+[submodule "lib/coldmind-igniter"]
+	path = lib/coldmind-igniter
+	url = https://github.com/duffman/igniter-node-lib.git
+[submodule "lib/kafka-integration"]
+	path = lib/kafka-integration
+	url = https://github.com/duffman/kafka-igniter.git
+[submodule "lib/igniter-di"]
+	path = lib/igniter-di
+	url = https://github.com/duffman/IgniterDI.git

@@ -1,0 +1,1 @@
+'use strict';Object.defineProperty(exports,'__esModule',{value:true});const db_kernel_new_1=require('../lib/putte-db/db-kernel-new');let dbKernel=new db_kernel_new_1.DbKernel();dbKernel.dbQuery('SELECT * FROM product_edition LIMIT 10').then(res=>{console.log('RES ::',res);}).catch(err=>{console.log('ERR ::',err);});

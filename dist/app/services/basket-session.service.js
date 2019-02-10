@@ -1,0 +1,1 @@
+'use strict';Object.defineProperty(exports,'__esModule',{value:true});const session_service_1=require('./session.service');class BasketSessionService{constructor(){this.sessService=new session_service_1.SessionService();}getBasket(sessId){let result;let data=this.sessService.getEntry(sessId,'basket');return result;}}exports.BasketSessionService=BasketSessionService;

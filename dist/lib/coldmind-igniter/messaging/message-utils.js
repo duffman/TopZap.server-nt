@@ -1,0 +1,1 @@
+'use strict';Object.defineProperty(exports,'__esModule',{value:true});class MessageUtils{static validateMessageType(dataObj){return dataObj!==null;}}exports.MessageUtils=MessageUtils;

@@ -1,0 +1,30 @@
+{
+  "name": "coldmind.igniter.node",
+  "version": "1.0.0",
+  "description": "Coldmind Igniter Node",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/duffman/coldmind.igniter.node.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/duffman/coldmind.igniter.node/issues"
+  },
+  "homepage": "https://github.com/duffman/coldmind.igniter.node#readme",
+  "dependencies": {
+    "@types/node": "^10.12.15",
+    "socket.io": "^2.2.0",
+    "socket.io-client": "^2.2.0",
+    "typescript": "^3.2.2"
+  },
+  "devDependencies": {
+    "@types/socket.io": "^2.1.2",
+    "@types/socket.io-client": "^1.4.32"
+  }
+}

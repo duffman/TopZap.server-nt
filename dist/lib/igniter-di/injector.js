@@ -1,0 +1,1 @@
+'use strict';Object.defineProperty(exports,'__esModule',{value:true});exports.Injector=new class{resolve(target){let tokens=Reflect.getMetadata('design:paramtypes',target)||[],injections=tokens.map(token=>exports.Injector.resolve(token));return new target(...injections);}}();

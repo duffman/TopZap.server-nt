@@ -1,0 +1,1 @@
+'use strict';Object.defineProperty(exports,'__esModule',{value:true});const db_kernel_1=require('../../../lib/putte-db/db-kernel');class AdminiDb{constructor(){this.db=new db_kernel_1.DbManager();this.init();}init(){}}exports.AdminiDb=AdminiDb;

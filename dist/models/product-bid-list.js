@@ -1,0 +1,1 @@
+'use strict';Object.defineProperty(exports,'__esModule',{value:true});class ProductBidList{constructor(){this.list=Array();}addBid(bid){this.list.push(bid);}}exports.ProductBidList=ProductBidList;

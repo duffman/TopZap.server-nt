@@ -1,0 +1,55 @@
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <style>
+        .completed {
+            background: lime;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Miner Stats</h2>
+
+        <table width="100%">
+        <tr>
+            <th>Session ID</th>
+            <th>Miner Name</th>
+            <th>Vendor ID</th>
+        <!--    <th>Session Key</th> -->
+            <th>Completed</th>
+            <th>Nr Total</th>
+            <th>Nr Success</th>
+            <th>Nr Processed</th>
+            <th>%</th>
+        </tr>
+
+        <% for (var i = 0; i < progData.length; i++) {
+            var classes = [];
+            var data = progData[i];
+            var percentDone = Math.round(data.percentDone * 100) / 100
+            if (data.completed != null)
+                classes.push("completed");
+            else classes.push("");
+
+        %>
+        <tr class="a <%= classes.join(" "); %>">
+            <td><%= data.sessionId; %></td>
+            <td><%= data.minerName; %></td>
+            <td><%= data.vendorId; %></td>
+          <!--  <td><%= data.sessionKey; %></td> -->
+            <td><%= data.completed; %></td>
+            <td><%= data.totalCount; %></td>
+            <td><%= data.successCount; %></td>
+            <td><%= data.processedCount; %></td>
+            <td><%= percentDone; %>%</td>
+        </tr>
+        <% } %>
+        </table>
+    </div>
+
+</body>
+</html>

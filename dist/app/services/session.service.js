@@ -1,0 +1,1 @@
+'use strict';Object.defineProperty(exports,'__esModule',{value:true});const db_kernel_new_1=require('../../lib/putte-db/db-kernel-new');class SessionService{constructor(){this.db=new db_kernel_new_1.DbKernel();}getEntry(sessId,key){let result=null;return result;}}exports.SessionService=SessionService;

@@ -1,0 +1,1 @@
+'use strict';Object.defineProperty(exports,'__esModule',{value:true});class GetOffersDone{constructor(success=false){this.success=success;}}exports.GetOffersDone=GetOffersDone;class GetOffersInit{constructor(vendorCount=0){this.vendorCount=vendorCount;}}exports.GetOffersInit=GetOffersInit;

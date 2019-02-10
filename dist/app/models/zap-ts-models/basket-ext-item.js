@@ -1,0 +1,1 @@
+'use strict';Object.defineProperty(exports,'__esModule',{value:true});class ExtBasketItem{constructor(id=-1,thumbImage='thumb-missing.png',platformName='',publisher='',releaseDate=''){this.id=id;this.thumbImage=thumbImage;this.platformName=platformName;this.publisher=publisher;this.releaseDate=releaseDate;}}exports.ExtBasketItem=ExtBasketItem;

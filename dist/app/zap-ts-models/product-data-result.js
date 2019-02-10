@@ -1,0 +1,1 @@
+'use strict';Object.defineProperty(exports,'__esModule',{value:true});class ProductDataResult{constructor(success=false,error=null,productData=null){this.success=success;this.error=error;this.productData=productData;}}exports.ProductDataResult=ProductDataResult;

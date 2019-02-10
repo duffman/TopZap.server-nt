@@ -1,0 +1,1 @@
+'use strict';Object.defineProperty(exports,'__esModule',{value:true});class SessionEntry{constructor(id,data=null,created=new Date()){this.id=id;this.data=data;}}exports.SessionEntry=SessionEntry;

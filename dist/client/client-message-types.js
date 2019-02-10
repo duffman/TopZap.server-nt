@@ -1,0 +1,1 @@
+'use strict';Object.defineProperty(exports,'__esModule',{value:true});var ClientMessageTypes;(function(ClientMessageTypes){ClientMessageTypes.GetDashboard='msgGetDashboard';ClientMessageTypes.CreateGear='msgCreateGear';}(ClientMessageTypes=exports.ClientMessageTypes||(exports.ClientMessageTypes={})));

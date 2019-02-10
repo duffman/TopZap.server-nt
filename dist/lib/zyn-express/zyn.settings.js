@@ -1,0 +1,1 @@
+'use strict';Object.defineProperty(exports,'__esModule',{value:true});var ZynapticSettings;(function(ZynapticSettings){ZynapticSettings.DefaultTcpListenPort=5658;ZynapticSettings.DefaultHttpListenPort=5658;}(ZynapticSettings=exports.ZynapticSettings||(exports.ZynapticSettings={})));

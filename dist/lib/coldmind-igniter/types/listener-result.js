@@ -1,0 +1,1 @@
+'use strict';Object.defineProperty(exports,'__esModule',{value:true});class SrvListenResult{constructor(success=false,portNumber=-1,addressInfo=null,error=null){this.success=success;this.portNumber=portNumber;this.addressInfo=addressInfo;this.error=error;}}exports.SrvListenResult=SrvListenResult;

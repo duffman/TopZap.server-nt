@@ -1,0 +1,1 @@
+var net=require('net');var port=5000;var host='127.0.0.1';console.log('Starting server on '+host+':'+port);var server=net.createServer(function(socket){socket.write('Echo server\r\n');socket.pipe(socket);});server.listen(port,host);

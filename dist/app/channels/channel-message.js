@@ -1,0 +1,1 @@
+'use strict';Object.defineProperty(exports,'__esModule',{value:true});class ChannelMessage{constructor(type,action,data=null,sessId='',tag=null){this.type=type;this.action=action;this.data=data;this.sessId=sessId;this.tag=tag;}}exports.ChannelMessage=ChannelMessage;

@@ -1,0 +1,1 @@
+'use strict';Object.defineProperty(exports,'__esModule',{value:true});const basket_model_1=require('./basket.model');class VendorBasketModel extends basket_model_1.BasketModel{constructor(vendorId){super();this.vendorId=vendorId;}}exports.VendorBasketModel=VendorBasketModel;

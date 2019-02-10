@@ -1,0 +1,1 @@
+'use strict';Object.defineProperty(exports,'__esModule',{value:true});class SessionPullResult{constructor(success=false,productData=null,data=new Array()){this.success=success;this.productData=productData;this.data=data;}}exports.SessionPullResult=SessionPullResult;

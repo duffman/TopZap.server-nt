@@ -1,0 +1,37 @@
+{
+  "compilerOptions": {
+    "types": ["reflect-metadata", "inversify"],
+  "module": "commonjs",
+  "target": "ESNEXT",
+  "strict": false,
+  "noImplicitAny": false,
+  "sourceMap": false,
+  "experimentalDecorators": true,
+  "emitDecoratorMetadata": true,
+  "outDir": "dist",
+  "baseUrl": "./",
+  "paths": {
+    "@app/*": ["./app/*"],
+    "@components/*": ["./app/components/*"],
+    "@cms/*": ["./app/admini-cms/*"],
+    "@api/*": ["./app/api/*"],
+    "@core/*": ["./app/core/*"],
+    "@cli/*": ["./app/cli/*"],
+    "@lib/*": ["./lib/*"],
+    "@db/*": ["./database/*"],
+    "@miner/*": ["./miner/*"],
+    "@zapModels/*": ["./app/zap-ts-models/*"],
+    "@models/*": ["./app/models/*"],
+    "@zynIgniter/*": ["./lib/zynaptic-igniter/*"],
+    "@putteDb/*": ["./lib/putte-db/*"],
+    "@mongo/*": ["./database/mongodb/*"],
+    "@igniter/*": ["./lib/coldmind-igniter/*"],
+    "@utils/*": ["./lib/utils/*"],
+    "@putte/*": ["./lib/putte-ts/*"],
+    "@zaplib/*": ["./lib/topzap-utils-lib/*"]
+  }
+},
+  "exclude": [
+    "node_modules"
+  ]
+}

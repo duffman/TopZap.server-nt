@@ -1,0 +1,1 @@
+'use strict';Object.defineProperty(exports,'__esModule',{value:true});class PRandNum{static getRandomInt(min,max){return Math.floor(Math.random()*(max-min+1))+min;}static randomNum(length=8){return new Date().getTime().toString()+PRandNum.getRandomInt(10,44);}}exports.PRandNum=PRandNum;

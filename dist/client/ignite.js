@@ -1,0 +1,1 @@
+'use strict';Object.defineProperty(exports,'__esModule',{value:true});const CreateDirectory_1=require('./utils/CreateDirectory');class Ignite{constructor(){this.rootPath='./dist/';let gearPath=this.rootPath+'Chat'+'Gear';CreateDirectory_1.CreateDirectory.mkdirSyncRecursive(gearPath);}createConfig(){}}exports.Ignite=Ignite;let ignite=new Ignite();

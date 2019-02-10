@@ -1,0 +1,1 @@
+'use strict';Object.defineProperty(exports,'__esModule',{value:true});class SearchResult{constructor(){this.success=true;}setProduct(product){this.product=product;}setVendorList(vendors){}setBidList(bidList){}setErrorMessage(message){this.success=false;this.errorMessage=message;}}exports.SearchResult=SearchResult;

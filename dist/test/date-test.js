@@ -1,0 +1,1 @@
+let mySqlDate='2018-09-30 00:00:00';var javaDate=new Date(mySqlDate);console.log(javaDate);

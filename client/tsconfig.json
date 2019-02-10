@@ -1,0 +1,22 @@
+{
+    "compilerOptions": {
+        "target": "es6",
+        "noImplicitAny": false,
+        "sourceMap": false,
+        "module": "commonjs",
+        "target": "es6",
+        "noImplicitAny": false,
+        "sourceMap": false,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+	"baseUrl": "./",
+	"paths": {
+          "@Server/*": ["../Igniter.Core/*"],
+          "@App/*": ["../Igniter.Game/*"],
+          "@Tools/*": ["../Igniter.Tools/*"]
+        }
+    },
+  "exclude": [
+  "./templates"
+  ]
+}
