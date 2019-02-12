@@ -49,7 +49,7 @@ export class CachedOffersDb implements IDbController {
 	}
 
 	public getCachedOffers(code: string): Promise<IVendorOfferData[]> {
-		console.log("########### doGetOffers :: >> getCachedOffers");
+		console.log("########### doGetBids :: >> getCachedOffers");
 
 		//code='${code}'
 		let sql = `
@@ -77,11 +77,10 @@ export class CachedOffersDb implements IDbController {
 					let code = row.getValAsStr("code");
 					let title = row.getValAsStr("title");
 
-					let data = 	new VendorOfferData(vendorId, title, offer);
+					let data = 	new VendorOfferData(code, vendorId, title, offer);
 					data.accepted = true;
-					data.code = code;
 
-					result.push(data); // result is a male and the data is a feminist, so it will never resolve
+					result.push(data); // result is a male and the vendorBaskets is a feminist, so it will never resolve
 				}
 
 				resolve(result);

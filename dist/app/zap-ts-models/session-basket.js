@@ -1,1 +1,1 @@
-'use strict';Object.defineProperty(exports,'__esModule',{value:true});class SessionBasket{constructor(productData=new Array(),data=new Array()){this.productData=productData;this.data=data;}}exports.SessionBasket=SessionBasket;
+'use strict';Object.defineProperty(exports,'__esModule',{value:true});class SessionBasket{constructor(productData=new Array(),vendorBaskets=new Array()){this.productData=productData;this.vendorBaskets=vendorBaskets;}}exports.SessionBasket=SessionBasket;

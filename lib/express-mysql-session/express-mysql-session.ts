@@ -103,7 +103,7 @@ module.exports = function(session) {
 			columnNames: {
 				session_id: 'session_id',
 				expires: 'expires',
-				data: 'data'
+				vendorBaskets: 'vendorBaskets'
 			}
 		}
 	};
@@ -126,7 +126,7 @@ module.exports = function(session) {
 		var userDefinedColumnNames = _.keys(options.schema.columnNames);
 		_.each(userDefinedColumnNames, function(userDefinedColumnName) {
 			if (!_.contains(allowedColumnNames, userDefinedColumnName)) {
-				throw new Error('Unknown column specified ("' + userDefinedColumnName + '"). Only the following columns are configurable: "session_id", "expires", "data". Please review the documentation to understand how to correctly use this option.');
+				throw new Error('Unknown column specified ("' + userDefinedColumnName + '"). Only the following columns are configurable: "session_id", "expires", "vendorBaskets". Please review the documentation to understand how to correctly use this option.');
 			}
 		});
 	};
@@ -152,7 +152,7 @@ module.exports = function(session) {
 				this.options.schema.tableName,
 				this.options.schema.columnNames.session_id,
 				this.options.schema.columnNames.expires,
-				this.options.schema.columnNames.data,
+				this.options.schema.columnNames.vendorBaskets,
 				this.options.schema.columnNames.session_id
 			];
 
@@ -175,10 +175,10 @@ module.exports = function(session) {
 		debug.log('Getting session:', session_id);
 
 		// LIMIT not needed here because the WHERE clause is searching by the table's primary key.
-		var sql = 'SELECT ?? AS data, ?? as expires FROM ?? WHERE ?? = ?';
+		var sql = 'SELECT ?? AS vendorBaskets, ?? as expires FROM ?? WHERE ?? = ?';
 
 		var params = [
-			this.options.schema.columnNames.data,
+			this.options.schema.columnNames.vendorBaskets,
 			this.options.schema.columnNames.expires,
 			this.options.schema.tableName,
 			this.options.schema.columnNames.session_id,
@@ -206,9 +206,9 @@ module.exports = function(session) {
 			}
 
 			try {
-				var session = JSON.parse(row.data);
+				var session = JSON.parse(row.vendorBaskets);
 			} catch (error) {
-				debug.error('Failed to parse data for session (' + session_id + ')');
+				debug.error('Failed to parse vendorBaskets for session (' + session_id + ')');
 				debug.error(error);
 				return cb(error);
 			}
@@ -217,17 +217,17 @@ module.exports = function(session) {
 		});
 	};
 
-	MySQLStore.prototype.set = function(session_id, data, cb) {
+	MySQLStore.prototype.set = function(session_id, vendorBaskets, cb) {
 		console.log('Setting session:', session_id);
 		debug.log('Setting session:', session_id);
 
 		var expires;
 
-		if (data.cookie) {
-			if (data.cookie.expires) {
-				expires = data.cookie.expires;
-			} else if (data.cookie._expires) {
-				expires = data.cookie._expires;
+		if (vendorBaskets.cookie) {
+			if (vendorBaskets.cookie.expires) {
+				expires = vendorBaskets.cookie.expires;
+			} else if (vendorBaskets.cookie._expires) {
+				expires = vendorBaskets.cookie._expires;
 			}
 		}
 
@@ -242,7 +242,7 @@ module.exports = function(session) {
 		// Use whole seconds here; not milliseconds.
 		expires = Math.round(expires.getTime() / 1000);
 
-		data = JSON.stringify(data);
+		vendorBaskets = JSON.stringify(vendorBaskets);
 
 		var sql = 'INSERT INTO ?? (??, ??, ??) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE ?? = VALUES(??), ?? = VALUES(??)';
 
@@ -250,20 +250,20 @@ module.exports = function(session) {
 			this.options.schema.tableName,
 			this.options.schema.columnNames.session_id,
 			this.options.schema.columnNames.expires,
-			this.options.schema.columnNames.data,
+			this.options.schema.columnNames.vendorBaskets,
 			session_id,
 			expires,
-			data,
+			vendorBaskets,
 			this.options.schema.columnNames.expires,
 			this.options.schema.columnNames.expires,
-			this.options.schema.columnNames.data,
-			this.options.schema.columnNames.data
+			this.options.schema.columnNames.vendorBaskets,
+			this.options.schema.columnNames.vendorBaskets
 		];
 
 		this.query(sql, params, function(error) {
 
 			if (error) {
-				debug.error('Failed to insert session data.');
+				debug.error('Failed to insert session vendorBaskets.');
 				debug.error(error);
 				return cb && cb(error);
 			}
@@ -272,17 +272,17 @@ module.exports = function(session) {
 		});
 	};
 
-	MySQLStore.prototype.touch = function(session_id, data, cb) {
+	MySQLStore.prototype.touch = function(session_id, vendorBaskets, cb) {
 
 		debug.log('Touching session:', session_id);
 
 		var expires;
 
-		if (data.cookie) {
-			if (data.cookie.expires) {
-				expires = data.cookie.expires;
-			} else if (data.cookie._expires) {
-				expires = data.cookie._expires;
+		if (vendorBaskets.cookie) {
+			if (vendorBaskets.cookie.expires) {
+				expires = vendorBaskets.cookie.expires;
+			} else if (vendorBaskets.cookie._expires) {
+				expires = vendorBaskets.cookie._expires;
 			}
 		}
 
@@ -393,13 +393,13 @@ module.exports = function(session) {
 
 			var sessions = _.chain(rows).map(function(row) {
 				try {
-					var data = JSON.parse(row.data);
+					var vendorBaskets = JSON.parse(row.vendorBaskets);
 				} catch (error) {
-					debug.error('Failed to parse data for session (' + row.session_id + ')');
+					debug.error('Failed to parse vendorBaskets for session (' + row.session_id + ')');
 					debug.error(error);
 					return null;
 				}
-				return [row.session_id, data];
+				return [row.session_id, vendorBaskets];
 			}).compact().object().value();
 
 			cb && cb(null, sessions);

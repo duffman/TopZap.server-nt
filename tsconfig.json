@@ -15,6 +15,8 @@
     "@components/*": ["./app/components/*"],
     "@cms/*": ["./app/admini-cms/*"],
     "@api/*": ["./app/api/*"],
+    "@channels/*": ["./app/channels.git/*"],
+    "@rest-api/*": ["./app/api/rest/*"],
     "@core/*": ["./app/core/*"],
     "@cli/*": ["./app/cli/*"],
     "@lib/*": ["./lib/*"],

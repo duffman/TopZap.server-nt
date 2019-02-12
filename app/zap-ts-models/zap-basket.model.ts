@@ -3,6 +3,7 @@
  * Unauthorized copying of this file, via any medium is strictly prohibited
  * Proprietary and confidential
  */
+
 import { IBasketModel }           from './basket/basket.model';
 import { BasketModel }            from './basket/basket.model';
 

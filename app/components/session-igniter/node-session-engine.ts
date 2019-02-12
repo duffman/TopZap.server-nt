@@ -10,7 +10,7 @@ import { SessionIgniter}          from '@components/session-igniter/session-igni
 
 export class SessionEntry {
 	constructor(public id: string,
-				public data: any = null,
+				public vendorBaskets: any = null,
 				created: Date = new Date()) {}
 }
 
@@ -45,13 +45,13 @@ export class SessionManager {
 		return result;
 	}
 
-	public setSessionData(id: string, data: any = null): SessionEntry {
+	public setSessionData(id: string, vendorBaskets: any = null): SessionEntry {
 		let entry = this.getSession(id);
 		if (entry === null) {
-			entry = new SessionEntry(id, data);
+			entry = new SessionEntry(id, vendorBaskets);
 			this.sessionData.push(entry);
 		} else {
-			entry.data = data;
+			entry.vendorBaskets = vendorBaskets;
 		}
 
 		return entry;
@@ -60,12 +60,12 @@ export class SessionManager {
 	public getSessionBasket(sessId: string): ISessionBasket {
 		let sessEntry = this.getSession(sessId);
 
-		if (sessEntry.data === null) {
-			sessEntry.data = new SessionBasket();
-			//this.setSessionData(sessId, sessEntry.data); //??? Are we operating on the pointer or do we REALLY need this???
+		if (sessEntry.vendorBaskets === null) {
+			sessEntry.vendorBaskets = new SessionBasket();
+			//this.setSessionData(sessId, sessEntry.vendorBaskets); //??? Are we operating on the pointer or do we REALLY need this???
 		}
 
-		return sessEntry.data;
+		return sessEntry.vendorBaskets;
 	}
 }
 */

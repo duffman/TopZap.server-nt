@@ -8,6 +8,10 @@ import { Express }                from "express";
 import { Request, Response }      from 'express';
 
 export class ApiControllerUtils {
+	public static jsonSuccess(resp: Response, success: boolean = true) {
+		resp.json({success: success});
+	}
+
 	public static internalError(resp: Response, message: string = "") {
 		resp.writeHead(501, {'Content-Type': 'text/plain'});
 		resp.end(message);

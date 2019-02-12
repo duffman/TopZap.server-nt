@@ -52,7 +52,7 @@ export class SessionManager {
 
 		if (sessEntry.data === null) {
 			sessEntry.data = new SessionBasket();
-			//this.setSessionData(sessId, sessEntry.data); //??? Are we operating on the pointer or do we REALLY need this???
+			//this.setSessionData(sessId, sessEntry.vendorBaskets); //??? Are we operating on the pointer or do we REALLY need this???
 		}
 
 		return sessEntry.data;

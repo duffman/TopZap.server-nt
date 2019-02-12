@@ -69,9 +69,9 @@ export class PuppetClient implements IPuppetClient {
 			console.log("CONNECTION >>>>>>>>>>>>>>>>");
 		});
 
-		// When receive server send back data.
+		// When receive server send back vendorBaskets.
 		client.on('data', function (data) {
-			console.log('IOServer return data : ' + data);
+			console.log('IOServer return vendorBaskets : ' + data);
 		});
 
 		// When conn disconnected.

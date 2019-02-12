@@ -58,13 +58,13 @@ export class MysqlSessionEngine implements ISessionStorageEngine {
 	public getDataStr(sessId: string): Promise<string> {
 		/*
 		return new Promise((resolve, reject) => {
-			return this.getData(sessId).then(data => {
+			return this.getData(sessId).then(vendorBaskets => {
 
 
 
 
 
-				resolve(data);
+				resolve(vendorBaskets);
 			}).catch(err => {
 				const errMess = "MysqlSessionEngine :: getDataStr :: ERROR ::";
 				Logger.logFatalError(errMess, err);
@@ -101,7 +101,7 @@ export class MysqlSessionEngine implements ISessionStorageEngine {
 			entry = data as ISessionEntry;
 		}
 
-//		let entry = new SessionEntry(sessId, data);
+//		let entry = new SessionEntry(sessId, vendorBaskets);
 
 		const dataStr = SqlString.escape(entry);
 		const sql = `REPLACE INTO session_storage (id, name, data, data_type) VALUES (NULL, '${sessId}', '${dataStr}', NULL)`;

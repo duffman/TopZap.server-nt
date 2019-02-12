@@ -12,7 +12,7 @@
 					'${data.title}',
 					'${data.offer}',
 					CURRENT_TIMESTAMP
-				)`;console.log('SQL ::',sql);this.db.dbQuery(sql).then(res=>{console.log('cacheOffer :: affectedRows ::',res.affectedRows);}).catch(err=>{cli_logger_1.Logger.logError('CachedOffersDb :: cacheOffer :: err ::',err);});}getCachedOffers(code){console.log('########### doGetOffers :: >> getCachedOffers');let sql=`
+				)`;console.log('SQL ::',sql);this.db.dbQuery(sql).then(res=>{console.log('cacheOffer :: affectedRows ::',res.affectedRows);}).catch(err=>{cli_logger_1.Logger.logError('CachedOffersDb :: cacheOffer :: err ::',err);});}getCachedOffers(code){console.log('########### doGetBids :: >> getCachedOffers');let sql=`
 			SELECT
 				*
 			FROM
@@ -21,4 +21,4 @@
 				code='${code}'
 				AND
 				cached_offers.cached_time > NOW() - INTERVAL ${zappy_app_settings_1.Settings.Caching.CacheTTL} MINUTE
-		`;return new Promise((resolve,reject)=>{return this.db.dbQuery(sql).then(res=>{let result=null;if(res.haveAny()){result=new Array();}for(let row of res.result.dataRows){let vendorId=row.getValAsNum('vendor_id');let offer=row.getValAsStr('offer');let code=row.getValAsStr('code');let title=row.getValAsStr('title');let data=new zap_offer_model_1.VendorOfferData(vendorId,title,offer);data.accepted=true;data.code=code;result.push(data);}resolve(result);}).catch(err=>{reject(err);});});}}exports.CachedOffersDb=CachedOffersDb;
+		`;return new Promise((resolve,reject)=>{return this.db.dbQuery(sql).then(res=>{let result=null;if(res.haveAny()){result=new Array();}for(let row of res.result.dataRows){let vendorId=row.getValAsNum('vendor_id');let offer=row.getValAsStr('offer');let code=row.getValAsStr('code');let title=row.getValAsStr('title');let data=new zap_offer_model_1.VendorOfferData(code,vendorId,title,offer);data.accepted=true;result.push(data);}resolve(result);}).catch(err=>{reject(err);});});}}exports.CachedOffersDb=CachedOffersDb;

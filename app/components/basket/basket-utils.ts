@@ -18,12 +18,12 @@ export class BasketUtils {
 	 */
 	public static showBasket(basket: ISessionBasket, includeVendorData: boolean = true): void {
 		Logger.logPurple("## showBasket ##");
-		if (!basket.data) {
+		if (!basket.vendorBaskets) {
 			Logger.logYellow("showBasket :: Vendor Baskets is NULL");
 			return;
 		}
 
-		for (const vBasket of basket.data) {
+		for (const vBasket of basket.vendorBaskets) {
 			let vendorBasket: IVendorBasket = vBasket;
 
 			if (!vendorBasket) {

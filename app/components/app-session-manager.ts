@@ -80,10 +80,10 @@ export class AppSessionManager {
 
 			/*
 			if (entry === null) {
-				entry = new SessionEntry(sessId, data);
+				entry = new SessionEntry(sessId, vendorBaskets);
 				this.sessionData.push(entry);
 			} else {
-				entry.data = data;
+				entry.vendorBaskets = vendorBaskets;
 			}
 
 			return entry;
@@ -117,7 +117,7 @@ export class AppSessionManager {
 				if (sessEntry.data === null) {
 					sessEntry.data = new SessionBasket();
 					resolve(sessEntry.data);
-					//this.setSessionData(sessId, sessEntry.data); //??? Are we operating on the pointer or do we REALLY need this???
+					//this.setSessionData(sessId, sessEntry.vendorBaskets); //??? Are we operating on the pointer or do we REALLY need this???
 				}
 			}).catch(err => {
 				Logger.logError("getSessionBasket :: ERROR ::", err);

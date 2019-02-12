@@ -11,6 +11,5 @@ export module ApiRoutes {
 		export const POST_BASKET_DELETE     = "/basket/del";
 		export const POST_BASKET_CLEAR      = "/basket/clear";
 		export const POST_BASKET_REVIEW     = "/basket/review";
-		export const POST_BASKET_SESS_PULL  = "/basket/pull";
 	}
 }

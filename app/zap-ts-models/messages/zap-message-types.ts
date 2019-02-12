@@ -7,7 +7,7 @@
 export module ZapMessageType {
 	export const GetOffers        = 'getOffers';
 	export const GetOffersInit    = 'getOffersInit';
-	export const VendorOffer      =  'vendorOffer';
+	export const VendorOffer      = 'vendorOffer';
 	export const GetOffersDone    = 'getOffersDone';
 
 	export const GCaptchaVerify   = 'gcapV';

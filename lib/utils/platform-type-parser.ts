@@ -248,6 +248,7 @@ export class PlatformTypeParser {
 	}
 
 	public parseFromName(name: string, icon: boolean): string {
+		console.log("### Get Platform Icon :: parseFromName ::", name);
 		let type = this.getTypeFromStr(name);
 		return this.getFilename(icon, type);
 	}

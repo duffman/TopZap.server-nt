@@ -42,8 +42,8 @@ export interface IZynMessage {
 
 	/*
 	ack(): void;
-	reply(type: string, id: string, data: any): void;
-	replyTyped(id: string, data: any): void;
+	reply(type: string, id: string, vendorBaskets: any): void;
+	replyTyped(id: string, vendorBaskets: any): void;
 	error(error: Error): void;
 	errorGeneric(): void;
 	*/
@@ -74,12 +74,12 @@ export class ZynMessage implements IZynMessage {
 		console.log("Ack Message Done");
 	}
 
-	public replyTyped(id: string, data: any): void {
-		this.reply(this.type, id, data);
+	public replyTyped(id: string, vendorBaskets: any): void {
+		this.reply(this.type, id, vendorBaskets);
 	}
 
-	public reply(type: string, id: string, data: any = null): void {
-		let igniterMessage = new ZynMessage(type, id, data, this.tag);
+	public reply(type: string, id: string, vendorBaskets: any = null): void {
+		let igniterMessage = new ZynMessage(type, id, vendorBaskets, this.tag);
 		Logger.logDebug("Reply Message ::", igniterMessage);
 		this.socket.emit(IOTypes.SOCKET_IO_MESSAGE, igniterMessage);
 	}

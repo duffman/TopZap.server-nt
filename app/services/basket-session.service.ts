@@ -5,9 +5,13 @@
  */
 
 import { SessionService }         from '@app/services/session.service';
-import {ISessionBasket} from '@zapModels/session-basket';
+import { ISessionBasket }         from '@zapModels/session-basket';
+import { SessionBasket }          from '@zapModels/session-basket';
+import { Logger }                 from '@cli/cli.logger';
 
 export interface IBasketSessionService {
+	getSessionBasket(sessId: string): Promise<ISessionBasket>;
+	saveSessionBasket(sessId: string, basket: ISessionBasket): Promise<boolean>;
 }
 
 export class BasketSessionService implements IBasketSessionService {
@@ -17,9 +21,32 @@ export class BasketSessionService implements IBasketSessionService {
 		this.sessService = new SessionService();
 	}
 
-	public getBasket(sessId: string): ISessionBasket {
+	public getSessionBasket(sessId: string): Promise<ISessionBasket> {
 		let result: ISessionBasket;
-		let data = this.sessService.getEntry(sessId, "basket");
-		return result;
+
+		return new Promise((resolve, reject) => {
+			return this.sessService.getSession(sessId).then(data => {
+				result = data as ISessionBasket;
+				if (!result) {
+					result = new SessionBasket();
+				}
+
+				resolve(result);
+
+			}).catch(err => {
+				Logger.logError("BasketSessionService :: getSessionBasket", err);
+			})
+		});
+	}
+
+	public saveSessionBasket(sessId: string, basket: ISessionBasket): Promise<boolean> {
+		return new Promise((resolve, reject) => {
+			return this.sessService.saveSession(sessId, basket).then(res => {
+				resolve(res)
+
+			}).catch(err => {
+				reject(err);
+			});
+		});
 	}
 }

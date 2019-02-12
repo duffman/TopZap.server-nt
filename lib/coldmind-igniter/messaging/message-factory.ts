@@ -11,7 +11,7 @@ import { ZynMessage }         from '@igniter/messaging/igniter-messages';
 
 export class MessageFactory {
 	public static newIgniterMessage(messageType: string, messageId: string, data: any = null, tag: string = null): IZynMessage {
-		//data = data === null ? {} : data;
+		//vendorBaskets = vendorBaskets === null ? {} : vendorBaskets;
 		tag = tag === null ? uuid4() : tag;
 		let message = new ZynMessage(messageType, messageId, data, tag);
 		return message;

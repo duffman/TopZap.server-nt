@@ -152,7 +152,7 @@ export interface ExtSioSocket extends NodeJS.EventEmitter{
 
 	/**
 	 * Sets the compress flag
-	 * @param compress If `true`, compresses the sending data
+	 * @param compress If `true`, compresses the sending vendorBaskets
 	 * @return This Socket
 	 */
 	compress( compress: boolean ): Socket;

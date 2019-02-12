@@ -3,39 +3,24 @@
  * Unauthorized copying of this file, via any medium is strictly prohibited
  * Proprietary and confidential
  */
-//
-import { MinerStatus }            from "@miner/miner-status";
+
 import * as express               from "express";
 import { NextFunction, Router }   from "express";
+import * as fs                    from 'fs';
 import * as bodyParser            from "body-parser";
 import * as cookieParser          from "cookie-parser";
 import * as session               from "express-session";
 import * as cors                  from "cors";
-import * as uidSafe               from "uid-safe";
 import { DbManager }              from "@putteDb/db-kernel";
 import { Logger }                 from "@cli/cli.logger";
-import { MinerApiController }     from "@api/miner-api-controller";
 import { ProductDb }              from "@db/product-db";
 import { IRestApiController }     from "@api/api-controller";
-import { IWSApiController }       from "@api/api-controller";
-import { ServiceApiController }   from "@api/rest/service-api.controller";
-import { CliCommander }           from "@cli/cli.commander";
+import { ServiceApiController }   from "@api/service-api.controller";
 import { IZappyApp }              from "@app/zappy.app";
-import { SearchWsApiController }  from "@api/ws/search-ws-api.controller";
-import { ProductApiController }   from "@api/rest/product-api.controller";
-import { IZynMiddleware }         from "@lib/zyn-express/zyn.middleware";
-import { BasketApiController }    from "@app/api/rest/basket-api.controller";
-import { DataDumpApiController }  from '@api/data-dump-api.controller';
-import { SocketServer }           from '@igniter/coldmind/zyn-socket.server';
-import { IZynMessage }               from '@igniter/messaging/igniter-messages';
-import { ClientSocket }           from '@igniter/coldmind/socket-io.client';
-import { DataCacheController }    from '@api/data-cache-controller';
-import { BasketWsApiController }  from '@api/ws/basket-ws-api.controller';
-import { ServiceWsApiController } from '@api/ws/service-ws-api.controller';
-import { AnalyticsWsApiController } from '@api/ws/analytics-ws-api.controller';
+import { ProductApiController }   from "@api/product-api.controller";
 import { Settings }               from '@app/zappy.app.settings';
 import * as path                  from 'path';
-import * as fs from 'fs';
+import { BidsApiController }      from '@api/bids-api.controller';
 
 export class ZapApp implements IZappyApp {
 	static developmentMode = false;
@@ -46,7 +31,6 @@ export class ZapApp implements IZappyApp {
 	webApp: express.Application;
 	webRoutes: Router = Router();
 	sessionMiddleware: any;
-	serviceClient: ClientSocket;
 
 	db: DbManager;
 	productDb: ProductDb;
@@ -82,9 +66,6 @@ export class ZapApp implements IZappyApp {
 		this.webApp.use(sessionMiddleware);
 
 		this.webApp.use(this.webRoutes);
-
-		this.serviceClient = new ClientSocket();
-		this.serviceClient.connect(null);
 
 		this.configureWebServer2();
 		this.initRestControllers();
@@ -137,11 +118,9 @@ export class ZapApp implements IZappyApp {
 		const routes = this.webRoutes;
 		const controllers = this.restControllers;
 
+		controllers.push(new BidsApiController());
 		controllers.push(new ServiceApiController(this.debugMode));
 		controllers.push(new ProductApiController(this.debugMode));
-		controllers.push(new MinerApiController(this.debugMode));
-		controllers.push(new BasketApiController(this.debugMode));
-		controllers.push(new DataDumpApiController(this.debugMode));
 
 		//
 		// Pass the Route object to each controller to assign routes

@@ -77,7 +77,7 @@ export class ProductDb {
 				if (extended && !dbRow.isEmpty && havePlatformAndTitle) {
 					Logger.logYellow("Adding extended properties to:", model.title);
 					let gpp = new PlatformTypeParser();
-					model.platformIcon = gpp.parseFromName(model.title, true);
+					model.platformIcon = gpp.parseFromName(model.platformName, true);
 					model.platformImage = gpp.parseFromName(model.platformName, false);
 
 					Logger.logCyan("getGameData() :: Model", model);

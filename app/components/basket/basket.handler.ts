@@ -45,7 +45,7 @@ export class BasketHandler {
 	public ensureBasket(sessionBasket: ISessionBasket): ISessionBasket {
 		if (!sessionBasket) {
 			sessionBasket = new SessionBasket();
-			console.log("ensureBasket >> We´re creating the basket ::", sessionBasket.data);
+			console.log("ensureBasket >> We´re creating the basket ::", sessionBasket.vendorBaskets);
 		}
 
 		return sessionBasket;
@@ -86,15 +86,15 @@ export class BasketHandler {
 	public getVendorBasket(sessBasket: ISessionBasket, vendorId: number): IBasketModel {
 		let result: IVendorBasket = null;
 
-		console.log("Get getVendorBasket ##### sessBasket.data", sessBasket.data);
+		console.log("Get getVendorBasket ##### sessBasket.data", sessBasket.vendorBaskets);
 
-		if (!sessBasket.data) {
-			console.log("IT WAS UNASSIGNED!!!!!");
-			sessBasket.data = new Array<IVendorBasket>(); //VendorBasketModel(vendorId);
+		if (!sessBasket.vendorBaskets) {
+			console.log("getVendorBasketIT WAS UNASSIGNED!!!!!");
+			sessBasket.vendorBaskets = new Array<IVendorBasket>(); //VendorBasketModel(vendorId);
 		}
 
-		for (let i = 0; i < sessBasket.data.length; i++) {
-			let basket = sessBasket.data[i];
+		for (let i = 0; i < sessBasket.vendorBaskets.length; i++) {
+			let basket = sessBasket.vendorBaskets[i];
 			if (basket.vendorId === vendorId) {
 				result = basket;
 				break;
@@ -103,10 +103,8 @@ export class BasketHandler {
 
 		if (result === null) {
 			result = new VendorBasketModel(vendorId);
-			sessBasket.data.push(result);
+			sessBasket.vendorBaskets.push(result);
 		}
-
-		console.log("WE`re FINE!!!!!");
 
 		return result;
 	}
@@ -161,8 +159,8 @@ export class BasketHandler {
 
 		console.log("getBestBasket ::", bestBaset);
 
-		for (let index in vendorBaskets.data) {
-			let basket = vendorBaskets.data[index];
+		for (let index in vendorBaskets.vendorBaskets) {
+			let basket = vendorBaskets.vendorBaskets[index];
 			let total = this.getBasketTotal(basket);
 
 			if (total > bestTotal) {
@@ -206,7 +204,7 @@ export class BasketHandler {
 			}
 		}
 
-		for (const vendorBasket of sessionBasket.data) {
+		for (const vendorBasket of sessionBasket.vendorBaskets) {
 			for (const item of vendorBasket.items) {
 				addBarcode(item.code);
 			}
@@ -224,11 +222,11 @@ export class BasketHandler {
 	public sortSessionBasket(sessionBasket: ISessionBasket): ISessionBasket {
 		this.ensureBasket(sessionBasket);
 
-		for (const basket of sessionBasket.data) {
+		for (const basket of sessionBasket.vendorBaskets) {
 			basket.totalValue = this.getBasketTotal(basket);
 		}
 
-		sessionBasket.data = sessionBasket.data.sort((x, y) => {
+		sessionBasket.vendorBaskets = sessionBasket.vendorBaskets.sort((x, y) => {
 			if (x.totalValue > y.totalValue) {
 				return -1;
 			}
@@ -259,7 +257,7 @@ export class BasketHandler {
 			return result;
 		}
 
-		for (let vendorBasket of sessBasket.data) {
+		for (let vendorBasket of sessBasket.vendorBaskets) {
 			let vendorData = getVendorDataById(vendorBasket.vendorId);
 			vendorBasket.vendorData = vendorData;
 		}
@@ -270,12 +268,12 @@ export class BasketHandler {
 	 * @param {ISessionBasket} sessBasket
 	 */
 	private calcBasketTotals(sessBasket: ISessionBasket): void {
-		if (!sessBasket.data) {
-			Logger.logError("calcBasketTotals :: no data");
+		if (!sessBasket.vendorBaskets) {
+			Logger.logError("calcBasketTotals :: no vendorBaskets");
 			return;
 		}
 
-		for (let vendorBasket of sessBasket.data) {
+		for (let vendorBasket of sessBasket.vendorBaskets) {
 			vendorBasket.totalValue = this.getBasketTotal(vendorBasket);
 		}
 	}
@@ -296,7 +294,6 @@ export class BasketHandler {
 			return new Promise((resolve, reject) => {
 				let codes = scope.getBasketCodes(sessBasket);
 				return prodDb.getProducts(codes).then(res => {
-					console.log("FETRES :::", res);
 					resolve(res);
 				}).catch(err => {
 					console.log("getExtSessionBasket :: err ::", err);
@@ -332,7 +329,7 @@ export class BasketHandler {
 			console.log("attachProductInfoToItem >>>>>");
 			scope.ensureBasket(sessBasket);
 
-			for (let vb of sessBasket.data) {
+			for (let vb of sessBasket.vendorBaskets) {
 				for (let item of vb.items) {
 					let prodData: IGameProductData = getProdData(item.code, sessBasket.productData);
 
@@ -360,21 +357,21 @@ export class BasketHandler {
 				attachProductInfoToItem(sessBasket);
 
 				//Hack
-				for (let vbasket of sessBasket.data) {
+				for (let vbasket of sessBasket.vendorBaskets) {
 					vbasket.highestBidder = false;
 				}
 
 				// Set Highest Bidder Property to the first vendor...
-				if (sessBasket.data.length > 0) {
-					sessBasket.data[0].highestBidder = true;
-					console.log("HIGH BID SET ::", sessBasket.data[0]);
+				if (sessBasket.vendorBaskets.length > 0) {
+					sessBasket.vendorBaskets[0].highestBidder = true;
+					console.log("HIGH BID SET ::", sessBasket.vendorBaskets[0]);
 				}
 
-				for (let b of sessBasket.data) {
+				for (let b of sessBasket.vendorBaskets) {
 					console.log("BDATA ::", b);
 				}
 
-				// Duffman: 2019-01-05 Breaking Change, attach vendor data to each
+				// Duffman: 2019-01-05 Breaking Change, attach vendor vendorBaskets to each
 				// basket instead of attached directly to the root of the basket
 				// sessBasket.vendorData = vendors;
 
@@ -382,7 +379,7 @@ export class BasketHandler {
 				scope.calcBasketTotals(sessBasket);
 
 			} catch (err) {
-				console.log("getExtSessionBasket :: getSessionBasket ::", err)
+				console.log("1 --- getExtSessionBasket :: getSessionBasket ::", err)
 			}
 		}
 
@@ -400,7 +397,7 @@ export class BasketHandler {
 	public showBasket(session: IZynSession): void {
 		let basket = this.getSessionBasket(session);
 
-		for (const vendorData of basket.data) {
+		for (const vendorData of basket.vendorBaskets) {
 			console.log("BASKET :: VENDOR ::", vendorData.vendorId);
 
 			for (const item of vendorData.items) {
@@ -444,7 +441,7 @@ export class BasketHandler {
 		this.removeProductByCode(code, basket);
 		console.log("removeItemByCode :: removeProductByCode ::", basket);
 
-		for (const vendorData of basket.data) {
+		for (const vendorData of basket.vendorBaskets) {
 			console.log("VENDOR BASKET ::", vendorData);
 
 			for (let i = 0; i < vendorData.items.length; i++) {

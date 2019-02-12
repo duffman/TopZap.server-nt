@@ -73,7 +73,7 @@ export class BasketHandlerDb {
 		return new Promise((resolve, reject) => {
 			return this.getSessionBasket(sessId).then(sessBasket => {
 
-				for (let vendorBasket of sessBasket.data) {
+				for (let vendorBasket of sessBasket.vendorBaskets) {
 					let existingItem = vendorBasket.items.find(o => o.code === item.code);
 
 					if (typeof existingItem === "object") {
@@ -97,8 +97,8 @@ export class BasketHandlerDb {
 	public findVendorBasketInSession(vendorId: number, sessionBasket: ISessionBasket): IVendorBasket {
 		let result: IVendorBasket = null;
 
-		for (let i = 0; i < sessionBasket.data.length; i++) {
-			let basket = sessionBasket.data[i];
+		for (let i = 0; i < sessionBasket.vendorBaskets.length; i++) {
+			let basket = sessionBasket.vendorBaskets[i];
 			if (basket.vendorId === vendorId) {
 				result = basket;
 				break;
@@ -156,8 +156,8 @@ export class BasketHandlerDb {
 			return this.getSessionBasket(sessId).then(sessBasket => {
 				console.log("getBestBasket ::", bestBaset);
 
-				for (let index in sessBasket.data) {
-					let basket = sessBasket.data[index];
+				for (let index in sessBasket.vendorBaskets) {
+					let basket = sessBasket.vendorBaskets[index];
 					let total = this.getBasketTotal(basket);
 
 					if (total > bestTotal) {
@@ -203,7 +203,7 @@ export class BasketHandlerDb {
 			}
 		}
 
-		for (const vendorBasket of sessionBasket.data) {
+		for (const vendorBasket of sessionBasket.vendorBaskets) {
 			for (const item of vendorBasket.items) {
 				addBarcode(item.code);
 			}
@@ -226,11 +226,11 @@ export class BasketHandlerDb {
 	}
 
 	public sortSessionBasket(sessionBasket: ISessionBasket): ISessionBasket {
-		for (const basket of sessionBasket.data) {
+		for (const basket of sessionBasket.vendorBaskets) {
 			basket.totalValue = this.getBasketTotal(basket);
 		}
 
-		sessionBasket.data = sessionBasket.data.sort((x, y) => {
+		sessionBasket.vendorBaskets = sessionBasket.vendorBaskets.sort((x, y) => {
 			if (x.totalValue > y.totalValue) {
 				return -1;
 			}
@@ -264,7 +264,7 @@ export class BasketHandlerDb {
 			return result;
 		}
 
-		for (let vendorBasket of sessBasket.data) {
+		for (let vendorBasket of sessBasket.vendorBaskets) {
 			console.log("attachVendors :: LOOPING :: vendorBasket ::", vendorBasket);
 
 			let vendorData = getVendorDataById(vendorBasket.vendorId);
@@ -277,7 +277,7 @@ export class BasketHandlerDb {
 	 * @param {ISessionBasket} sessBasket
 	 */
 	private calcBasketTotals(sessBasket: ISessionBasket): void {
-		for (let vendorBasket of sessBasket.data) {
+		for (let vendorBasket of sessBasket.vendorBaskets) {
 			vendorBasket.totalValue = this.getBasketTotal(vendorBasket);
 		}
 	}
@@ -380,7 +380,7 @@ export class BasketHandlerDb {
 			Logger.logGreen("sessBasket ::", sessBasket);
 			Logger.logGreen("--------------------------------");
 
-			for (let vb of sessBasket.data) {
+			for (let vb of sessBasket.vendorBaskets) {
 				for (let vbItem of vb.items) {
 					let gameBasketItem: IGameBasketItem = vbItem as IGameBasketItem;
 
@@ -452,21 +452,21 @@ export class BasketHandlerDb {
 
 
 				//Hack
-				for (let vbasket of sessBasket.data) {
+				for (let vbasket of sessBasket.vendorBaskets) {
 					vbasket.highestBidder = false;
 				}
 
 				// Set Highest Bidder Property to the first vendor...
-				if (sessBasket.data.length > 0) {
-					sessBasket.data[0].highestBidder = true;
-					console.log("HIGH BID SET ::", sessBasket.data[0]);
+				if (sessBasket.vendorBaskets.length > 0) {
+					sessBasket.vendorBaskets[0].highestBidder = true;
+					console.log("HIGH BID SET ::", sessBasket.vendorBaskets[0]);
 				}
 
-				for (let b of sessBasket.data) {
+				for (let b of sessBasket.vendorBaskets) {
 					console.log("BDATA ::", b);
 				}
 
-				// Duffman: 2019-01-05 Breaking Change, attach vendor data to each
+				// Duffman: 2019-01-05 Breaking Change, attach vendor vendorBaskets to each
 				// basket instead of attached directly to the root of the basket
 				// sessBasket.vendorData = vendors;
 
@@ -489,7 +489,7 @@ export class BasketHandlerDb {
 
 	public showBasket(sessId: string): void {
 		this.sessManager.getSessionBasket(sessId).then(basket => {
-			for (const vendorData of basket.data) {
+			for (const vendorData of basket.vendorBaskets) {
 				//console.log("BASKET :: VENDOR ::", vendorData.vendorId);
 
 				for (const item of vendorData.items) {
@@ -541,7 +541,7 @@ export class BasketHandlerDb {
 			return result;
 		}
 
-		for (const vendorData of basket.data) {
+		for (const vendorData of basket.vendorBaskets) {
 			console.log("VENDOR BASKET ::", vendorData);
 
 			for (let i = 0; i < vendorData.items.length; i++) {

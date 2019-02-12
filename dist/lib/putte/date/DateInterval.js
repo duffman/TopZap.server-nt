@@ -1,0 +1,1 @@
+'use strict';Object.defineProperty(exports,'__esModule',{value:true});class DateInterval{static day(){return 1440;}static seconds(val){return val/60;}static hours(val){return val*60;}static days(val){return DateInterval.day()*val;}}exports.DateInterval=DateInterval;

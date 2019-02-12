@@ -56,14 +56,14 @@ export class PuppetServer implements IPuppetServer {
 
 			client.on('data', (newData) => {
 
-				// Print received clientSocket data and length.
-				console.log('Receive clientSocket send data : ' + newData + ', data size : ' + client.bytesRead);
+				// Print received clientSocket vendorBaskets and length.
+				console.log('Receive clientSocket send vendorBaskets : ' + newData + ', vendorBaskets size : ' + client.bytesRead);
 
-				// Server send data back to clientSocket use clientSocket net.Socket object.
-				client.write('Server received data : ' + newData + ', send back to clientSocket data size : ' + client.bytesWritten);
+				// Server send vendorBaskets back to clientSocket use clientSocket net.Socket object.
+				client.write('Server received vendorBaskets : ' + newData + ', send back to clientSocket vendorBaskets size : ' + client.bytesWritten);
 			});
 
-			// When clientSocket send data complete.
+			// When clientSocket send vendorBaskets complete.
 			client.on('end', () => {
 				console.log('Client disconnect.');
 

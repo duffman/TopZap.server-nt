@@ -234,7 +234,7 @@ export class SocketServer implements IZynSocketServer {
 		console.log(">>>>> handleMessage", "Create Socket Session");
 		let zynSession = new ZynSession(socket);
 		console.log(">>>>> handleMessage :: zynSession ::", zynSession.sessionId);
-		let zynMess = new ZynMessage(dataObj.type, dataObj.id, dataObj.data, dataObj.tag);
+		let zynMess = new ZynMessage(dataObj.type, dataObj.id, dataObj.vendorBaskets, dataObj.tag);
 		message.socket = socket; // Attach socket so that we can reply from within the message <--- HACK
 
 		this.eventEmitter.emit(SocketEvents.NewMessage, zynSession, zynMess);

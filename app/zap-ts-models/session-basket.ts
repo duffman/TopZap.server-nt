@@ -10,11 +10,11 @@ import { IVendorBasket }          from './basket/vendor-basket.model';
 
 export interface ISessionBasket {
 	productData: IProductData[];
-	data: IVendorBasket[];
+	vendorBaskets: IVendorBasket[];
 }
 
 export class SessionBasket implements ISessionBasket {
 	constructor(public productData: IProductData[] = new Array<IProductData>(),
-				public data: IVendorBasket[] = new Array<IVendorBasket>()
+				public vendorBaskets: IVendorBasket[] = new Array<IVendorBasket>()
 	) {}
 }
