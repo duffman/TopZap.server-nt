@@ -1,1 +1,0 @@
-'use strict';Object.defineProperty(exports,'__esModule',{value:true});class MongoManager{constructor(){}}exports.MongoManager=MongoManager;

@@ -2,7 +2,7 @@
 // Create Test Session Basket
 
 import {DbManager} from '@putteDb/db-kernel';
-import {Settings} from '@app/zappy.app.settings';
+import {Settings} from '@app/app.settings';
 
 
 const log = console.log;

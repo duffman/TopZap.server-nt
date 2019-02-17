@@ -1,1 +1,0 @@
-'use strict';Object.defineProperty(exports,'__esModule',{value:true});const mongoose=require('mongoose');const Schema=mongoose.Schema;class MongoLogger{constructor(){let any=new Schema({any:Schema.Types.Mixed});}}exports.MongoLogger=MongoLogger;

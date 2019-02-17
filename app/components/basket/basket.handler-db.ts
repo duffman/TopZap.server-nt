@@ -611,8 +611,8 @@ export class BasketHandlerDb {
 			}
 
 			console.log("removeItemByCode ::", basket);
-			this.removeProductByCode(sessId, code, basket);
-			console.log("removeItemByCode :: removeProductByCode ::", basket);
+			this.removeProductData(sessId, code, basket);
+			console.log("removeItemByCode :: removeProductData ::", basket);
 			*/
 
 

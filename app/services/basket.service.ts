@@ -45,7 +45,7 @@ export class BasketService implements IBasketService {
 		});
 	}
 
-	public ensureBasket(sessionBasket: ISessionBasket): ISessionBasket {
+	private ensureBasket(sessionBasket: ISessionBasket): ISessionBasket {
 		if (!sessionBasket) {
 			sessionBasket = new SessionBasket();
 			console.log("ensureBasket >> We´re creating the basket ::", sessionBasket.vendorBaskets);
@@ -54,6 +54,12 @@ export class BasketService implements IBasketService {
 		return sessionBasket;
 	}
 
+	/**
+	 * Add new Vendor bid to session basket
+	 * @param {string} sessId
+	 * @param {IVendorOfferData} offerData
+	 * @returns {Promise<boolean>}
+	 */
 	public addToBasket(sessId: string, offerData: IVendorOfferData): Promise<boolean> {
 		return new Promise((resolve, reject) => {
 			this.getSessionBasket(sessId).then(sessionBasket => {
@@ -190,6 +196,11 @@ export class BasketService implements IBasketService {
 		});
 	}
 
+	/**
+	 * Returns the vendor basket with the highest value
+	 * @param {ISessionBasket} sessionBasket
+	 * @returns {IBasketModel}
+	 */
 	public getBestBasket(sessionBasket: ISessionBasket): IBasketModel {
 		let vendorBaskets = sessionBasket.vendorBaskets;
 		let bestTotal: number = 0;
@@ -210,6 +221,11 @@ export class BasketService implements IBasketService {
 		return bestBaset;
 	}
 
+	/**
+	 * TODO: IMPLEMENT REAL FUNCTIONALITY
+	 * @param {ISessionBasket} sessionBasket
+	 * @returns {Promise<ISessionBasket>}
+	 */
 	public extendSessionBasket(sessionBasket: ISessionBasket): Promise<ISessionBasket> {
 		let prodDb = new ProductDb();
 
@@ -251,6 +267,11 @@ export class BasketService implements IBasketService {
 		return result;
 	}
 
+	/**
+	 * Returns all Vendor baskets
+	 * @param {string} sessId
+	 * @returns {Promise<ISessionBasket>}
+	 */
 	public getFullBasket(sessId: string): Promise<ISessionBasket> {
 		return new Promise((resolve, reject) => {
 			return this.basketSessService.getSessionBasket(sessId).then(sessionBasket => {
@@ -461,7 +482,7 @@ export class BasketService implements IBasketService {
 	 * @param {string} code
 	 * @returns {boolean}
 	 */
-	public removeProductByCode(code: string, basket: ISessionBasket = null): boolean {
+	private removeProductData(code: string, basket: ISessionBasket = null): boolean {
 		let result = false;
 
 		basket.productData = !(basket.productData) ? new Array<IProductData>() : basket.productData;
@@ -484,11 +505,11 @@ export class BasketService implements IBasketService {
 	 * @param {string} code
 	 * @param {ISessionBasket} basket
 	 */
-	public removeItemByCode(code: string, basket: ISessionBasket = null): boolean {
+	private removeItemByCode(code: string, basket: ISessionBasket = null): boolean {
 		let result = false;
 
-		this.removeProductByCode(code, basket);
-		console.log("removeItemByCode :: removeProductByCode ::", basket);
+		this.removeProductData(code, basket);
+		console.log("removeItemByCode :: removeProductData ::", basket);
 
 		for (const vendorData of basket.vendorBaskets) {
 			console.log("VENDOR BASKET ::", vendorData);
@@ -504,5 +525,17 @@ export class BasketService implements IBasketService {
 		}
 
 		return result;
+	}
+
+	public removeItem(code: string): Promise<ISessionBasket> {
+		let scope = this;
+
+		return new Promise((resolve, reject) => {
+			scope.removeItem(code).then(res => {
+
+			}).catch(err => {
+
+			});
+		});
 	}
 }

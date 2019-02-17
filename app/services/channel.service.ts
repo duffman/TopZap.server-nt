@@ -5,14 +5,14 @@
  */
 
 import * as Scaledrone            from 'scaledrone-node';
-import { ChannelEvents }          from '@channels/channel-events';
+import { ChannelEvents }          from '@pubsub/channel-events';
 import { VendorOfferData }        from '@zapModels/zap-offer.model';
-import { ChannelConfig }          from '@channels/channel-config';
-import { ChannelNames }           from '@channels/channel-config';
-import { MessagePipes }           from '@channels/channel-config';
+import { ChannelConfig }          from '@pubsub/channel-config';
+import { ChannelNames }           from '@pubsub/channel-config';
+import { MessagePipes }           from '@pubsub/channel-config';
 import { ProductDb }              from '@db/product-db';
 import { BasketService }          from '@app/services/basket.service';
-import {DroneCore} from '@channels/drone-core';
+import { DroneCore }              from '@pubsub/drone-core';
 
 export class ChannelService {	bidsDrone: any;
 	basketDrone: any;

@@ -1,1 +1,0 @@
-const {spawn}=require('child_process');const child=spawn('tsc',[]);child.stdout.on('data',chunk=>{console.log('chunk',chunk.toString('utf8'));});child.on('close',code=>{console.log(`child process exited with code ${code}`);});

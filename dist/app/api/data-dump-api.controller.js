@@ -1,1 +1,0 @@
-'use strict';Object.defineProperty(exports,'__esModule',{value:true});class DataDumpApiController{constructor(debugMode=false){this.debugMode=debugMode;}doDataDump(req,resp){}attachWSS(wss){}initRoutes(routes){routes.post('/dump',this.doDataDump.bind(this));}}exports.DataDumpApiController=DataDumpApiController;

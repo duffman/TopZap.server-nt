@@ -1,1 +1,0 @@
-'use strict';Object.defineProperty(exports,'__esModule',{value:true});let fs=require('fs');class CreateDirectory{static mkdirSyncRecursive(directory){let path=directory.replace(/\/$/,'').split('/');for(let i=1;i<=path.length;i++){let segment=path.slice(0,i).join('/');!fs.existsSync(segment)?fs.mkdirSync(segment):null;}}}exports.CreateDirectory=CreateDirectory;

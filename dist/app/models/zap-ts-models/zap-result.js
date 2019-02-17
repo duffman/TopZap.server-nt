@@ -1,1 +1,0 @@
-'use strict';Object.defineProperty(exports,'__esModule',{value:true});class ZapResult{constructor(success=false,error=null){this.success=success;this.error=error;}}exports.ZapResult=ZapResult;

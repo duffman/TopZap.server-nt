@@ -10,7 +10,7 @@ import { DbManager }              from '@putteDb/db-kernel';
 import { IVendorOfferData }       from '@zapModels/zap-offer.model';
 import { VendorOfferData }        from '@zapModels/zap-offer.model';
 import { Logger }                 from '@cli/cli.logger';
-import { Settings }               from '@app/zappy.app.settings';
+import { Settings }               from '@app/app.settings';
 import { IDbController }          from '@db/db.controller';
 
 export class CachedOffersDb implements IDbController {

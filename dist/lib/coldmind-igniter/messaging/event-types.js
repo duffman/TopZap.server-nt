@@ -1,1 +1,0 @@
-'use strict';Object.defineProperty(exports,'__esModule',{value:true});var EventType;(function(EventType){EventType.Broadcast='broadcast';let Actions;(function(Actions){Actions.Connect='connect';}(Actions=EventType.Actions||(EventType.Actions={})));}(EventType=exports.EventType||(exports.EventType={})));

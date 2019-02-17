@@ -1,4 +1,4 @@
-'use strict';Object.defineProperty(exports,'__esModule',{value:true});const db_kernel_1=require('../lib/putte-db/db-kernel');const zap_offer_model_1=require('../app/zap-ts-models/zap-offer.model');const cli_logger_1=require('../app/cli/cli.logger');const zappy_app_settings_1=require('../app/zappy.app.settings');class CachedOffersDb{constructor(){this.db=new db_kernel_1.DbManager();}cacheOffer(data){let sql=`INSERT INTO cached_offers (
+'use strict';Object.defineProperty(exports,'__esModule',{value:true});const db_kernel_1=require('../lib/putte-db/db-kernel');const zap_offer_model_1=require('../app/zap-ts-models/zap-offer.model');const cli_logger_1=require('../app/cli/cli.logger');const app_settings_1=require('../app/app.settings');class CachedOffersDb{constructor(){this.db=new db_kernel_1.DbManager();}cacheOffer(data){let sql=`INSERT INTO cached_offers (
 					id,
 					code,
 					vendor_id,
@@ -20,5 +20,5 @@
 			WHERE
 				code='${code}'
 				AND
-				cached_offers.cached_time > NOW() - INTERVAL ${zappy_app_settings_1.Settings.Caching.CacheTTL} MINUTE
+				cached_offers.cached_time > NOW() - INTERVAL ${app_settings_1.Settings.Caching.CacheTTL} MINUTE
 		`;return new Promise((resolve,reject)=>{return this.db.dbQuery(sql).then(res=>{let result=null;if(res.haveAny()){result=new Array();}for(let row of res.result.dataRows){let vendorId=row.getValAsNum('vendor_id');let offer=row.getValAsStr('offer');let code=row.getValAsStr('code');let title=row.getValAsStr('title');let data=new zap_offer_model_1.VendorOfferData(code,vendorId,title,offer);data.accepted=true;result.push(data);}resolve(result);}).catch(err=>{reject(err);});});}}exports.CachedOffersDb=CachedOffersDb;

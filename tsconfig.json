@@ -15,7 +15,7 @@
     "@components/*": ["./app/components/*"],
     "@cms/*": ["./app/admini-cms/*"],
     "@api/*": ["./app/api/*"],
-    "@channels/*": ["./app/channels.git/*"],
+    "@pubsub/*": ["./app/pubsub.git/*"],
     "@rest-api/*": ["./app/api/rest/*"],
     "@core/*": ["./app/core/*"],
     "@cli/*": ["./app/cli/*"],
@@ -34,6 +34,7 @@
   }
 },
   "exclude": [
+    "test",
     "node_modules"
   ]
 }

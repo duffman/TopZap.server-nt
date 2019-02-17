@@ -4,6 +4,7 @@
  * Proprietary and confidential
  */
 
+/*
 import { IBasketItem }            from '@zapModels/basket/basket-item.model';
 import { BasketItem }             from '@zapModels/basket/basket-item.model';
 import { IBasketModel }           from '@zapModels/basket/basket.model';
@@ -12,14 +13,12 @@ import { VendorBasketModel }      from '@zapModels/basket/vendor-basket.model';
 import { IVendorOfferData }       from '@zapModels/zap-offer.model';
 import { ISessionBasket }         from '@zapModels/session-basket';
 import { SessionBasket }          from '@zapModels/session-basket';
-import { SessionManager }         from '@components/session-manager';
 import { PRandNum }               from '@putte/prand-num';
 import { ProductDb }              from '@db/product-db';
 import { BarcodeParser }          from '@zaplib/barcode-parser';
 import { IProductData }           from '@zapModels/product.model';
 import { IVendorModel }           from '@zapModels/vendor-model';
 import { IGameProductData }       from '@zapModels/game-product-model';
-import { IZynSession }            from '@igniter/coldmind/zyn-socket-session';
 import { SessionKeys }            from '@app/types/session-keys';
 import { Logger}                  from '@cli/cli.logger';
 import { BasketUtils }            from '@components/basket/basket-utils';
@@ -184,11 +183,6 @@ export class BasketHandler {
 		});
 	}
 
-	/**
-	 * Extract all barcodes from the session basket
-	 * @param {ISessionBasket} sessionBasket
-	 * @returns {string[]}
-	 */
 	public getBasketCodes(sessionBasket: ISessionBasket): string[] {
 		let result = new Array<string>();
 
@@ -239,11 +233,6 @@ export class BasketHandler {
 		return sessionBasket;
 	}
 
-	/**
-	 * Attaches
-	 * @param {ISessionBasket} sessBasket
-	 * @param {IVendorModel[]} vendors
-	 */
 	public attachVendors(sessBasket: ISessionBasket, vendors: IVendorModel[]): void {
 		function getVendorDataById(vendorId: number): IVendorModel {
 			let result: IVendorModel = null;
@@ -263,10 +252,6 @@ export class BasketHandler {
 		}
 	}
 
-	/**
-	 * Calculate total value of each basket
-	 * @param {ISessionBasket} sessBasket
-	 */
 	private calcBasketTotals(sessBasket: ISessionBasket): void {
 		if (!sessBasket.vendorBaskets) {
 			Logger.logError("calcBasketTotals :: no vendorBaskets");
@@ -278,11 +263,6 @@ export class BasketHandler {
 		}
 	}
 
-	/**
-	 * Get Session Basket with Vendor Data attached to each Vendor Basket
-	 * @param {string} sessId
-	 * @returns {Promise<ISessionBasket>}
-	 */
 	public getExtSessionBasket(session: IZynSession): Promise<ISessionBasket> {
 		let scope = this;
 		let sessBasket = this.getFullBasket(session);
@@ -406,12 +386,6 @@ export class BasketHandler {
 		}
 	}
 
-	/**
-	 * Remove product assicoated with a barcode from a session basket
-	 * @param {string} sessId
-	 * @param {string} code
-	 * @returns {boolean}
-	 */
 	public removeProductByCode(code: string, basket: ISessionBasket = null): boolean {
 		let result = false;
 
@@ -429,17 +403,11 @@ export class BasketHandler {
 		return result;
 	}
 
-	/**
-	 * Remove item by barcode from all vendor baskets
-	 * @param {string} sessId
-	 * @param {string} code
-	 * @param {ISessionBasket} basket
-	 */
 	public removeItemByCode(code: string, basket: ISessionBasket = null): boolean {
 		let result = false;
 
 		this.removeProductByCode(code, basket);
-		console.log("removeItemByCode :: removeProductByCode ::", basket);
+		console.log("removeItemByCode :: removeProductData ::", basket);
 
 		for (const vendorData of basket.vendorBaskets) {
 			console.log("VENDOR BASKET ::", vendorData);
@@ -457,3 +425,4 @@ export class BasketHandler {
 		return result;
 	}
 }
+*/

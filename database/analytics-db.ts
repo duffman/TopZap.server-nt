@@ -15,8 +15,6 @@ export class AnalyticsDb implements IDbController {
 
 	constructor() {
 		this.db = new DbManager();
-		console.log("********* AnalyticsDb");
-
 	}
 
 	/**

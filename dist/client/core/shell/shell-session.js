@@ -1,1 +1,0 @@
-'use strict';Object.defineProperty(exports,'__esModule',{value:true});var fs=require('fs');var chalk=require('chalk');class ShellSession{constructor(commanderInstance){this.commander=commanderInstance;this.recentDirectories=new Array();}}exports.ShellSession=ShellSession;

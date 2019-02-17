@@ -7,3 +7,7 @@
 export module Global {
 	export let DebugMode = false;
 }
+
+export module ErrorCodes {
+	export const INVALID_PARAMS = 3001;
+}

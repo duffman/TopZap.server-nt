@@ -5,8 +5,6 @@
  */
 
 import { CachedOffersDb }         from '@db/cached-offers-db';
-import { IZynMessage }            from '@igniter/messaging/igniter-messages';
-import { ZapMessageType }         from '@zapModels/messages/zap-message-types';
 import { IApiController }         from '@api/api-controller';
 
 export class DataCacheController  implements IApiController {
@@ -17,11 +15,5 @@ export class DataCacheController  implements IApiController {
 	}
 
 	public initRoutes(routes: any): void {
-	}
-
-	private onServiceMessage(mess: IZynMessage): void {
-		if (mess.id === ZapMessageType.VendorOffer) {
-			this.cachedOffersDb.cacheOffer(mess.data);
-		}
 	}
 }

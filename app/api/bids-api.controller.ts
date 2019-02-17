@@ -12,19 +12,20 @@ import { IApiController }         from '@api/api-controller';
 import { Logger }                 from '@cli/cli.logger';
 import { ISessionBasket }         from '@zapModels/session-basket';
 import { SessionBasket }          from '@zapModels/session-basket';
-import { IChannelMessage }        from '@channels/channel-message';
-import { ChannelMessage }         from '@channels/channel-message';
-import {ChannelConfig, MessagePipes} from '@channels/channel-config';
-import { ChannelNames }           from '@channels/channel-config';
+import { IChannelMessage }        from '@pubsub/channel-message';
+import { ChannelMessage }         from '@pubsub/channel-message';
+import { ChannelConfig }          from '@pubsub/channel-config';
+import { MessagePipes }           from '@pubsub/channel-config';
+import { ChannelNames }           from '@pubsub/channel-config';
 import { ZapMessageType }         from '@zapModels/messages/zap-message-types';
-import { Channel }                from '@channels/channel';
+import { Channel }                from '@pubsub/channel';
 import { ApiControllerUtils }     from '@api/controller.utils';
 import { BasketService }          from '@app/services/basket.service';
 import { VendorOfferData }        from '@zapModels/zap-offer.model';
-import { ChannelEvents }          from '@channels/channel-events';
+import { ChannelEvents }          from '@pubsub/channel-events';
 import { AnalyticsDb }            from '@db/analytics-db';
 import { ApiRoutes }              from '@api/api-routes';
-import {DroneCore} from '@channels/drone-core';
+import { DroneCore }              from '@pubsub/drone-core';
 
 export class BidsApiController implements IApiController{
 	debugMode: boolean;
@@ -66,22 +67,30 @@ export class BidsApiController implements IApiController{
 		});
 	}
 
+	/**
+	 * New Vendor bid received through the PS service
+	 * @param {IChannelMessage} message
+	 */
 	public onNewVendorBid(message: IChannelMessage) {
 		let vendorBid = message.data;
+
 		this.basketService.addToBasket(message.sessId, message.data).then(res => {
-			let tmpDrone = new DroneCore(ChannelConfig.getChannelId(ChannelNames.Basket));
+			console.log(this.basketService.addToBasket, message);
+			// Tell the client to fetch the current basket (highest valued)
+			let tmpDrone = new DroneCore(ChannelNames.Basket);
 			tmpDrone.emitRaw("A405CP", { type: "getBasket"});
 
 		}).catch(err => {
 			console.log("onNewVendorBid :: error ::", err);
 		});
+
 		console.log("onNewVendorBid :: -->");
 	}
 
 	private apiGetBasket(req: Request, resp: Response): void {
-		console.log("apiGetBasket ::", req.sessionID);
+		console.log("apiGetBasket ::", req.session.id);
 
-		this.basketService.getCurrentBasket(req.sessionID).then(data => {
+		this.basketService.getCurrentBasket(req.session.id).then(data => {
 			resp.json(data);
 
 		}).catch(err => {
@@ -93,26 +102,30 @@ export class BidsApiController implements IApiController{
 		let data = req.body;
 		let code = data.code;
 
+		console.log("BIDS :: BODY ::", data);
 		console.log("BIDS :: CODE ::", code);
 
-		let res = this.doGetBids(code, req.sessionID);
+		let res = this.doGetBids(code, req.session.id);
 		ApiControllerUtils.jsonSuccess(resp, res);
 	}
 
 	private apiDeleteBasketItem(req: Request, resp: Response): void {
+		let code = req.body.code;
+
+		this.basketService.removeItem(code).then(res => {
+
+		}).catch(err => {
+
+		});
 	}
 
 	private apiReviewBasket(req: Request, resp: Response): void {
 		let data = req.body;
 
-		console.log("BASKET :: SESSION ID ::", req.sessionID);
+		console.log("BASKET :: SESSION ID ::", req.session.id);
 	}
 
 	public initRoutes(routes: Router): void {
-		routes.all("/basketa", (req, resp) => {
-			resp.end("Balle");
-		});
-
 		routes.post(ApiRoutes.Basket.GET_BASKET,            this.apiGetBasket.bind(this));
 		routes.post(ApiRoutes.Basket.POST_BASKET_ADD,       this.apiAddBasketItem.bind(this));
 		routes.post(ApiRoutes.Basket.POST_BASKET_DELETE,    this.apiDeleteBasketItem.bind(this));

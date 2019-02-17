@@ -18,74 +18,45 @@
  */
 
 import { IColdmindNode }          from '@app/types/coldmind-node';
-import { IZappyApp }              from "@app/zappy.app";
+import { IZapNode }               from "@app/app.interface";
 import { Logger }                 from "@cli/cli.logger";
-import { ZapApp }                 from "@app/app";
-import { CliCommander }           from '@cli/cli.commander';
-import * as fs                    from "fs";
-import {CliConfigFile, IConfigFile} from '@cli/cli.config-file';
-
-
+import { CliConfigFile }          from '@cli/cli.config-file';
+import { WebApp }                 from '@app/webserver';
+import { IAppSettings }           from '@app/app.settings';
+import { AppSettings }            from '@app/app.settings';
 
 export class Main implements IColdmindNode {
 	debugMode: boolean;
-	zappy: IZappyApp;
+	zappy: IZapNode;
 
+	private createSettings(config: any): IAppSettings {
+		let settings = new AppSettings();
+
+		settings.listenHost = (config.listenHost) ? config.listenHost : "127.0.0.1";
+		settings.listenPort = (config.listenPort) ? config.port : 8080;
+
+		return settings;
+	}
+
+	/**
+	 * Execute the Server App
+	 * @returns {boolean}
+	 */
 	public run(): boolean {
 		let config = new CliConfigFile();
 
 		try {
-			let configData = config.getConfig() as IConfigFile;
-			this.zappy = new ZapApp(configData.port, this.debugMode);
+			let configData = config.getConfig();
+			let settings = this.createSettings(configData);
+			this.zappy = new WebApp(settings);
+
 			return true;
 		} catch (err) {
 			Logger.logError("Run Failed ::", err);
 			return false;
 		}
 	}
-
-	/*
-	public init(): Promise<MinerSessionModel> {
-		return new Promise((resolve, reject) => {
-			this.minerServer.aquireSession(7, "Test").then((res) => {
-
-			});
-		}).catch((err) => {
-			Logger.logError("Error getting session ::", err);
-		});
-  	}
-  	*/
 }
 
 let main = new Main();
-
-if (CliCommander.first("debug")) {
-	console.log("OUTSIDE CODE EXECUTING");
-	main.debugMode = true;
-}
-
 main.run();
-
-
-
-/*
-let item = new MinerWorkItemUpdate(
-	4,
-	res.id,
-	true,
-	56.12,
-	"form.message"
-);
-
-minerServer.updateWorkItem(item).then((res) => {
-	console.log("updateWorkItem ::", res);
-});
-*/
-
-/*
-minerServer.getWorkQueue(res.id, 10).then((queue) => {
-	console.log("QUEUE", queue);
-});
-*/
-
-//Logger.logGreen("Session :: success :: >>");

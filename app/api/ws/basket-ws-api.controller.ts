@@ -4,25 +4,19 @@
  * Proprietary and confidential
  */
 
-import { IZynSocketServer }       from '@igniter/coldmind/zyn-socket.server';
+/*
 import { Router }                 from 'express';
 import { Logger }                 from '@cli/cli.logger';
-import { ClientSocket }           from '@igniter/coldmind/socket-io.client';
-import { IZynMessage }            from '@igniter/messaging/igniter-messages';
-import { ZynMessage }             from '@igniter/messaging/igniter-messages';
 import { ZapMessageType }         from '@zapModels/messages/zap-message-types';
-import { MessageType }            from '@igniter/messaging/message-types';
 import { BasketHandler }          from '@components/basket/basket.handler';
 import { SessionManager }         from '@components/session-manager';
-import { MessageFactory }         from '@igniter/messaging/message-factory';
 import { IBasketModel }           from '@zapModels/basket/basket.model';
 import { ProductDb }              from '@db/product-db';
 import { GetOffersInit }          from '@zapModels/messages/get-offers-messages';
 import { IVendorOfferData }       from '@zapModels/zap-offer.model';
 import { CachedOffersDb }         from '@db/cached-offers-db';
-import { Settings }               from '@app/zappy.app.settings';
+import { Settings }               from '@app/app.settings';
 import { BasketRemItemRes }       from '@zapModels/basket/remove-item-result';
-import { IZynSession }            from '@igniter/coldmind/zyn-socket-session';
 import { SessionKeys }            from '@app/types/session-keys';
 import { ISessionBasket }         from '@zapModels/session-basket';
 
@@ -61,10 +55,6 @@ export class BasketWsApiController {
 		this.wss.onMessage(this.onClientMessage.bind(this));
 	}
 
-	/**
-	 * New Message from a User Session/Device
-	 * @param {IZynMessage} mess
-	 */
 	private onClientMessage(session: IZynSession, mess: IZynMessage): void {
 		if (mess.id === ZapMessageType.BasketPull) {
 			this.onBasketPull(session, mess);
@@ -106,32 +96,9 @@ export class BasketWsApiController {
 		let attempt2 = session.getAs<ISessionBasket>(SessionKeys.Basket);
 		let attempt3 = session.get (SessionKeys.Basket);
 
-		/*
-		LogFat("Session Basket Get");
-
-		if (attempt1) {
-			FatLine();
-			console.log("ATTEMPT 1", attempt1);
-		}
-		if (attempt2) {
-			FatLine();
-			console.log("ATTEMPT 2", attempt2);
-		}
-		if (attempt3) {
-			FatLine();
-			console.log("ATTEMPT 3 ", attempt3);
-		}
-		*/
-
 		return null;
 	}
 
-	/**
-	 * Attempt to getAs cached offers
-	 * @param {string} code
-	 * @param {string} sessId
-	 * @param {boolean} fallbalOnSearch
-	 */
 	private getCachedOffers(code: string, sessId: string, fallbalOnSearch: boolean = true): void {
 		let scope = this;
 		console.log("########### doGetBids :: " + code + " :: " + sessId);
@@ -174,12 +141,6 @@ export class BasketWsApiController {
 		let code = mess.data.code;
 		console.log("### doGetBids ::", code);
 
-		/*if (!PStrUtils.isNumeric(code)) {
-			Logger.logDebugErr("BasketWsApiController :: doGetBids ::", code);
-			this.wss.messError(session.id, mess, new Error("messZapMessageType.ErrInvalidCode"));
-			return;
-		}*/
-
 		if (Settings.Caching.UseCachedOffers) {
 			console.log("### doGetBids ::", "UseCachedOffers");
 			this.getCachedOffers(code, session.id);
@@ -193,11 +154,6 @@ export class BasketWsApiController {
 
 	// 08 123 40 000
 
-	/**
-	 * Basket Add Handler
-	 * @param {IZynSession} session
-	 * @param {IZynMessage} mess
-	 */
 	private onBasketAdd(session: IZynSession, mess: IZynMessage): void {
 		let basket = this.getSessionBasket(session);
 		console.log(">>>>> onBasketGet", basket);
@@ -218,11 +174,6 @@ export class BasketWsApiController {
 	}
 
 	private onBasketGet(session: IZynSession, mess: IZynMessage): void {
-		/*console.log("onBasketGet");
-		let bestBasket: IBasketModel = this.basketHandler.getBestBasket(sessId);
-		mess.replyTyped(ZapMessageType.BasketGet, bestBasket);
-		*/
-
 		console.log("onBasketGet");
 		let bestBasket: IBasketModel = this.basketHandler.getBestBasket(session);
 		console.log("onBasketGet :: bestBasket");
@@ -232,11 +183,6 @@ export class BasketWsApiController {
 		this.wss.sendMessageToSocket(session.id, zynMessage);
 	}
 
-	/**
-	 * Remove item from session baset and re-save
-	 * @param {IZynSession} session
-	 * @param {IZynMessage} mess
-	 */
 	private onBasketRem(session: IZynSession, mess: IZynMessage): void {
 		let code = mess.data.code;
 		let basket = session.getAs<ISessionBasket>(SessionKeys.Basket);
@@ -285,13 +231,6 @@ export class BasketWsApiController {
 		console.log("BasketWsApiController :: onMessOffersInit ::", sessId);
 	}
 
-	/**
-	 * Vendor offer have been returned from the search service, now we
-	 * need to route it back to the requesting client...
-	 * @param {string} socketId
-	 * @param data
-	 */
-
 	private onMessVendorOffer(socketId: string, data: any): void {
 		//basket = this.getSessionBasket(socketId);
 		//session.setValue(SessionKeys.Basket, basket);
@@ -315,10 +254,6 @@ export class BasketWsApiController {
 		console.log("BasketWsApiController :: onMessOffersDone ::", socketId);
 	}
 
-	/**
-	 * Message from one of the Price Services
-	 * @param {IZynMessage} mess
-	 */
 	private onServiceMessage(mess: IZynMessage): void {
 		let scope = this;
 
@@ -335,11 +270,6 @@ export class BasketWsApiController {
 		}
 	}
 
-	/**
-	 * Emit Search Message through Search Service
-	 * @param {string} code
-	 * @param {string} sessId
-	 */
 	private emitGetOffersMessage(code: string, sessId: string): void {
 		let messageData = { code: code };
 		this.serviceClient.sendMessage(MessageType.Action, ZapMessageType.GetOffers, messageData, sessId);
@@ -347,3 +277,4 @@ export class BasketWsApiController {
 
 	public initRoutes(routes: Router): void {}
 }
+*/

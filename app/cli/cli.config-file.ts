@@ -3,25 +3,22 @@
  * Unauthorized copying of this file, via any medium is strictly prohibited
  * Proprietary and confidential
  */
-import {Logger} from '@cli/cli.logger';
-import * as fs from 'fs';
 
-export interface IConfigFile {
-	port: number;
-}
+import { Logger }                 from '@cli/cli.logger';
+import * as fs                    from 'fs';
 
 export class CliConfigFile {
-	constructor(public defaultPort: number = 8080,
-				public fileEncoding: string = "utf8") {}
+	constructor() {}
 
-	public getConfig(configFilename = "/app.config.json"): IConfigFile {
-		let result = { port: this.defaultPort };
+	public getConfig(configFilename = "/app.config.json"): any {
+		let result = {};
+
 		let configFile = __dirname + configFilename;
 		Logger.logPurple("Reading config file ::", configFile);
 
 		try {
 			if (fs.existsSync(configFile)) {
-				let contents = fs.readFileSync(configFile, this.fileEncoding);
+				let contents = fs.readFileSync(configFile, "utf8");
 				result = JSON.parse(contents);
 			}
 		} catch (ex) {
