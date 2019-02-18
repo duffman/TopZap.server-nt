@@ -1,2 +1,0 @@
-# zynaptic-connector
-Zynaptic Connector
