@@ -19,3 +19,6 @@
 [submodule "app/app/topzap.zapbot.git"]
 	path = app/app/topzap.zapbot.git
 	url = https://github.com/duffman/topzap.zapbot.git
+[submodule "app/services/topzap.zapbot.git"]
+	path = app/services/topzap.zapbot.git
+	url = https://github.com/duffman/topzap.zapbot.git
