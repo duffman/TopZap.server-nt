@@ -7,7 +7,7 @@
 import { Express }                from "express";
 import { Request, Response }      from 'express';
 
-export class ApiControllerUtils {
+export class RestUtils {
 	public static jsonSuccess(resp: Response, success: boolean = true) {
 		resp.json({success: success});
 	}

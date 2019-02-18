@@ -8,7 +8,7 @@ import { Request }                from 'express';
 import { Response }               from 'express';
 import { Router }                 from 'express';
 import { IRestApiController }     from "@api/api-controller";
-import { ApiRoutes }              from '@api/api-routes';
+import { ApiRoutes }              from '@api/../settings/api-routes';
 import { Logger }                 from '@cli/cli.logger';
 
 export class PutteController implements IRestApiController {

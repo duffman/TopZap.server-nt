@@ -22,7 +22,7 @@ export class ExpressMysqlSession {
 }
 
 /*
-
+cd
 'use strict';
 import {DbKernel} from '@putteDb/database-manager';
 

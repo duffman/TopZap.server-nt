@@ -12,22 +12,22 @@
   "baseUrl": "./",
   "paths": {
     "@app/*": ["./app/*"],
-    "@components/*": ["./app/components/*"],
-    "@cms/*": ["./app/admini-cms/*"],
     "@api/*": ["./app/api/*"],
+    "@igniter/*": ["./pubsub-igniter.git/*"],
+    "@components/*": ["./app/components/*"],
+
+
+    "@cms/*": ["./app/admini-cms/*"],
     "@pubsub/*": ["./app/pubsub.git/*"],
-    "@rest-api/*": ["./app/api/rest/*"],
     "@core/*": ["./app/core/*"],
     "@cli/*": ["./app/cli/*"],
     "@lib/*": ["./lib/*"],
     "@db/*": ["./database/*"],
-    "@miner/*": ["./miner/*"],
+
     "@zapModels/*": ["./app/zap-ts-models/*"],
     "@models/*": ["./app/models/*"],
-    "@zynIgniter/*": ["./lib/zynaptic-igniter/*"],
     "@putteDb/*": ["./lib/putte-db/*"],
     "@mongo/*": ["./database/mongodb/*"],
-    "@igniter/*": ["./lib/coldmind-igniter/*"],
     "@utils/*": ["./lib/utils/*"],
     "@putte/*": ["./lib/putte-ts/*"],
     "@zaplib/*": ["./lib/topzap-utils-lib/*"]

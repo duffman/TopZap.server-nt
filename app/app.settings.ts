@@ -4,7 +4,7 @@
  * Proprietary and confidential
  */
 
-import { DateInterval }           from '@putte/date/DateInterval';
+import { DateInterval }           from '@putte/date/date-interval';
 
 export module Settings {
 	//export const allowedCORSOrigins = "*";

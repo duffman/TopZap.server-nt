@@ -19,13 +19,12 @@ import { MessagePipes }           from '@pubsub/channel-config';
 import { ChannelNames }           from '@pubsub/channel-config';
 import { ZapMessageType }         from '@zapModels/messages/zap-message-types';
 import { Channel }                from '@pubsub/channel';
-import { ApiControllerUtils }     from '@api/controller.utils';
+import { RestUtils }              from '@api/../utils/rest-utils';
 import { BasketService }          from '@app/services/basket.service';
-import { VendorOfferData }        from '@zapModels/zap-offer.model';
 import { ChannelEvents }          from '@pubsub/channel-events';
 import { AnalyticsDb }            from '@db/analytics-db';
-import { ApiRoutes }              from '@api/api-routes';
-import { DroneCore }              from '@pubsub/drone-core';
+import { DroneCore }              from '@pubsub/../pubsub-igniter.git/drone-core';
+import {ApiRoutes} from '@app/settings/api-routes';
 
 export class BidsApiController implements IApiController{
 	debugMode: boolean;
@@ -106,7 +105,7 @@ export class BidsApiController implements IApiController{
 		console.log("BIDS :: CODE ::", code);
 
 		let res = this.doGetBids(code, req.session.id);
-		ApiControllerUtils.jsonSuccess(resp, res);
+		RestUtils.jsonSuccess(resp, res);
 	}
 
 	private apiDeleteBasketItem(req: Request, resp: Response): void {

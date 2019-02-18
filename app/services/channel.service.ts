@@ -12,7 +12,7 @@ import { ChannelNames }           from '@pubsub/channel-config';
 import { MessagePipes }           from '@pubsub/channel-config';
 import { ProductDb }              from '@db/product-db';
 import { BasketService }          from '@app/services/basket.service';
-import { DroneCore }              from '@pubsub/drone-core';
+import { DroneCore }              from '@pubsub/../pubsub-igniter.git/drone-core';
 
 export class ChannelService {	bidsDrone: any;
 	basketDrone: any;
