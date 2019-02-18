@@ -28,3 +28,9 @@
 [submodule "lib/putte-ts"]
 	path = lib/putte-ts
 	url = https://github.com/duffman/putte-tsnode-lib.git
+[submodule "app/pubsub-igniter.git"]
+	path = app/pubsub-igniter.git
+	url = https://github.com/duffman/topzap.pubsub-igniter.git
+[submodule "app/zapbot.git"]
+	path = app/zapbot.git
+	url = https://github.com/duffman/topzap.zapbot.git
