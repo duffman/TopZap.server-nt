@@ -5,7 +5,7 @@
  * Proprietary and confidential
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-const DateInterval_1 = require("@putte/date/DateInterval");
+const date_interval_1 = require("@putte/date/date-interval");
 var Settings;
 (function (Settings) {
     //export const allowedCORSOrigins = "*";
@@ -15,7 +15,7 @@ var Settings;
     let Caching;
     (function (Caching) {
         Caching.UseCachedOffers = true;
-        Caching.CacheTTL = DateInterval_1.DateInterval.days(10); // 5760; // 4 days
+        Caching.CacheTTL = date_interval_1.DateInterval.days(10); // 5760; // 4 days
     })(Caching = Settings.Caching || (Settings.Caching = {}));
     let PriceServiceApi;
     (function (PriceServiceApi) {

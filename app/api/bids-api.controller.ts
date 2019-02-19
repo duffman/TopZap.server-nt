@@ -12,19 +12,11 @@ import { IApiController }         from '@api/api-controller';
 import { Logger }                 from '@cli/cli.logger';
 import { ISessionBasket }         from '@zapModels/session-basket';
 import { SessionBasket }          from '@zapModels/session-basket';
-import { IChannelMessage }        from '@pubsub/channel-message';
-import { ChannelMessage }         from '@pubsub/channel-message';
-import { ChannelConfig }          from '@pubsub/channel-config';
-import { MessagePipes }           from '@pubsub/channel-config';
-import { ChannelNames }           from '@pubsub/channel-config';
 import { ZapMessageType }         from '@zapModels/messages/zap-message-types';
-import { Channel }                from '@pubsub/channel';
 import { RestUtils }              from '@api/../utils/rest-utils';
 import { BasketService }          from '@app/services/basket.service';
-import { ChannelEvents }          from '@pubsub/channel-events';
 import { AnalyticsDb }            from '@db/analytics-db';
-import { DroneCore }              from '@pubsub/../pubsub-igniter.git/drone-core';
-import {ApiRoutes} from '@app/settings/api-routes';
+import { ApiRoutes }              from '@app/settings/api-routes';
 
 export class BidsApiController implements IApiController{
 	debugMode: boolean;
@@ -41,10 +33,12 @@ export class BidsApiController implements IApiController{
 		this.basketService = new BasketService();
 		//super(ChannelNames.Bids, MessagePipes.NewBid);
 
+		/*
+
 		this.drone = new Scaledrone("0RgtaE9UstNGjTmu");
 		this.channel = this.drone.subscribe(MessagePipes.GetBid);
 
-		 this.channel.on(ChannelEvents.ChannelData, data => {
+		 this.channel.on(DroneEvents.Data, data => {
 			console.log("XXX DATA ::", data);
 		});
 
@@ -64,12 +58,13 @@ export class BidsApiController implements IApiController{
 				});
 			}
 		});
+		*/
 	}
 
 	/**
 	 * New Vendor bid received through the PS service
 	 * @param {IChannelMessage} message
-	 */
+	 *
 	public onNewVendorBid(message: IChannelMessage) {
 		let vendorBid = message.data;
 
@@ -85,6 +80,7 @@ export class BidsApiController implements IApiController{
 
 		console.log("onNewVendorBid :: -->");
 	}
+	*/
 
 	private apiGetBasket(req: Request, resp: Response): void {
 		console.log("apiGetBasket ::", req.session.id);
@@ -143,9 +139,11 @@ export class BidsApiController implements IApiController{
 			Logger.logPurple("doGetBids :: CHANNEL-DATA ::", messData);
 			*/
 
+			/* RE-ADD THIS
 			let messData = new ChannelMessage(ZapMessageType.GetOffers, {code: code}, sessId);
 			console.log("BidsApiController :: Emitting ::", messData);
 			this.channel.emitMessage(messData, MessagePipes.GetBid);
+			*/
 
 			/*
 			this.bidsDrone.publish(

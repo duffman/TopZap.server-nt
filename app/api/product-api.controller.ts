@@ -28,7 +28,6 @@ export class ProductApiController implements IRestApiController {
 		return new Promise((resolve, reject) => {
 			this.productDb.getGameData(barcode).then((res) => {
 				resolve(res);
-				console.log("%%%%% ::: getGameData ::", res);
 			}).catch((err) => {
 				Logger.logError("ProductApiController :: getGameData :: error ::", err);
 				reject(err);
@@ -38,15 +37,6 @@ export class ProductApiController implements IRestApiController {
 
 	public initRoutes(routes: Router) {
 		let scope = this;
-
-		routes.get("/kalle/:code", (req: Request, resp: Response) => {
-			console.log(":: KALLE ::");
-			resp.json({kalle: "kula"});
-		});
-
-		routes.post("/prod/:code", (req: Request, resp: Response) => {
-			let code = req.params.code;
-		});
 
 		//
 		// Get product info
@@ -60,9 +50,6 @@ export class ProductApiController implements IRestApiController {
 			scope.getProduct(code).then((productData) => {
 				productResult.success = true;
 				productResult.productData = productData;
-
-				//Logger.log("routes.post/prod :: ProductApiController :: getGameData ::", productData);
-				//console.log("routes.post/prod :: JSON.stringify :: getGameData ::", JSON.stringify(productData))
 
 				resp.json(productResult);
 
@@ -80,12 +67,8 @@ export class ProductApiController implements IRestApiController {
 		routes.get("/prod/:code", (req: Request, resp: Response) => {
 			let code = req.params.code;
 
-			console.log("CODE :: ", code);
-
 			scope.getProduct(code).then((prodResult) => {
-				Logger.log("ProductApiController :: getGameData ::", prodResult);
-
-				console.log("KKKKK ::", JSON.stringify(prodResult))
+				Logger.logDebug("ProductApiController :: getGameData ::", prodResult);
 
 				resp.json(prodResult);
 
@@ -96,14 +79,6 @@ export class ProductApiController implements IRestApiController {
 						errorCode: 6667
 					});
 			});
-		});
-
-		//
-		// Product Bid
-		//
-		routes.post("/calcbasket/:barcode", (req, res) => {
-			let fruits = req.body.items.split(",");
-			console.log(fruits); // This is an array
 		});
 	}
 }

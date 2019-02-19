@@ -5,62 +5,65 @@
  * Proprietary and confidential
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-const Scaledrone = require("scaledrone-node");
 const cli_logger_1 = require("@cli/cli.logger");
 const session_basket_1 = require("@zapModels/session-basket");
-const channel_message_1 = require("@pubsub/channel-message");
-const channel_config_1 = require("@pubsub/channel-config");
-const channel_config_2 = require("@pubsub/channel-config");
-const zap_message_types_1 = require("@zapModels/messages/zap-message-types");
-const channel_1 = require("@pubsub/channel");
-const controller_utils_1 = require("@api/controller.utils");
+const rest_utils_1 = require("@api/../utils/rest-utils");
 const basket_service_1 = require("@app/services/basket.service");
-const channel_events_1 = require("@pubsub/channel-events");
 const analytics_db_1 = require("@db/analytics-db");
-const api_routes_1 = require("@api/api-routes");
-const drone_core_1 = require("@pubsub/../pubsub-igniter.git/drone-core");
+const api_routes_1 = require("@app/settings/api-routes");
 class BidsApiController {
     constructor() {
         this.analyticsDb = new analytics_db_1.AnalyticsDb();
         console.log("BidsApiController --- XXX");
         this.basketService = new basket_service_1.BasketService();
         //super(ChannelNames.Bids, MessagePipes.NewBid);
+        /*
+
         this.drone = new Scaledrone("0RgtaE9UstNGjTmu");
-        this.channel = this.drone.subscribe(channel_config_1.MessagePipes.GetBid);
-        this.channel.on(channel_events_1.ChannelEvents.ChannelData, data => {
+        this.channel = this.drone.subscribe(MessagePipes.GetBid);
+
+         this.channel.on(DroneEvents.Data, data => {
             console.log("XXX DATA ::", data);
         });
+
         // -- //
-        this.channel = new channel_1.Channel(channel_config_2.ChannelNames.Bids, channel_config_1.MessagePipes.NewBid);
+
+        this.channel = new Channel(ChannelNames.Bids, MessagePipes.NewBid);
         this.channel.onChannelData((data) => {
             let sessId = data.sessId;
+
             console.log("NEW BID RECEIVED ::", data);
-            if (data.type === zap_message_types_1.ZapMessageType.VendorOffer) {
+
+            if (data.type === ZapMessageType.VendorOffer) {
                 this.onNewVendorBid(data);
-            }
-            else {
+            } else {
                 this.basketService.getReviewData(sessId).then(data => {
                     console.log("DATA ::", data);
                 });
             }
         });
+        */
     }
     /**
      * New Vendor bid received through the PS service
      * @param {IChannelMessage} message
-     */
-    onNewVendorBid(message) {
+     *
+    public onNewVendorBid(message: IChannelMessage) {
         let vendorBid = message.data;
+
         this.basketService.addToBasket(message.sessId, message.data).then(res => {
             console.log(this.basketService.addToBasket, message);
             // Tell the client to fetch the current basket (highest valued)
-            let tmpDrone = new drone_core_1.DroneCore(channel_config_2.ChannelNames.Basket);
-            tmpDrone.emitRaw("A405CP", { type: "getBasket" });
+            let tmpDrone = new DroneCore(ChannelNames.Basket);
+            tmpDrone.emitRaw("A405CP", { type: "getBasket"});
+
         }).catch(err => {
             console.log("onNewVendorBid :: error ::", err);
         });
+
         console.log("onNewVendorBid :: -->");
     }
+    */
     apiGetBasket(req, resp) {
         console.log("apiGetBasket ::", req.session.id);
         this.basketService.getCurrentBasket(req.session.id).then(data => {
@@ -75,7 +78,7 @@ class BidsApiController {
         console.log("BIDS :: BODY ::", data);
         console.log("BIDS :: CODE ::", code);
         let res = this.doGetBids(code, req.session.id);
-        controller_utils_1.ApiControllerUtils.jsonSuccess(resp, res);
+        rest_utils_1.RestUtils.jsonSuccess(resp, res);
     }
     apiDeleteBasketItem(req, resp) {
         let code = req.body.code;
@@ -102,9 +105,11 @@ class BidsApiController {
             this.emitMessage(messData, MessagePipes.GetBid);
             Logger.logPurple("doGetBids :: CHANNEL-DATA ::", messData);
             */
-            let messData = new channel_message_1.ChannelMessage(zap_message_types_1.ZapMessageType.GetOffers, { code: code }, sessId);
+            /* RE-ADD THIS
+            let messData = new ChannelMessage(ZapMessageType.GetOffers, {code: code}, sessId);
             console.log("BidsApiController :: Emitting ::", messData);
-            this.channel.emitMessage(messData, channel_config_1.MessagePipes.GetBid);
+            this.channel.emitMessage(messData, MessagePipes.GetBid);
+            */
             /*
             this.bidsDrone.publish(
                 {room: MessagePipes.GetBid, message: messData }

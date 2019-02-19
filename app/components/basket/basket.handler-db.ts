@@ -2,29 +2,27 @@
  * Copyright (c) Patrik Forsberg <patrik.forsberg@coldmind.com> - All Rights Reserved
  * Unauthorized copying of this file, via any medium is strictly prohibited
  * Proprietary and confidential
- */
+ *
 
-import {IBasketItem} from '@zapModels/basket/basket-item.model';
-import {BasketItem} from '@zapModels/basket/basket-item.model';
-import {IBasketModel} from '@zapModels/basket/basket.model';
-import {IVendorBasket} from '@zapModels/basket/vendor-basket.model';
-import {VendorBasketModel} from '@zapModels/basket/vendor-basket.model';
-import {IVendorOfferData} from '@zapModels/zap-offer.model';
-import {ISessionBasket} from '@zapModels/session-basket';
-import {PRandNum} from '@putte/prand-num';
-import {ProductDb} from '@db/product-db';
-import {BarcodeParser} from '@zaplib/barcode-parser';
-import {IVendorModel} from '@zapModels/vendor-model';
-import {IGameProductData} from '@zapModels/game-product-model';
-import { IProductData} from '@zapModels/product.model';
-import { IGameBasketItem} from '@zapModels/basket/basket-product-item';
-import { ProductItemTypes} from '@zapModels/product-item-types';
-import { CliDebugYield} from '@cli/cli.debug-yield';
-import { Logger} from '@cli/cli.logger';
-import { AppSessionManager} from '@components/app-session-manager';
+import { IBasketItem }            from '@zapModels/basket/basket-item.model';
+import { BasketItem }             from '@zapModels/basket/basket-item.model';
+import { IBasketModel }           from '@zapModels/basket/basket.model';
+import { IVendorBasket }          from '@zapModels/basket/vendor-basket.model';
+import { VendorBasketModel }      from '@zapModels/basket/vendor-basket.model';
+import { IVendorOfferData }       from '@zapModels/zap-offer.model';
+import { ISessionBasket }         from '@zapModels/session-basket';
+import { PRandNum }               from '@putte/prand-num';
+import { ProductDb } from '@db/product-db';
+import { IVendorModel } from '@zapModels/vendor-model';
+import { IGameProductData } from '@zapModels/game-product-model';
+import { IProductData } from '@zapModels/product.model';
+import { IGameBasketItem } from '@zapModels/basket/basket-product-item';
+import { ProductItemTypes } from '@zapModels/product-item-types';
+import { CliDebugYield } from '@cli/cli.debug-yield';
+import { Logger } from '@cli/cli.logger';
 
 export class BasketHandlerDb {
-	constructor(public sessManager: AppSessionManager) {
+	constructor() {
 	}
 
 	public getSessionBasket(sessId: string): Promise<ISessionBasket> {
@@ -61,12 +59,7 @@ export class BasketHandlerDb {
 		});
 	}
 
-	/**
-	 * Add a prepared BasketItem to the session
-	 * @param {string} sessId
-	 * @param {IBasketItem} item
-	 * @returns {Promise<boolean>}
-	 */
+
 	public addToVendorBasket(sessId: string, item: IBasketItem): Promise<boolean> {
 		//return this.getVendorBasket(sessId, item.vendorId).then(basket => {
 
@@ -88,12 +81,7 @@ export class BasketHandlerDb {
 		});
 	}
 
-	/**
-	 * Find vendor basket in given SessionBasket
-	 * @param {number} vendorId
-	 * @param {ISessionBasket} sessionBasket
-	 * @returns {IVendorBasket}
-	 */
+
 	public findVendorBasketInSession(vendorId: number, sessionBasket: ISessionBasket): IVendorBasket {
 		let result: IVendorBasket = null;
 
@@ -187,11 +175,7 @@ export class BasketHandlerDb {
 		});
 	}
 
-	/**
-	 * Extract all barcodes from the session basket
-	 * @param {ISessionBasket} sessionBasket
-	 * @returns {string[]}
-	 */
+
 	public getBasketCodes(sessionBasket: ISessionBasket): string[] {
 		let result = new Array<string>();
 
@@ -244,11 +228,6 @@ export class BasketHandlerDb {
 	}
 
 
-	/**
-	 * Attaches
-	 * @param {ISessionBasket} sessBasket
-	 * @param {IVendorModel[]} vendors
-	 */
 	public attachVendors(sessBasket: ISessionBasket, vendors: IVendorModel[]): void {
 		console.log("attachVendors ::", sessBasket);
 
@@ -272,10 +251,7 @@ export class BasketHandlerDb {
 		}
 	}
 
-	/**
-	 * Calculate total value of each basket
-	 * @param {ISessionBasket} sessBasket
-	 */
+
 	private calcBasketTotals(sessBasket: ISessionBasket): void {
 		for (let vendorBasket of sessBasket.vendorBaskets) {
 			vendorBasket.totalValue = this.getBasketTotal(vendorBasket);
@@ -288,11 +264,7 @@ export class BasketHandlerDb {
 	}
 
 
-	/**
-	 * Get Session Basket with Vendor Data attached to each Vendor Basket
-	 * @param {string} sessId
-	 * @returns {Promise<ISessionBasket>}
-	 */
+
 	public getExtSessionBasket(sessId: string): Promise<ISessionBasket> {
 		Logger.logGreen("****** getExtSessionBasket")
 		let scope = this;
@@ -328,12 +300,7 @@ export class BasketHandlerDb {
 			});
 		}
 
-		/**
-		 * Retrieves productdata with a given barcode from given productdata array
-		 * @param {string} code
-		 * @param {IGameProductData[]} prodData
-		 * @returns {IGameProductData}
-		 */
+
 		function getCoreProductData(code: string, prodData: IProductData[]): IProductData {
 			let res: IProductData = null;
 			for (let prod of prodData) {
@@ -345,12 +312,7 @@ export class BasketHandlerDb {
 			return res;
 		}
 
-		/**
-		 * Retrieves gamedata with a given barcode from given gamedata array
-		 * @param {string} code
-		 * @param {IGameProductData[]} prodData
-		 * @returns {IGameProductData}
-		 */
+
 		function getGameProductData(code: string, prodData: IGameProductData[]): IGameProductData {
 			let res: IGameProductData = null;
 			for (let prod of prodData) {
@@ -393,22 +355,7 @@ export class BasketHandlerDb {
 
 
 
-					/* IProductData
-						public id:            number = -1,
-						public code:          string = '',
-						public platformName:  string = '',
-						public title:         string = '',
-						public publisher:     string = '',
-						public developer:     string = '',
-						public genre:         string = '',
-						public coverImage:    string = '',
-						public thumbImage:    string = '',
-						public videoSource:   string = '',
-						public source:        string = '',
-						public releaseDate:   string = '',
-						public platformIcon:  string = '',
-						public platformImage: string = '',
-					 */
+
 
 					gameBasketItem.zid = scope.generateZid();
 					gameBasketItem.code = prodData.code;
@@ -501,12 +448,6 @@ export class BasketHandlerDb {
 		});
 	}
 
-	/**
-	 * Remove product assicoated with a barcode from a session basket
-	 * @param {string} sessId
-	 * @param {string} code
-	 * @returns {boolean}
-	 */
 	public removeProductByCode(sessId: string, code: string, basket: ISessionBasket = null): Promise<boolean> {
 		let result = false;
 
@@ -557,12 +498,7 @@ export class BasketHandlerDb {
 		return result;
 	}
 
-	/**
-	 * Remove item by barcode from all vendor baskets
-	 * @param {string} sessId
-	 * @param {string} code
-	 * @param {ISessionBasket} basket
-	 */
+
 	public removeItemByCode(sessId: string, code: string, basket: ISessionBasket = null): Promise<boolean> {
 		let result = false;
 
@@ -605,16 +541,7 @@ export class BasketHandlerDb {
 		});
 
 
-		/*
-				if (basket === null) {
-				basket = this.sessManager.getSessionBasket(sessId);
-			}
-
-			console.log("removeItemByCode ::", basket);
-			this.removeProductData(sessId, code, basket);
-			console.log("removeItemByCode :: removeProductData ::", basket);
-			*/
-
 
 	}
 }
+*/

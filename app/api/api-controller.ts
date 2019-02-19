@@ -5,11 +5,7 @@
  */
 
 import { Router }                 from "express";
-import { IZynMiddleware }         from '@lib/zyn-express/zyn.middleware';
 
-/**
- * API Controller
- */
 export interface IApiController {
 	debugMode: boolean;
 }

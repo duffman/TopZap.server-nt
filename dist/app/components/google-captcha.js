@@ -6,12 +6,12 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 const zap_result_1 = require("@zapModels/zap-result");
-const zyn_post_data_1 = require("@lib/zyn-express/zyn.post-data");
+const http_post_data_1 = require("@app/utils/http-post-data");
 class GoogleCaptcha {
     constructor() { }
     verifyGCaptcha(gResponse, remoteIp = '') {
         let result = new zap_result_1.ZapResult();
-        let zynPostRequest = new zyn_post_data_1.ZynPostData();
+        let httpPostData = new http_post_data_1.HttpPostData();
         // Needs to differ for different routes??
         let appSecret = "6LeYWn4UAAAAADNvTRK3twgps530_PnrO8ZuuaPM";
         let payload = {
@@ -23,7 +23,7 @@ class GoogleCaptcha {
         };
         const googleReCaptchaUrl = "https://www.google.com/recaptcha/api/siteverify";
         return new Promise((resolve, reject) => {
-            zynPostRequest.postData2(googleReCaptchaUrl, payload).then(res => {
+            httpPostData.postData(googleReCaptchaUrl, payload).then(res => {
                 console.log("res ::", res);
                 //let gRes = GCAPTCHAResult.toIGCAPTCHAResult(res);
                 result.success = res.success;

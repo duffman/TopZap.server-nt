@@ -13,12 +13,12 @@
   "paths": {
     "@app/*": ["./app/*"],
     "@api/*": ["./app/api/*"],
-    "@igniter/*": ["./pubsub-igniter.git/*"],
     "@components/*": ["./app/components/*"],
 
+    "@scaledrone/*": ["./app/components/scaledrone-service.git/*"],
+    "@zapdrone/*": ["./app/components/zapdrone-service.git/*"],
 
     "@cms/*": ["./app/admini-cms/*"],
-    "@pubsub/*": ["./app/pubsub.git/*"],
     "@core/*": ["./app/core/*"],
     "@cli/*": ["./app/cli/*"],
     "@lib/*": ["./lib/*"],
@@ -27,7 +27,6 @@
     "@zapModels/*": ["./app/zap-ts-models/*"],
     "@models/*": ["./app/models/*"],
     "@putteDb/*": ["./lib/putte-db/*"],
-    "@mongo/*": ["./database/mongodb/*"],
     "@utils/*": ["./lib/utils/*"],
     "@putte/*": ["./lib/putte-ts/*"],
     "@zaplib/*": ["./lib/topzap-utils-lib/*"]

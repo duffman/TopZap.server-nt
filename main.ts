@@ -18,16 +18,15 @@
  */
 
 import { IColdmindNode }          from '@app/types/coldmind-node';
-import { IZapNode }               from "@app/app.interface";
 import { Logger }                 from "@cli/cli.logger";
 import { CliConfigFile }          from '@cli/cli.config-file';
-import { WebApp }                 from '@app/webserver';
+import { IWebApp, WebApp }       from '@app/webserver';
 import { IAppSettings }           from '@app/app.settings';
 import { AppSettings }            from '@app/app.settings';
 
 export class Main implements IColdmindNode {
 	debugMode: boolean;
-	zappy: IZapNode;
+	app: IWebApp;
 
 	private createSettings(config: any): IAppSettings {
 		let settings = new AppSettings();
@@ -48,7 +47,7 @@ export class Main implements IColdmindNode {
 		try {
 			let configData = config.getConfig();
 			let settings = this.createSettings(configData);
-			this.zappy = new WebApp(settings);
+			this.app = new WebApp(settings);
 
 			return true;
 		} catch (err) {

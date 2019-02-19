@@ -10,7 +10,7 @@ const vendor_basket_model_1 = require("@zapModels/basket/vendor-basket.model");
 const session_basket_1 = require("@zapModels/session-basket");
 const prand_num_1 = require("@putte/prand-num");
 const product_db_1 = require("@db/product-db");
-const barcode_parser_1 = require("@zaplib/barcode-parser");
+const barcode_parser_1 = require("@zaplib/../../lib/utils/barcode-parser");
 const cli_logger_1 = require("@cli/cli.logger");
 const basket_session_service_1 = require("@app/services/basket-session.service");
 class BasketService {

@@ -5,8 +5,6 @@
  */
 
 
-import * as http                  from "http";
-import * as https                 from "https";
 import * as express               from "express";
 import * as session               from "express-session";
 import * as cors                  from "cors";
@@ -17,12 +15,12 @@ import { ProductApiController }   from '@api/product-api.controller';
 import { ServiceApiController }   from '@api/service-api.controller';
 import { BidsApiController }      from '@api/bids-api.controller';
 import { IRestApiController}      from '@api/api-controller';
-import { IZapNode }              from '@app/app.interface';
 import {AppSettings, IAppSettings} from '@app/app.settings';
 import {PutteController} from '@api/putte.controller';
 import {PVarUtils} from '@putte/pvar-utils';
 import {Logger} from '@cli/cli.logger';
 import {ErrorCodes} from '../global';
+import {CaptchaController} from '@api/captcha.controller';
 
 let sessData = {
 	resave: true,
@@ -33,7 +31,11 @@ let sessData = {
 	}
 };
 
-export class WebApp implements IZapNode {
+export interface IWebApp {
+	debugMode: boolean;
+}
+
+export class WebApp implements IWebApp {
 	debugMode: boolean;
 	version: string;
 	app: express.Application;
@@ -89,7 +91,7 @@ export class WebApp implements IZapNode {
 
 		this.webRoutes.use((req, res, next) => {
 			let origin = req.headers['origin'] || req.headers['Origin'];
-			let or: string = origin.toString();
+			let or: string = origin ? origin.toString() : "";
 
 			res.header('Access-Control-Allow-Credentials', "true");
 			res.header('Access-Control-Allow-Origin', or); //req.headers.origin);
@@ -123,6 +125,7 @@ export class WebApp implements IZapNode {
 
 		controllers.push(new BidsApiController());
 		controllers.push(new PutteController());
+		controllers.push(new CaptchaController());
 		controllers.push(new ServiceApiController());
 		controllers.push(new ProductApiController());
 

@@ -20,7 +20,6 @@ class ProductApiController {
         return new Promise((resolve, reject) => {
             this.productDb.getGameData(barcode).then((res) => {
                 resolve(res);
-                console.log("%%%%% ::: getGameData ::", res);
             }).catch((err) => {
                 cli_logger_1.Logger.logError("ProductApiController :: getGameData :: error ::", err);
                 reject(err);
@@ -29,13 +28,6 @@ class ProductApiController {
     }
     initRoutes(routes) {
         let scope = this;
-        routes.get("/kalle/:code", (req, resp) => {
-            console.log(":: KALLE ::");
-            resp.json({ kalle: "kula" });
-        });
-        routes.post("/prod/:code", (req, resp) => {
-            let code = req.params.code;
-        });
         //
         // Get product info
         //
@@ -46,8 +38,6 @@ class ProductApiController {
             scope.getProduct(code).then((productData) => {
                 productResult.success = true;
                 productResult.productData = productData;
-                //Logger.log("routes.post/prod :: ProductApiController :: getGameData ::", productData);
-                //console.log("routes.post/prod :: JSON.stringify :: getGameData ::", JSON.stringify(productData))
                 resp.json(productResult);
             }).catch((err) => {
                 cli_logger_1.Logger.logError("ProductApiController :: error ::", err);
@@ -59,10 +49,8 @@ class ProductApiController {
         });
         routes.get("/prod/:code", (req, resp) => {
             let code = req.params.code;
-            console.log("CODE :: ", code);
             scope.getProduct(code).then((prodResult) => {
-                cli_logger_1.Logger.log("ProductApiController :: getGameData ::", prodResult);
-                console.log("KKKKK ::", JSON.stringify(prodResult));
+                cli_logger_1.Logger.logDebug("ProductApiController :: getGameData ::", prodResult);
                 resp.json(prodResult);
             }).catch((err) => {
                 cli_logger_1.Logger.logError("ProductApiController :: error ::", err);
@@ -71,13 +59,6 @@ class ProductApiController {
                     errorCode: 6667
                 });
             });
-        });
-        //
-        // Product Bid
-        //
-        routes.post("/calcbasket/:barcode", (req, res) => {
-            let fruits = req.body.items.split(",");
-            console.log(fruits); // This is an array
         });
     }
 }

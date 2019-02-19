@@ -38,7 +38,7 @@ class Main {
         try {
             let configData = config.getConfig();
             let settings = this.createSettings(configData);
-            this.zappy = new webserver_1.WebApp(settings);
+            this.app = new webserver_1.WebApp(settings);
             return true;
         }
         catch (err) {

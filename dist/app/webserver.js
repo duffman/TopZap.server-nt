@@ -18,6 +18,7 @@ const putte_controller_1 = require("@api/putte.controller");
 const pvar_utils_1 = require("@putte/pvar-utils");
 const cli_logger_1 = require("@cli/cli.logger");
 const global_1 = require("../global");
+const captcha_controller_1 = require("@api/captcha.controller");
 let sessData = {
     resave: true,
     saveUninitialized: true,
@@ -65,7 +66,7 @@ class WebApp {
         this.webRoutes.use(session(sessData));
         this.webRoutes.use((req, res, next) => {
             let origin = req.headers['origin'] || req.headers['Origin'];
-            let or = origin.toString();
+            let or = origin ? origin.toString() : "";
             res.header('Access-Control-Allow-Credentials', "true");
             res.header('Access-Control-Allow-Origin', or); //req.headers.origin);
             res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
@@ -92,6 +93,7 @@ class WebApp {
         const controllers = this.restControllers;
         controllers.push(new bids_api_controller_1.BidsApiController());
         controllers.push(new putte_controller_1.PutteController());
+        controllers.push(new captcha_controller_1.CaptchaController());
         controllers.push(new service_api_controller_1.ServiceApiController());
         controllers.push(new product_api_controller_1.ProductApiController());
         //
