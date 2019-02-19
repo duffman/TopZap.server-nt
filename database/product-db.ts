@@ -4,7 +4,7 @@
  * Proprietary and confidential
  */
 
-import { DbManager }              from "@putteDb/db-kernel";
+import { DBKernel }               from "@putteDb/db-kernel";
 import { SQLTableDataRow }        from "@putteDb/sql-table-data-row";
 import { Logger }                 from "@cli/cli.logger";
 import { IVendorModel }           from "@zapModels/vendor-model";
@@ -14,22 +14,32 @@ import { PStrUtils }              from "@putte/pstr-utils";
 import { CliCommander }           from "@cli/cli.commander";
 import { IProductData }           from '@zapModels/product.model';
 import { ProductData }            from '@zapModels/product.model';
-import {GameProductData, IGameProductData} from '@zapModels/game-product-model';
+import { IGameProductData }       from '@zapModels/game-product-model';
+import { GameProductData }        from '@zapModels/game-product-model';
+
+export interface IProductDb {
+	getGameData(barcode: string, extended: boolean, debug: boolean): Promise<IGameProductData>;
+	getProducts(codes: string[]): Promise<IProductData[]>;
+	getVendors(): Promise<Array<IVendorModel>> ;
+}
 
 export class ProductDb {
-	db: DbManager;
+	db: DBKernel;
 
 	constructor() {
-		this.db = new DbManager();
+		this.db = new DBKernel();
 		this.init();
 	}
 
 	private init() {}
 
-	//
-	// Get Product
-	// - extended adds pltform image info
-	//
+	/**
+	 * Get Game Product Data
+	 * @param barcode
+	 * @param extended
+	 * @param debug
+	 * @returns {Promise<T>}
+	 */
 	public getGameData(barcode: string, extended: boolean = true, debug: boolean = false): Promise<IGameProductData> {
 		function generateSql(): string {
 			if (!debug) {
@@ -92,7 +102,11 @@ export class ProductDb {
 		});
 	}
 
-
+	/**
+	 * Get product data for a given list of barcodes
+	 * @param codes
+	 * @returns {Promise<T>}
+	 */
 	public getProducts(codes: string[]): Promise<IProductData[]> {
 		let scope = this;
 		let result = new Array<IProductData>();
@@ -129,9 +143,10 @@ export class ProductDb {
 		});
 	}
 
-	//
-	// Get Full Vendor List
-	//
+	/**
+	 * Returns all product vendors
+	 * @returns {Promise<T>}
+	 */
 	public getVendors(): Promise<Array<IVendorModel>> {
 		let result = new Array<IVendorModel>();
 		let sql = `SELECT * FROM product_vendors`;
@@ -167,7 +182,7 @@ export class ProductDb {
 	}
 }
 
-if (CliCommander.debug()) {
+if (CliCommander.haveArgs() && CliCommander.first("product-db")) {
 	console.log("OUTSIDE CODE EXECUTING");
 	console.log("DEBUG!");
 	let debug = new ProductDb();

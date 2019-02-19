@@ -15,10 +15,10 @@
     "@api/*": ["./app/api/*"],
     "@components/*": ["./app/components/*"],
 
-    "@scaledrone/*": ["./app/components/scaledrone-service.git/*"],
-    "@zapdrone/*": ["./app/components/zapdrone-service.git/*"],
+    "@pubsub/*": ["./modules/pubsub/*"],
+    "@scaledrone/*": ["./modules/pubsub/scaledrone-service.git/*"],
+    "@zapdrone/*": ["./modules/pubsub/zapdrone-service.git/*"],
 
-    "@cms/*": ["./app/admini-cms/*"],
     "@core/*": ["./app/core/*"],
     "@cli/*": ["./app/cli/*"],
     "@lib/*": ["./lib/*"],
@@ -26,9 +26,9 @@
 
     "@zapModels/*": ["./app/zap-ts-models/*"],
     "@models/*": ["./app/models/*"],
-    "@putteDb/*": ["./lib/putte-db/*"],
+    "@putteDb/*": ["./lib/dbcore/*"],
     "@utils/*": ["./lib/utils/*"],
-    "@putte/*": ["./lib/putte-ts/*"],
+    "@putte/*": ["./lib/node-tsutils/*"],
     "@zaplib/*": ["./lib/topzap-utils-lib/*"]
   }
 },

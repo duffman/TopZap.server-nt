@@ -6,7 +6,7 @@
 
 // This made total sense while I was drunk, remove this entire class if it ever yields an error...
 
-import { DbManager }              from '@putteDb/db-kernel';
+import { DBKernel }              from '@putteDb/db-kernel';
 import { IVendorOfferData }       from '@zapModels/zap-offer.model';
 import { VendorOfferData }        from '@zapModels/zap-offer.model';
 import { Logger }                 from '@cli/cli.logger';
@@ -14,10 +14,10 @@ import { Settings }               from '@app/app.settings';
 import { IDbController }          from '@db/db.controller';
 
 export class CachedOffersDb implements IDbController {
-	db: DbManager;
+	db: DBKernel;
 
 	constructor() {
-		this.db = new DbManager();
+		this.db = new DBKernel();
 	}
 
 	public cacheOffer(data: IVendorOfferData): void {

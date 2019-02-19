@@ -4,9 +4,8 @@
  * Proprietary and confidential
  */
 
-//var Promise = require("bluebird");
-import { DbKernel }               from '@putteDb/db-kernel-new';
-import {Logger} from '@cli/cli.logger';
+import { DBKernel }               from '@putteDb/db-kernel';
+import { Logger }                 from '@cli/cli.logger';
 
 export interface ISessionService {
 	saveSession(sessId: string, data: any, expiresMinutes: number): Promise<boolean>;
@@ -14,11 +13,11 @@ export interface ISessionService {
 }
 
 export class SessionService implements ISessionService {
-	db: DbKernel;
+	db: DBKernel;
 
 	 // Expiration 7 days and nights
 	constructor(public expireMinutes: number = 10080) {
-		this.db = new DbKernel();
+		this.db = new DBKernel();
 	}
 
 	/**

@@ -6,22 +6,33 @@
 
 
 import * as express               from "express";
-import * as session               from "express-session";
+import * as expressSession        from "express-session";
+import * as redis                 from "redis";
 import * as cors                  from "cors";
 import * as bodyParser            from "body-parser";
 import * as cookieParser          from "cookie-parser";
-import {NextFunction, Router} from 'express';
-import { ProductApiController }   from '@api/product-api.controller';
-import { ServiceApiController }   from '@api/service-api.controller';
-import { BidsApiController }      from '@api/bids-api.controller';
-import { IRestApiController}      from '@api/api-controller';
-import {AppSettings, IAppSettings} from '@app/app.settings';
-import {PutteController} from '@api/putte.controller';
-import {PVarUtils} from '@putte/pvar-utils';
-import {Logger} from '@cli/cli.logger';
-import {ErrorCodes} from '../global';
-import {CaptchaController} from '@api/captcha.controller';
+import { Router }                 from "express";
+import { NextFunction }           from "express";
 
+import { ProductApiController }   from "@api/product-api.controller";
+import { ServiceApiController }   from "@api/service-api.controller";
+import { BidsApiController }      from "@api/bids-api.controller";
+import { IRestApiController }     from "@api/api-controller";
+import { CaptchaController }      from "@api/captcha.controller";
+
+
+import { IAppSettings }           from "@app/app.settings";
+import { AppSettings }            from "@app/app.settings";
+import { PutteController }        from "@api/putte.controller";
+import { PVarUtils }              from "@putte/pvar-utils";
+import { Logger }                 from "@cli/cli.logger";
+import { ErrorCodes }             from "../global";
+
+let RedisConnector = require("connect-redis")(expressSession);
+
+
+
+/*
 let sessData = {
 	resave: true,
 	saveUninitialized: true,
@@ -30,6 +41,7 @@ let sessData = {
 		maxAge: 960000
 	}
 };
+*/
 
 export interface IWebApp {
 	debugMode: boolean;
@@ -41,6 +53,7 @@ export class WebApp implements IWebApp {
 	app: express.Application;
 	server: any;
 	restControllers: IRestApiController[];
+
 	webRoutes: Router = Router();
 
 	public getAppVersion(): string {
@@ -68,6 +81,8 @@ export class WebApp implements IWebApp {
 			this.haltProcess(ErrorCodes.INVALID_PARAMS);
 		}
 
+		//let bodyParser = require('body-parser');
+
 		this.restControllers = new Array<IRestApiController>();
 		this.app = express();
 
@@ -79,6 +94,23 @@ export class WebApp implements IWebApp {
 		let listenHost = this.settings.listenHost;
 		let listenPort = this.settings.listenPort;
 
+		//
+		// Create new redis store.
+		//
+		let redisClient  = redis.createClient();
+		let redisConnection = { host: 'localhost', port: 6379, client: redisClient,ttl :  260 };
+		let redisStore = new RedisConnector(redisConnection);
+
+		this.webRoutes.use(expressSession({
+			secret: "1g#ulka9n!",
+			store: redisStore,
+			saveUninitialized: false,
+			resave: false
+		}));
+
+		//this.app.use(bodyParser.json());
+		//this.app.use(bodyParser.urlencoded({extended: true}));
+
 		this.app.use(this.webRoutes);
 
 		Logger.logPurple("LISTEN HOST ::", listenHost);
@@ -86,8 +118,7 @@ export class WebApp implements IWebApp {
 
 		//cors({credentials: true, withCredentials: true, origin: true});
 		//this.app.use(cors());
-
-		this.webRoutes.use(session(sessData));
+		//this.webRoutes.use(session(sessData));
 
 		this.webRoutes.use((req, res, next) => {
 			let origin = req.headers['origin'] || req.headers['Origin'];
@@ -100,12 +131,26 @@ export class WebApp implements IWebApp {
 			next();
 		});
 
-		this.webRoutes.use(cookieParser());
+		//this.webRoutes.use(cookieParser()); <-- interferes with exoressSession
 		this.webRoutes.use(bodyParser.json()); // support json encoded bodies
 		this.webRoutes.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
-		this.webRoutes.all('*', (req, resp, next) => {
+		this.webRoutes.all('*', (req: any, resp: any, next: any) => {
 			console.log('Request With Session ID ::', req.session.id);
+
+			// IMPORTANT!!!!!!
+			// Setting a property will automatically cause a Set-Cookie response,
+			// so touch the header so the session cookie will be set on the client
+			//
+			const PROP_HEADER = "X-Zapped";
+
+			if (req.ZSession.zapped) {
+				resp.setHeader(PROP_HEADER, true);
+			} else {
+				req.ZSession.zapped = true;
+				resp.setHeader(PROP_HEADER, false);
+			}
+
 			next();
 		});
 

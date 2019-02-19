@@ -21,3 +21,6 @@
 [submodule "app/services/zapdrone-service.git"]
 	path = app/services/zapdrone-service.git
 	url = https://github.com/duffman/zapdrone-service.git
+[submodule "lib/dbcore"]
+	path = lib/dbcore
+	url = https://github.com/duffman/igniter-dbcore.git

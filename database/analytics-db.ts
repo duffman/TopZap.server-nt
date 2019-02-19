@@ -4,17 +4,17 @@
  * Proprietary and confidential
  */
 import { IDbController }          from '@db/db.controller';
-import { DbManager }              from '@putteDb/db-kernel';
+import { DBKernel }              from '@putteDb/db-kernel';
 import { Logger }                 from '@cli/cli.logger';
 
 
 const ZapCounterTable = "zap_counter";
 
 export class AnalyticsDb implements IDbController {
-	db: DbManager;
+	db: DBKernel;
 
 	constructor() {
-		this.db = new DbManager();
+		this.db = new DBKernel();
 	}
 
 	/**

@@ -1,7 +1,7 @@
 
 // Create Test Session Basket
 
-import {DbManager} from '@putteDb/db-kernel';
+import {DBKernel} from '@putteDb/db-kernel';
 import {Settings} from '@app/app.settings';
 
 
@@ -9,12 +9,12 @@ const log = console.log;
 
 
 export class SessBasketTest {
-	db: DbManager;
+	db: DBKernel;
 
 	constructor() {
 		console.log("SessBasketTest", "constructor");
 
-		this.db = new DbManager(Settings.Database.dbHost,
+		this.db = new DBKernel(Settings.Database.dbHost,
 			Settings.Database.dbUser,
 			Settings.Database.dbPass,
 			Settings.Database.dbName);
