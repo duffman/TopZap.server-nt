@@ -1,1 +1,14 @@
-'use strict';Object.defineProperty(exports,'__esModule',{value:true});const drone_api_routes_1=require('./drone-api-routes');class DroneApiController{constructor(){}apiGetSessionData(req,resp,next){let responseData={key:req.session.id};resp.json(responseData);next();}initRoutes(routes){routes.all(drone_api_routes_1.DroneApiRoutes.DRONE_GET_SESSION,this.apiGetSessionData.bind(this));}}exports.DroneApiController=DroneApiController;
+"use strict";
+/**
+ * Copyright (c) Patrik Forsberg <patrik.forsberg@coldmind.com> - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly prohibited
+ * Proprietary and confidential
+ * February 2019
+ */
+Object.defineProperty(exports, "__esModule", { value: true });
+class DroneApiController {
+    constructor() { }
+    initRoutes(routes) {
+    }
+}
+exports.DroneApiController = DroneApiController;

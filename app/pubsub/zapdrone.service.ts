@@ -5,11 +5,18 @@
  * February 2019
  */
 
-import { ScaledroneClient } from "@app/pubsub/scaledrone-service/scaledrone-client";
-import { ChannelNames, ChannelConfig } from "@app/pubsub/scaledrone-service/channel-config";
+import { injectable }             from "inversify";
+import { ScaledroneClient }       from "@app/pubsub/scaledrone-service/scaledrone-client";
+import { ChannelNames }           from "@app/pubsub/scaledrone-service/channel-config";
 
+@injectable()
 export class ZapdroneService {
 	constructor() {
 		let drone = new ScaledroneClient(ChannelNames.Bids);
+
+		let droneService = new ScaledroneClient(ChannelNames.Service);
+
+
+		//droneService.
 	}
 }

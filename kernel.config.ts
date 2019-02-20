@@ -5,7 +5,8 @@ import { ProductDb }              from "@db/product-db";
 import { IWebApp }                from "@app/webapp";
 import { WebApp }                 from "@app/webapp";
 import { Bootstrap }              from "./main";
-import { ServerService, IServerService } from "@app/server.service";
+import { IServerService }         from "@app/server.service";
+import { ServerService }          from "@app/server.service";
 
 let KernelModules = {
 	ApiController      : Symbol("IApiController")

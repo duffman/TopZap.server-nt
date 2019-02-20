@@ -4,7 +4,6 @@
  * Proprietary and confidential
  */
 
-import * as Scaledrone            from 'scaledrone-node';
 import { Request }                from 'express';
 import { Response }               from 'express';
 import { Router }                 from 'express';
@@ -17,6 +16,7 @@ import { RestUtils }              from '@api/../utils/rest-utils';
 import { BasketService }          from '@app/services/basket.service';
 import { AnalyticsDb }            from '@db/analytics-db';
 import { ApiRoutes }              from '@app/settings/api-routes';
+import { ChannelNames } from "@app/pubsub/scaledrone-service/channel-config";
 
 export class BidsApiController implements IApiController{
 	debugMode: boolean;
@@ -31,56 +31,7 @@ export class BidsApiController implements IApiController{
 
 		console.log("BidsApiController --- XXX");
 		this.basketService = new BasketService();
-		//super(ChannelNames.Bids, MessagePipes.NewBid);
-
-		/*
-
-		this.drone = new Scaledrone("0RgtaE9UstNGjTmu");
-		this.channel = this.drone.subscribe(MessagePipes.GetBid);
-
-		 this.channel.on(DroneEvents.Data, data => {
-			console.log("XXX DATA ::", data);
-		});
-
-		// -- //
-
-		this.channel = new Channel(ChannelNames.Bids, MessagePipes.NewBid);
-		this.channel.onChannelData((data) => {
-			let sessId = data.sessId;
-
-			console.log("NEW BID RECEIVED ::", data);
-
-			if (data.type === ZapMessageType.VendorOffer) {
-				this.onNewVendorBid(data);
-			} else {
-				this.basketService.getReviewData(sessId).then(data => {
-					console.log("DATA ::", data);
-				});
-			}
-		});
-		*/
 	}
-
-	/**
-	 * New Vendor bid received through the PS service
-	 * @param {IChannelMessage} message
-	 *
-	public onNewVendorBid(message: IChannelMessage) {
-		let vendorBid = message.data;
-
-		this.basketService.addToBasket(message.sessId, message.data).then(res => {
-			console.log(this.basketService.addToBasket, message);
-			// Tell the client to fetch the current basket (highest valued)
-			let tmpDrone = new DroneCore(ChannelNames.Basket);
-			tmpDrone.emitRaw("A405CP", { type: "getBasket"});
-
-		}).catch(err => {
-			console.log("onNewVendorBid :: error ::", err);
-		});
-
-		console.log("onNewVendorBid :: -->");
-	}
-	*/
 
 	private apiGetBasket(req: Request, resp: Response): void {
 		console.log("apiGetBasket ::", req.session.id);

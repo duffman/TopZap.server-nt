@@ -4,17 +4,18 @@
  * Proprietary and confidential
  */
 
+import { injectable }             from "inversify";
+import { IGameProductData }       from '@zapModels/game-product-model';
+import { IProductData }           from '@zapModels/product.model';
+import { IVendorModel }           from "@zapModels/vendor-model";
 import { DBKernel }               from "@putteDb/db-kernel";
 import { SQLTableDataRow }        from "@putteDb/sql-table-data-row";
 import { Logger }                 from "@cli/cli.logger";
-import { IVendorModel }           from "@zapModels/vendor-model";
 import { Vendor }                 from "@zapModels/vendor-model";
 import { PlatformTypeParser }     from "@utils/platform-type-parser"
 import { PStrUtils }              from "@putte/pstr-utils";
 import { CliCommander }           from "@cli/cli.commander";
-import { IProductData }           from '@zapModels/product.model';
 import { ProductData }            from '@zapModels/product.model';
-import { IGameProductData }       from '@zapModels/game-product-model';
 import { GameProductData }        from '@zapModels/game-product-model';
 
 export interface IProductDb {
@@ -23,7 +24,8 @@ export interface IProductDb {
 	getVendors(): Promise<Array<IVendorModel>> ;
 }
 
-export class ProductDb {
+@injectable()
+export class ProductDb implements IProductDb {
 	db: DBKernel;
 
 	constructor() {

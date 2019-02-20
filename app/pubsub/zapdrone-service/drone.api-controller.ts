@@ -17,16 +17,7 @@ export class DroneApiController implements IApiController {
 
 	constructor () {}
 
-	private apiGetSessionData(req: Request, resp: Response, next: NextFunction): void {
-		let responseData = {
-			key: req.session.id
-		};
-
-		resp.json(responseData);
-		next();
-	}
 
 	public initRoutes (routes: Router): void {
-		routes.all(DroneApiRoutes.DRONE_GET_SESSION, this.apiGetSessionData.bind(this));
 	}
 }

@@ -4,7 +4,7 @@
  * Proprietary and confidential
  */
 
-
+import { injectable }             from "inversify";
 import * as express               from "express";
 import * as expressSession        from "express-session";
 import * as redis                 from "redis";
@@ -30,8 +30,6 @@ import { DroneApiController } from "@app/pubsub/zapdrone-service/drone.api-contr
 
 let RedisConnector = require("connect-redis")(expressSession);
 
-
-
 /*
 let sessData = {
 	resave: true,
@@ -47,6 +45,7 @@ export interface IWebApp {
 	debugMode: boolean;
 }
 
+@injectable()
 export class WebApp implements IWebApp {
 	debugMode: boolean;
 	version: string;
@@ -70,7 +69,11 @@ export class WebApp implements IWebApp {
 
 	constructor(public settings: IAppSettings) {
 		if (!settings) {
-			throw new Error("WebApp Settings Missing!");
+			//throw new Error("WebApp Settings Missing!");
+
+
+			settings = new AppSettings("127.0.0.1", 8080);
+
 		}
 
 		this.restControllers = new Array<IRestApiController>();
@@ -94,8 +97,8 @@ export class WebApp implements IWebApp {
 		this.webRoutes.use(expressSession({
 			secret: "1g#ulka9n!",
 			store: redisStore,
-			saveUninitialized: false,
-			resave: false
+			saveUninitialized: true, // <- Create new session even if the request does not "touch" the session
+			resave: true             // <- Update the session even if the request does not "touch" the session
 		}));
 
 		//this.app.use(bodyParser.json());

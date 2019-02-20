@@ -5,15 +5,17 @@
  */
 
 export module ApiRoutes {
-	export module Basket {
-		//
-		// Session
-		//
-		export const ZAPBOT_SESSION        = "/zap-session";
+	//
+	// Session
+	//
+	export module Service {
+		export const GET_SESSION_INFO      = "/zap-session";
+	}
 
-		//
-		// Basket
-		//
+	//
+	// Basket
+	//
+	export module Basket {
 		export const GET_BASKET             = "/basket";
 		export const POST_BASKET_ADD        = "/basket/add";
 		export const POST_BASKET_DELETE     = "/basket/del";
