@@ -1,1 +1,0 @@
-'use strict';Object.defineProperty(exports,'__esModule',{value:true});var Global;(function(Global){Global.DebugMode=false;}(Global=exports.Global||(exports.Global={})));var ErrorCodes;(function(ErrorCodes){ErrorCodes.INVALID_PARAMS=3001;}(ErrorCodes=exports.ErrorCodes||(exports.ErrorCodes={})));

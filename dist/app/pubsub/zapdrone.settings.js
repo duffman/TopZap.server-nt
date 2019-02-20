@@ -1,0 +1,1 @@
+'use strict';Object.defineProperty(exports,'__esModule',{value:true});var ZapdroneSettings;(function(ZapdroneSettings){ZapdroneSettings.SessionSecret='0c\u20ACan@lex@nd3r';ZapdroneSettings.DroneWebServerPort=6060;}(ZapdroneSettings=exports.ZapdroneSettings||(exports.ZapdroneSettings={})));

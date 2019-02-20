@@ -1,0 +1,1 @@
+'use strict';Object.defineProperty(exports,'__esModule',{value:true});const scaledrone_client_1=require('./scaledrone-service/scaledrone-client');const channel_config_1=require('./scaledrone-service/channel-config');class ZapdroneService{constructor(){let drone=new scaledrone_client_1.ScaledroneClient(channel_config_1.ChannelNames.Bids);}}exports.ZapdroneService=ZapdroneService;

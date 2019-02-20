@@ -1,0 +1,1 @@
+'use strict';Object.defineProperty(exports,'__esModule',{value:true});var DroneEvents;(function(DroneEvents){DroneEvents.Open='open';DroneEvents.Data='data';DroneEvents.Error='error';DroneEvents.Close='close';DroneEvents.Disconnect='disconnect';DroneEvents.Reconnect='reconnect';}(DroneEvents=exports.DroneEvents||(exports.DroneEvents={})));

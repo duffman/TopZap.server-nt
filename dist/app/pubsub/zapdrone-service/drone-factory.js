@@ -1,0 +1,1 @@
+'use strict';Object.defineProperty(exports,'__esModule',{value:true});const scaledrone_client_1=require('../scaledrone-service/scaledrone-client');class DroneFactory{constructor(){}createDrone(channelId){let drone=new scaledrone_client_1.ScaledroneClient(channelId);return drone;}}exports.DroneFactory=DroneFactory;

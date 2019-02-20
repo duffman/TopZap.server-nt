@@ -1,35 +1,35 @@
 {
   "compilerOptions": {
+    "lib": ["es6", "dom" ],
     "types": ["reflect-metadata", "inversify"],
-  "module": "commonjs",
-  "target": "ESNEXT",
-  "strict": false,
-  "noImplicitAny": false,
-  "sourceMap": false,
-  "experimentalDecorators": true,
-  "emitDecoratorMetadata": true,
-  "outDir": "dist",
-  "baseUrl": "./",
-  "paths": {
-    "@app/*": ["./app/*"],
-    "@api/*": ["./app/api/*"],
-    "@components/*": ["./app/components/*"],
+    "module": "commonjs",
+    "target": "ESNEXT",
+    "noImplicitAny": false,
+    "sourceMap": false,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "outDir": "./dist",
+    "baseUrl": "./",
+    "paths": {
+      "@app/*": ["./app/*"],
+      "@api/*": ["./app/api/*"],
+      "@components/*": ["./app/components/*"],
 
-    "@pubsub/*": ["./modules/pubsub/*"],
-    "@scaledrone/*": ["./modules/pubsub/scaledrone-service.git/*"],
-    "@zapdrone/*": ["./modules/pubsub/zapdrone-service.git/*"],
+      "@pubsub/*": ["./app/pubsub/*"],
+      "@scaledrone/*": ["./app/pubsub/scaledrone-service/*"],
+      "@zapdrone/*": ["./app/pubsub/zapdrone-service/*"],
 
-    "@core/*": ["./app/core/*"],
-    "@cli/*": ["./app/cli/*"],
-    "@lib/*": ["./lib/*"],
-    "@db/*": ["./database/*"],
+      "@core/*": ["./app/core/*"],
+      "@cli/*": ["./app/cli/*"],
+      "@lib/*": ["./lib/*"],
+      "@db/*": ["./database/*"],
 
-    "@zapModels/*": ["./app/zap-ts-models/*"],
-    "@models/*": ["./app/models/*"],
-    "@putteDb/*": ["./lib/dbcore/*"],
-    "@utils/*": ["./lib/utils/*"],
-    "@putte/*": ["./lib/node-tsutils/*"],
-    "@zaplib/*": ["./lib/topzap-utils-lib/*"]
+      "@zapModels/*": ["./app/zap-ts-models/*"],
+      "@models/*": ["./app/models/*"],
+      "@putteDb/*": ["./lib/dbcore/*"],
+      "@utils/*": ["./lib/utils/*"],
+      "@putte/*": ["./lib/node-tsutils/*"],
+      "@zaplib/*": ["./lib/topzap-utils-lib/*"]
   }
 },
   "exclude": [

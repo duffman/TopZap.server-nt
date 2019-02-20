@@ -1,0 +1,1 @@
+'use strict';Object.defineProperty(exports,'__esModule',{value:true});class DbConnection{configure(settins){throw new Error('Method not implemented.');}}exports.DbConnection=DbConnection;

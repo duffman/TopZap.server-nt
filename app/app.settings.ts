@@ -39,8 +39,6 @@ export interface IAppSettings {
 }
 
 export class AppSettings implements IAppSettings {
-	public listenHost: string;
-	public listenPort: number;
-
-	constructor() {}
+	constructor(public listenHost: string,
+				public listenPort: number) {}
 }

@@ -4,6 +4,6 @@
  * Proprietary and confidential
  */
 
-export interface IColdmindNode {
+export interface IZapNode {
 	debugMode: boolean;
 }

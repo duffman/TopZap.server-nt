@@ -1,23 +1,28 @@
 import { Container }              from "inversify";
-import { Main }                   from './main';
-import { IColdmindNode }          from '@app/types/coldmind-node';
-import { IProductDb, ProductDb } from "@db/product-db";
+import { IZapNode }               from '@app/types/coldmind-node';
+import { IProductDb }             from "@db/product-db";
+import { ProductDb }              from "@db/product-db";
+import { IWebApp }                from "@app/webapp";
+import { WebApp }                 from "@app/webapp";
+import { Bootstrap }              from "./main";
+import { ServerService, IServerService } from "@app/server.service";
 
 let KernelModules = {
 	ApiController      : Symbol("IApiController")
 };
 
-
 let Interface = {
-	ProductDb: "IProductDb"
+	ZapNode           : "IZapNode",
+	ServerService     : "IServerService",
+	WebApp            : "IWebApp",
+	ProductDb         : "IProductDb"
 };
 
-
 let Tag = {
-	Handler         : "handler",
-	Message         : "message",
-	DataModule      : "data_module",
-	ProtocolManager : "protocol_manager"
+	Handler           : "handler",
+	Message           : "message",
+	DataModule        : "data_module",
+	ProtocolManager   : "protocol_manager"
 };
 
 let kernel = new Container();
@@ -25,18 +30,15 @@ let kernel = new Container();
 //
 //
 //
-kernel.bind<IColdmindNode>          ("IColdmindNode").to(Main);
-kernel.bind<IProductDb>             (Interface.ProductDb).to(ProductDb).inSingletonScope();
-
-
+kernel.bind<IZapNode>             (Interface.ZapNode).to(Bootstrap);
+kernel.bind<IServerService>       (Interface.ServerService).to(ServerService).inSingletonScope();
+kernel.bind<IWebApp>              (Interface.WebApp).to(WebApp).inSingletonScope();
+kernel.bind<IProductDb>           (Interface.ProductDb).to(ProductDb).inSingletonScope();
 
 //
 // Bind API Controllers
 //
 //kernel.bind<IMessageHandler>("IMessageHandler").to(KeyStoreMessageHandler).whenTargetTagged(Tag.Handler, Tag.Message);
-
-
-
 
 
 /********************************************************************************************
@@ -55,4 +57,4 @@ kernel.bind<IMessageHandler>("IMessageHandler")
 	.to(SessionMessageHandler).whenTargetTagged(Tag.Handler, Tag.Message);
  */
 
-export { kernel, KernelModules, Tag };
+export { kernel, KernelModules, Interface, Tag };

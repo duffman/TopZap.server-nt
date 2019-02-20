@@ -1,0 +1,1 @@
+'use strict';Object.defineProperty(exports,'__esModule',{value:true});class Timestamp{static UNIX(){return Math.round(new Date().getTime()/1000);}}exports.Timestamp=Timestamp;

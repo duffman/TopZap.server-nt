@@ -1,0 +1,1 @@
+'use strict';Object.defineProperty(exports,'__esModule',{value:true});var PUrlType;(function(PUrlType){PUrlType[PUrlType['Unknown']=0]='Unknown';PUrlType[PUrlType['Http']=1]='Http';PUrlType[PUrlType['Https']=2]='Https';PUrlType[PUrlType['Ftp']=3]='Ftp';}(PUrlType=exports.PUrlType||(exports.PUrlType={})));

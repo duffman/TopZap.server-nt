@@ -17,24 +17,32 @@
  * Created by Patrik Forsberg - 2018
  */
 
-import { IColdmindNode }          from '@app/types/coldmind-node';
-import { Logger }                 from "@cli/cli.logger";
-import { CliConfigFile }          from '@cli/cli.config-file';
-import { IWebApp, WebApp }       from '@app/webserver';
+import { kernel, Interface }      from "./kernel.config";
+import { IZapNode }               from '@app/types/coldmind-node';
 import { IAppSettings }           from '@app/app.settings';
 import { AppSettings }            from '@app/app.settings';
+import { ServerService }          from "@app/server.service";
+import { Logger }                 from "@cli/cli.logger";
+import { CliConfigFile }          from '@cli/cli.config-file';
+import { WebApp } from "@app/webapp";
+import { ZapdroneService } from "@app/pubsub/zapdrone.service";
 
-export class Main implements IColdmindNode {
+export class Bootstrap implements IZapNode {
 	debugMode: boolean;
-	app: IWebApp;
+
+	constructor() {
+		let settings = new AppSettings("127.0.0.1", 8080);
+		new WebApp(settings);
+
+		new ZapdroneService();
+		//kernel.get<ServerService>("IServerService");
+	}
 
 	private createSettings(config: any): IAppSettings {
-		let settings = new AppSettings();
+		let listenHost = (config.listenHost) ? config.listenHost : "127.0.0.1";
+		let listenPort = (config.listenPort) ? config.port : 8080;
 
-		settings.listenHost = (config.listenHost) ? config.listenHost : "127.0.0.1";
-		settings.listenPort = (config.listenPort) ? config.port : 8080;
-
-		return settings;
+		return new AppSettings(listenHost, listenPort);
 	}
 
 	/**
@@ -47,7 +55,7 @@ export class Main implements IColdmindNode {
 		try {
 			let configData = config.getConfig();
 			let settings = this.createSettings(configData);
-			this.app = new WebApp(settings);
+			//this.app = new WebApp(settings);
 
 			return true;
 		} catch (err) {
@@ -57,5 +65,5 @@ export class Main implements IColdmindNode {
 	}
 }
 
-let main = new Main();
-main.run();
+let bootstrap = new Bootstrap();
+//main.run();
