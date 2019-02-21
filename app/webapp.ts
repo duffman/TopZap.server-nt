@@ -4,13 +4,13 @@
  * Proprietary and confidential
  */
 
+import "reflect-metadata";
 import { injectable }             from "inversify";
 import * as express               from "express";
 import * as expressSession        from "express-session";
 import * as redis                 from "redis";
 import * as cors                  from "cors";
 import * as bodyParser            from "body-parser";
-import * as cookieParser          from "cookie-parser";
 import { Router }                 from "express";
 import { NextFunction }           from "express";
 
@@ -20,13 +20,12 @@ import { BidsApiController }      from "@api/bids-api.controller";
 import { IRestApiController }     from "@api/api-controller";
 import { CaptchaController }      from "@api/captcha.controller";
 
-
 import { IAppSettings }           from "@app/app.settings";
 import { AppSettings }            from "@app/app.settings";
 import { PutteController }        from "@api/putte.controller";
 import { PVarUtils }              from "@putte/pvar-utils";
 import { Logger }                 from "@cli/cli.logger";
-import { DroneApiController } from "@app/pubsub/zapdrone-service/drone.api-controller";
+import { DroneApiController }     from "@app/pubsub/zapdrone-service/drone.api-controller";
 
 let RedisConnector = require("connect-redis")(expressSession);
 
@@ -43,6 +42,8 @@ let sessData = {
 
 export interface IWebApp {
 	debugMode: boolean;
+	initApp(): void;
+
 }
 
 @injectable()
@@ -67,23 +68,17 @@ export class WebApp implements IWebApp {
 		process.exit(code);
 	}
 
-	constructor(public settings: IAppSettings) {
-		if (!settings) {
-			//throw new Error("WebApp Settings Missing!");
+	settings: AppSettings;
+	constructor() {
+		this.settings = new AppSettings("127.0.0.1", 8080);
+	}
 
-
-			settings = new AppSettings("127.0.0.1", 8080);
-
-		}
+	public initApp(): void {
+		let scope = this;
 
 		this.restControllers = new Array<IRestApiController>();
 		this.app = express();
 
-		this.initApp();
-	}
-
-	private initApp() {
-		let scope = this;
 		let listenHost = this.settings.listenHost;
 		let listenPort = this.settings.listenPort;
 

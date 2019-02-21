@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "lib": ["es6", "dom" ],
-    "types": ["reflect-metadata", "inversify"],
+    "types": ["node", "reflect-metadata", "inversify"],
     "module": "commonjs",
     "target": "ESNEXT",
     "noImplicitAny": false,
@@ -11,6 +11,7 @@
     "outDir": "./dist",
     "baseUrl": "./",
     "paths": {
+      "@root/*": ["./*"],
       "@app/*": ["./app/*"],
       "@api/*": ["./app/api/*"],
       "@components/*": ["./app/components/*"],

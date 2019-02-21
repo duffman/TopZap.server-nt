@@ -5,14 +5,20 @@
  * February 2019
  */
 
-import { injectable }             from "inversify";
+import "reflect-metadata";
+import {inject, injectable}       from "inversify";
+import { WebApp }                 from '@app/webapp';
+import { Interface }              from '@root/kernel.config';
 
 export interface IServerService {
 }
 
 @injectable()
 export class ServerService implements IServerService {
-	constructor() {
+	constructor(
+		@inject("IWebApp") private webApp: WebApp
+	) {
 		console.log("ServerService !!!");
+		webApp.initApp();
 	}
 }

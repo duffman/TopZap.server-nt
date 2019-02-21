@@ -4,6 +4,7 @@
  * Proprietary and confidential
  */
 
+import "reflect-metadata";
 import { injectable }             from "inversify";
 import { IGameProductData }       from '@zapModels/game-product-model';
 import { IProductData }           from '@zapModels/product.model';

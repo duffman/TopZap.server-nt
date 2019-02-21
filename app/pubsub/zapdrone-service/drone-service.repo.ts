@@ -19,6 +19,7 @@ export class DroneServiceRepo implements IDroneServiceRepo {
 	public getServiceOfType() {}
 
 	private init() {
+		/*
 		let pingTimer = setInterval(() => {
 			client.get('string key', function (err, reply) {
 				if(reply) {
@@ -30,5 +31,6 @@ export class DroneServiceRepo implements IDroneServiceRepo {
 				}
 			});
 		}, 1000);
+		*/
 	}
 }

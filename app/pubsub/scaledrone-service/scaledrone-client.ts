@@ -36,6 +36,10 @@ export class ScaledroneClient implements IDroneModule {
 		this.attachEventHandlers();
 	}
 
+	public subscribe(pipeName: string): any {
+		return this.drone.subscribe(pipeName);
+	}
+
 	private openChannel(): void {
 		this.isOpen = true;
 

@@ -11,16 +11,16 @@ import { IApiController }         from '@api/api-controller';
 import { Logger }                 from '@cli/cli.logger';
 import { ISessionBasket }         from '@zapModels/session-basket';
 import { SessionBasket }          from '@zapModels/session-basket';
-import { ZapMessageType }         from '@zapModels/messages/zap-message-types';
 import { RestUtils }              from '@api/../utils/rest-utils';
 import { BasketService }          from '@app/services/basket.service';
 import { AnalyticsDb }            from '@db/analytics-db';
 import { ApiRoutes }              from '@app/settings/api-routes';
-import { ChannelNames } from "@app/pubsub/scaledrone-service/channel-config";
+import { ServiceBidsPipe }        from '@zapdrone/pipes/drone-bids-pipe';
 
 export class BidsApiController implements IApiController{
 	debugMode: boolean;
 	basketService: BasketService;
+	bidsPipe: ServiceBidsPipe;
 	analyticsDb: AnalyticsDb;
 
 	drone: any;
@@ -31,6 +31,7 @@ export class BidsApiController implements IApiController{
 
 		console.log("BidsApiController --- XXX");
 		this.basketService = new BasketService();
+		this.bidsPipe = new ServiceBidsPipe();
 	}
 
 	private apiGetBasket(req: Request, resp: Response): void {
@@ -83,6 +84,10 @@ export class BidsApiController implements IApiController{
 
 		try {
 			Logger.log(`BasketChannelController :: doGetOffers`);
+			this.bidsPipe.getBid(code, sessId);
+
+
+			//let messData = new ChannelMessage(ZapMessageType.GetOffers, {code: code}, sessId);
 
 			/*
 			let messData = new ChannelMessage(ZapMessageType.GetOffers, {code: code}, sessId);

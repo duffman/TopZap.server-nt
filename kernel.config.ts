@@ -30,7 +30,6 @@ let kernel = new Container();
 
 //
 //
-//
 kernel.bind<IZapNode>             (Interface.ZapNode).to(Bootstrap);
 kernel.bind<IServerService>       (Interface.ServerService).to(ServerService).inSingletonScope();
 kernel.bind<IWebApp>              (Interface.WebApp).to(WebApp).inSingletonScope();

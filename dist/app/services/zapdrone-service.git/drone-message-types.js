@@ -1,0 +1,1 @@
+'use strict';Object.defineProperty(exports,'__esModule',{value:true});var MessageTypes;(function(MessageTypes){MessageTypes[MessageTypes['Ping']=101]='Ping';MessageTypes[MessageTypes['Pong']=102]='Pong';}(MessageTypes=exports.MessageTypes||(exports.MessageTypes={})));

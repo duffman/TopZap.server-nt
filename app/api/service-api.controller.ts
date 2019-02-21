@@ -15,7 +15,7 @@ export class ServiceApiController implements IRestApiController {
 	constructor(public debugMode: boolean = false) {}
 
 	private getToken(req: Request, resp: Response): void {
-		resp.json({token: req.session.id});
+		resp.json({sessionId: req.session.id});
 	}
 
 	private apiGetSessionData(req: Request, resp: Response, next: NextFunction): void {

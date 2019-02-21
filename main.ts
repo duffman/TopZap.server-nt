@@ -17,7 +17,8 @@
  * Created by Patrik Forsberg - 2018
  */
 
-import { kernel, Interface }      from "./kernel.config";
+import { injectable }             from 'inversify';
+import { kernel }                 from "./kernel.config";
 import { IZapNode }               from '@app/types/coldmind-node';
 import { IAppSettings }           from '@app/app.settings';
 import { AppSettings }            from '@app/app.settings';
@@ -27,6 +28,7 @@ import { CliConfigFile }          from '@cli/cli.config-file';
 import { WebApp }                 from "@app/webapp";
 import { ZapdroneService }        from "@app/pubsub/zapdrone.service";
 
+@injectable()
 export class Bootstrap implements IZapNode {
 	debugMode: boolean;
 

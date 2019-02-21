@@ -15,15 +15,14 @@ import { ISessionBasket }         from '@zapModels/session-basket';
 import { SessionBasket }          from '@zapModels/session-basket';
 import { PRandNum }               from '@putte/prand-num';
 import { ProductDb }              from '@db/product-db';
-import { BarcodeParser }          from '@zaplib/../../lib/utils/barcode-parser';
 import { IProductData }           from '@zapModels/product.model';
 import { IVendorModel }           from '@zapModels/vendor-model';
 import { IGameProductData }       from '@zapModels/game-product-model';
 import { Logger}                  from '@cli/cli.logger';
 import { BasketSessionService }   from '@app/services/basket-session.service';
+import { BarcodeParser }          from '@utils/barcode-parser';
 
 export interface IBasketService {
-
 }
 
 export class BasketService implements IBasketService {

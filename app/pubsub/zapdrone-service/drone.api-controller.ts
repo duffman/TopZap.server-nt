@@ -10,7 +10,6 @@ import { Router }                 from 'express';
 import { Request }                from 'express';
 import { Response }               from 'express';
 import { NextFunction }           from 'express';
-import { DroneApiRoutes } from "@pubsub/zapdrone-service/drone-api-routes";
 
 export class DroneApiController implements IApiController {
 	debugMode: boolean;
