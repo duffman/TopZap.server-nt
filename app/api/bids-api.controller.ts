@@ -68,8 +68,17 @@ export class BidsApiController implements IApiController{
 
 	private apiReviewBasket(req: Request, resp: Response): void {
 		let data = req.body;
+		let sessId = req.session.id;
 
-		console.log("BASKET :: SESSION ID ::", req.session.id);
+		console.log("BASKET :: SESSION ID ::", sessId);
+
+		this.basketService.getReviewData(sessId).then(res => {
+			console.log("apiReviewBasket ::", JSON.stringify(res));
+			resp.json(res);
+
+		}).catch(err => {
+			Logger.logError("apiReviewBasket :: err ::", err);
+		});
 	}
 
 	public initRoutes(routes: Router): void {
@@ -85,7 +94,6 @@ export class BidsApiController implements IApiController{
 		try {
 			Logger.log(`BasketChannelController :: doGetOffers`);
 			this.bidsPipe.getBid(code, sessId);
-
 
 			//let messData = new ChannelMessage(ZapMessageType.GetOffers, {code: code}, sessId);
 
@@ -114,13 +122,6 @@ export class BidsApiController implements IApiController{
 		}
 
 		return result;
-	}
-
-	public getSessionBasket(sessId: string): ISessionBasket {
-		//let sessBasket = this.basketSessService.getSessionBasket(sessId);
-
-		let sessBasket = new SessionBasket();
-		return sessBasket;
 	}
 }
 
