@@ -12,6 +12,14 @@ export class RestUtils {
 		resp.json({success: success});
 	}
 
+	public static jsonError(resp: Response, err: any = null) {
+		let errorObj = {success: false,
+						error: err
+					};
+
+		resp.json(errorObj);
+	}
+
 	public static internalError(resp: Response, message: string = "") {
 		resp.writeHead(501, {'Content-Type': 'text/plain'});
 		resp.end(message);

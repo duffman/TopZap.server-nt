@@ -481,21 +481,30 @@ export class BasketService implements IBasketService {
 	 * @param {string} code
 	 * @returns {boolean}
 	 */
-	private removeProductData(code: string, basket: ISessionBasket = null): boolean {
+	private removeProductData(code: string, basket: ISessionBasket): Promise<boolean> {
 		let result = false;
 
-		basket.productData = !(basket.productData) ? new Array<IProductData>() : basket.productData;
+		return new Promise((resolve, reject) => {
+			try {
+				basket.productData = !(basket.productData) ? new Array<IProductData>() : basket.productData;
 
-		for (let i = 0; i < basket.productData.length; i++) {
-			let product = basket.productData[i];
-			if (product.code === code) {
-				basket.productData.splice(i, 1);
-				result = true;
-				break;
+				for (let i = 0; i < basket.productData.length; i++) {
+					let product = basket.productData[i];
+					if (product.code === code) {
+						console.log(">>> FOUND PROD TO REMOVE ::", code);
+						basket.productData.splice(i, 1);
+						result = true;
+						break;
+					}
+				}
+
+				resolve(result);
+
+			} catch (ex) {
+				reject(ex);
 			}
-		}
+		});
 
-		return result;
 	}
 
 	/**
@@ -504,36 +513,63 @@ export class BasketService implements IBasketService {
 	 * @param {string} code
 	 * @param {ISessionBasket} basket
 	 */
-	private removeItemByCode(code: string, basket: ISessionBasket = null): boolean {
+	private removeFromVendorBaskets(code: string, basket: ISessionBasket = null): Promise<boolean> {
 		let result = false;
 
-		this.removeProductData(code, basket);
-		console.log("removeItemByCode :: removeProductData ::", basket);
+		return new Promise((resolve, reject) => {
+			console.log("removeFromVendorBaskets :: removeProductData");
 
-		for (const vendorData of basket.vendorBaskets) {
-			console.log("VENDOR BASKET ::", vendorData);
+			try {
+				for (const vendorData of basket.vendorBaskets) {
+					console.log("VENDOR BASKET ::", vendorData.vendorId);
 
-			for (let i = 0; i < vendorData.items.length; i++) {
-				let item = vendorData.items[i];
-				if (item.code === code) {
-					vendorData.items.splice(i, 1);
-					result = true;
-					break;
+					for (let i = 0; i < vendorData.items.length; i++) {
+						let item = vendorData.items[i];
+						if (item.code === code) {
+							console.log(">>> FOUND ITEM TO REMOVE ::", code);
+							vendorData.items.splice(i, 1);
+							result = true;
+							break;
+						}
+					}
 				}
-			}
-		}
 
-		return result;
+				resolve(result);
+
+			} catch (ex) {
+				reject(ex);
+			}
+		});
 	}
 
-	public removeItem(code: string): Promise<ISessionBasket> {
+	public removeItem(code: string, sessId: string): Promise<boolean> {
 		let scope = this;
 
+		console.log("***************************");
+		console.log("* REMOVE ITEM :: CODE ::", code);
+		console.log("* REMOVE ITEM :: SESSID ::", sessId);
+		console.log("***************************");
+
 		return new Promise((resolve, reject) => {
-			scope.removeItem(code).then(res => {
+			this.getSessionBasket(sessId).then(sessionBasket => {
+				// First Remove unnecessary product data
+				let remRes = this.removeFromVendorBaskets(code, sessionBasket);
+				console.log("Rmmoved From Vendor Baskets ::", remRes);
+
+				return sessionBasket;
+
+			}).then(sessionBasket => {
+				let remRes = this.removeProductData(code, sessionBasket);
+				console.log("Rmmoved From Product Data ::", remRes);
+
+				return sessionBasket;
+			}).then(sessionBasket => {
+				this.basketSessService.saveSessionBasket(sessId, sessionBasket);
+				resolve(true);
 
 			}).catch(err => {
-
+				Logger.logError("BasketService :: removeItem :: err ::", err)
+				reject(err);
 			});
 		});
 	}

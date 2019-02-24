@@ -69,8 +69,9 @@ export class WebApp implements IWebApp {
 	}
 
 	settings: AppSettings;
+
 	constructor() {
-		this.settings = new AppSettings("127.0.0.1", 8080);
+		this.settings = new AppSettings("127.0.0.1", 8081);
 	}
 
 	public initApp(): void {
@@ -110,7 +111,7 @@ export class WebApp implements IWebApp {
 
 		this.webRoutes.use((req, res, next) => {
 			let origin = req.headers['origin'] || req.headers['Origin'];
-			let or: string = origin ? origin.toString() : "";
+			let or: string = origin ? origin.toString() : "*";
 
 			res.header('Access-Control-Allow-Credentials', "true");
 			res.header('Access-Control-Allow-Origin', or); //req.headers.origin);

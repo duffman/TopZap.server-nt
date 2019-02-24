@@ -403,11 +403,11 @@ export class BasketHandler {
 		return result;
 	}
 
-	public removeItemByCode(code: string, basket: ISessionBasket = null): boolean {
+	public removeFromVendorBaskets(code: string, basket: ISessionBasket = null): boolean {
 		let result = false;
 
 		this.removeProductByCode(code, basket);
-		console.log("removeItemByCode :: removeProductData ::", basket);
+		console.log("removeFromVendorBaskets :: removeProductData ::", basket);
 
 		for (const vendorData of basket.vendorBaskets) {
 			console.log("VENDOR BASKET ::", vendorData);

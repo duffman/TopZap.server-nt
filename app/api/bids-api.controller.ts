@@ -39,7 +39,6 @@ export class BidsApiController implements IApiController{
 
 		this.basketService.getCurrentBasket(req.session.id).then(data => {
 			resp.json(data);
-
 		}).catch(err => {
 			Logger.logError("apiGetBasket :: err ::", err);
 		});
@@ -57,12 +56,18 @@ export class BidsApiController implements IApiController{
 	}
 
 	private apiDeleteBasketItem(req: Request, resp: Response): void {
-		let code = req.body.code;
+		let data = req.body;
+		let code = data.code;
 
-		this.basketService.removeItem(code).then(res => {
+		let sessId = req.session.id;
 
+		console.log("REMOVING ITEM :: BODY ::", data);
+		console.log("REMOVING ITEM ::", code);
+
+		this.basketService.removeItem(code, sessId).then(res => {
+			RestUtils.jsonSuccess(resp, true);
 		}).catch(err => {
-
+			RestUtils.jsonError(resp);
 		});
 	}
 
