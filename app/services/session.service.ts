@@ -20,6 +20,23 @@ export class SessionService implements ISessionService {
 		this.db = new DBKernel();
 	}
 
+	private escapeJSON(data: string): string {
+		if (data) {
+			data = data.replace(
+				new RegExp("\\'".replace(/([.*+?^=!:${}()|\[\]\/\\])/g, '\\$1'), 'g'),
+				"'"
+			);
+			data = data.replace(
+				/"((?:"[^"]*"|[^"])*?)"(?=[:},])(?=(?:"[^"]*"|[^"])*$)/gm,
+				(match, group) => {
+					return '"' + group.replace(/"/g, '\\"') + '"';
+				}
+			);
+		}
+		return data;
+	}
+
+
 	/**
 	 * Checks to see if the retrieved session is expired.
 	 * @returns {boolean}
@@ -78,6 +95,8 @@ export class SessionService implements ISessionService {
 				let data = row.getValAsStr("data");
 
 				console.log("DATA BEFORE PARSE::", data);
+
+				data = this.escapeJSON(data);
 
 				let sessionData = data ? JSON.parse(data) : {};
 

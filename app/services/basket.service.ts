@@ -22,6 +22,7 @@ import { Logger}                  from '@cli/cli.logger';
 import { BasketSessionService }   from '@app/services/basket-session.service';
 import { BarcodeParser }          from '@utils/barcode-parser';
 import SqlString                  from '@putteDb/dynsql/sql-string';
+import {PStrUtils} from '@putte/pstr-utils';
 
 export interface IBasketService {
 }
@@ -64,7 +65,11 @@ export class BasketService implements IBasketService {
 	 */
 	public addToBasket(sessId: string, offerData: IVendorOfferData): Promise<boolean> {
 		function prepStr(data: string): string {
-			return SqlString.escape(data);
+			// data = PStrUtils.replaceEx(data, '"', '\"');
+			// data = PStrUtils.replaceEx(data, "'", "\'");
+			// return SqlString.escape(data);
+
+			return data;
 		}
 
 		return new Promise((resolve, reject) => {
