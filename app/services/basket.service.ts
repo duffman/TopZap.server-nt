@@ -21,6 +21,7 @@ import { IGameProductData }       from '@zapModels/game-product-model';
 import { Logger}                  from '@cli/cli.logger';
 import { BasketSessionService }   from '@app/services/basket-session.service';
 import { BarcodeParser }          from '@utils/barcode-parser';
+import SqlString                  from '@putteDb/dynsql/sql-string';
 
 export interface IBasketService {
 }
@@ -53,6 +54,8 @@ export class BasketService implements IBasketService {
 		return sessionBasket;
 	}
 
+
+
 	/**
 	 * Add new Vendor bid to session basket
 	 * @param {string} sessId
@@ -60,6 +63,10 @@ export class BasketService implements IBasketService {
 	 * @returns {Promise<boolean>}
 	 */
 	public addToBasket(sessId: string, offerData: IVendorOfferData): Promise<boolean> {
+		function prepStr(data: string): string {
+			return SqlString.escape(data);
+		}
+
 		return new Promise((resolve, reject) => {
 			this.getSessionBasket(sessId).then(sessionBasket => {
 				if (!offerData.accepted) {
@@ -74,7 +81,7 @@ export class BasketService implements IBasketService {
 					1,
 					offerData.code,
 					offerData.vendorId,
-					offerData.title,
+					prepStr(offerData.title),
 					vendorOffer
 				);
 

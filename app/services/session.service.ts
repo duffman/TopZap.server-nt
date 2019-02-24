@@ -76,6 +76,9 @@ export class SessionService implements ISessionService {
 			this.db.dbQuery(query).then(res => {
 				let row = res.safeGetFirstRow();
 				let data = row.getValAsStr("data");
+
+				console.log("DATA BEFORE PARSE::", data);
+
 				let sessionData = data ? JSON.parse(data) : {};
 
 				resolve(sessionData);
