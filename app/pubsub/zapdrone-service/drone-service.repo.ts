@@ -13,7 +13,6 @@ export interface IDroneServiceRepo {
 @injectable()
 export class DroneServiceRepo implements IDroneServiceRepo {
 	constructor() {
-
 	}
 
 	public getServiceOfType() {}

@@ -5,6 +5,8 @@
  * Proprietary and confidential
  */
 
+import "reflect-metadata";
+import { injectable }             from "inversify";
 import { IBasketItem }            from '@zapModels/basket/basket-item.model';
 import { BasketItem }             from '@zapModels/basket/basket-item.model';
 import { IBasketModel }           from '@zapModels/basket/basket.model';
@@ -21,12 +23,11 @@ import { IGameProductData }       from '@zapModels/game-product-model';
 import { Logger}                  from '@cli/cli.logger';
 import { BasketSessionService }   from '@app/services/basket-session.service';
 import { BarcodeParser }          from '@utils/barcode-parser';
-import SqlString                  from '@putteDb/dynsql/sql-string';
-import {PStrUtils} from '@putte/pstr-utils';
 
 export interface IBasketService {
 }
 
+@injectable()
 export class BasketService implements IBasketService {
 	basketSessService: BasketSessionService;
 
@@ -49,13 +50,11 @@ export class BasketService implements IBasketService {
 	private ensureBasket(sessionBasket: ISessionBasket): ISessionBasket {
 		if (!sessionBasket) {
 			sessionBasket = new SessionBasket();
-			console.log("ensureBasket >> We´re creating the basket ::", sessionBasket.vendorBaskets);
+			console.log("ensureBasket :: Creating new SessionBasket");
 		}
 
 		return sessionBasket;
 	}
-
-
 
 	/**
 	 * Add new Vendor bid to session basket
@@ -176,8 +175,6 @@ export class BasketService implements IBasketService {
 			try {
 				let sessionBasket: ISessionBasket = await scope.getReviewData(sessId);
 				let baskets = sessionBasket.vendorBaskets;
-
-				console.log("getBasket() :: sessionBasket ::", sessionBasket);
 
 				// Remove all baskets except the first (highest value)
 				if (baskets && baskets.length > 0) {

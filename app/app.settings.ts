@@ -40,5 +40,7 @@ export interface IAppSettings {
 
 export class AppSettings implements IAppSettings {
 	constructor(public listenHost: string,
-				public listenPort: number) {}
+				public listenPort: number,
+				public corsCredentials: boolean = true,
+				public corsOrigin: string = "") {}
 }

@@ -5,6 +5,7 @@
  */
 
 import "reflect-metadata";
+import { Interface, kernel, Tag } from '@root/kernel.config';
 import { injectable }             from "inversify";
 import * as express               from "express";
 import * as expressSession        from "express-session";
@@ -12,20 +13,15 @@ import * as redis                 from "redis";
 import * as cors                  from "cors";
 import * as bodyParser            from "body-parser";
 import { Router }                 from "express";
-import { NextFunction }           from "express";
-
-import { ProductApiController }   from "@api/product-api.controller";
-import { ServiceApiController }   from "@api/service-api.controller";
-import { BidsApiController }      from "@api/bids-api.controller";
 import { IRestApiController }     from "@api/api-controller";
-import { CaptchaController }      from "@api/captcha.controller";
-
-import { IAppSettings }           from "@app/app.settings";
 import { AppSettings }            from "@app/app.settings";
-import { PutteController }        from "@api/putte.controller";
-import { PVarUtils }              from "@putte/pvar-utils";
 import { Logger }                 from "@cli/cli.logger";
-import { DroneApiController }     from "@app/pubsub/zapdrone-service/drone.api-controller";
+import { ScaledroneClient }       from '@scaledrone/scaledrone-client';
+import { ChannelNames }           from '@scaledrone/channel-config';
+import { DroneEvents }            from '@scaledrone/drone-events';
+
+import * as Scaledrone            from 'scaledrone-node';
+import {CliConfigFile} from '@cli/cli.config-file';
 
 let RedisConnector = require("connect-redis")(expressSession);
 
@@ -43,7 +39,6 @@ let sessData = {
 export interface IWebApp {
 	debugMode: boolean;
 	initApp(): void;
-
 }
 
 @injectable()
@@ -71,7 +66,21 @@ export class WebApp implements IWebApp {
 	settings: AppSettings;
 
 	constructor() {
-		this.settings = new AppSettings("127.0.0.1", 8081);
+		let configFile = new CliConfigFile();
+		let config = configFile.getConfig();
+
+		let listenHost = config.listenHost ? config.listenHost : "127.0.0.1";
+		let listenPort = config.listenPort ? config.listenPort : 8081;
+
+		Logger.logPurple("* Listen Host ::", listenHost);
+		Logger.logPurple("* Listen Port ::", listenPort);
+
+		this.settings = new AppSettings(
+			listenHost,
+			listenPort,
+			config.cors.credentials,
+			config.cors.origin
+		);
 	}
 
 	public initApp(): void {
@@ -90,9 +99,15 @@ export class WebApp implements IWebApp {
 		let redisConnection = { host: 'localhost', port: 6379, client: redisClient,ttl :  260 };
 		let redisStore = new RedisConnector(redisConnection);
 
+		let expDate = new Date(Date.now() + 9000000);
+
 		this.webRoutes.use(expressSession({
 			secret: "1g#ulka9n!",
 			store: redisStore,
+			cookie: {
+				maxAge: 18000 * 10000,
+				expires: expDate
+			},
 			saveUninitialized: true, // <- Create new session even if the request does not "touch" the session
 			resave: true             // <- Update the session even if the request does not "touch" the session
 		}));
@@ -100,25 +115,36 @@ export class WebApp implements IWebApp {
 		//this.app.use(bodyParser.json());
 		//this.app.use(bodyParser.urlencoded({extended: true}));
 
-		this.app.use(this.webRoutes);
-
-		Logger.logPurple("LISTEN HOST ::", listenHost);
-		Logger.logPurple("LISTEN PORT ::", listenPort);
+		Logger.logPurple("this.settings ::", this.settings);
 
 		//cors({credentials: true, withCredentials: true, origin: true});
-		//this.app.use(cors());
+//		this.app.use(cors());
+//		this.webRoutes.use(cors());
 		//this.webRoutes.use(session(sessData));
+		/*this.webRoutes.use((req, res, next) => {*/
 
-		this.webRoutes.use((req, res, next) => {
+		let corsOptions = {
+			credentials: this.settings.corsCredentials,
+			origin: this.settings.corsOrigin
+		};
+
+		this.app.use(cors(corsOptions));
+
+		/*
+		this.app.use((req, res, next) => {
 			let origin = req.headers['origin'] || req.headers['Origin'];
-			let or: string = origin ? origin.toString() : "*";
+			let or: string = origin ? origin[0] : "*";
 
-			res.header('Access-Control-Allow-Credentials', "true");
-			res.header('Access-Control-Allow-Origin', or); //req.headers.origin);
-			res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-			res.header('Access-Control-Allow-Headers', 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept');
+			let origins = ["http://localhost:4200", "*", or];
+
+			res.setHeader('Access-Control-Allow-Origin',       "http://localhost:4200"); // req.headers.origin);
+			res.setHeader('Access-Control-Allow-Credentials',  "true");
+			res.setHeader('Access-Control-Allow-Methods',      "GET, POST, OPTIONS, PUT, PATCH, DELETE");
+			res.setHeader('Access-Control-Allow-Headers',      "X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept");
+
 			next();
 		});
+		*/
 
 		//this.webRoutes.use(cookieParser()); <-- interferes with exoressSession
 		this.webRoutes.use(bodyParser.json()); // support json encoded bodies
@@ -144,6 +170,28 @@ export class WebApp implements IWebApp {
 		});
 
 		//
+
+		this.app.use(this.webRoutes);
+
+		//
+
+		//let client = new ScaledroneClient(ChannelNames.Service);
+		let client = new ScaledroneClient(ChannelNames.Service); //   "RgtaE9UstNGjTmu");
+		let channel = client.subscribe("register");
+
+		let mess = {
+			mess: "kalle"
+		};
+
+		channel.on(DroneEvents.Open, error => {
+			Logger.logPurple("Service Channel Open ::", error);
+		});
+
+		channel.on(DroneEvents.Data, data => {
+			Logger.logPurple("Service Channel Data ::", data);
+		});
+
+		//
 		// Initialize API Controllers
 		//
 		this.initRestControllers();
@@ -155,20 +203,18 @@ export class WebApp implements IWebApp {
 
 	private initRestControllers() {
 		const routes = this.webRoutes; //webRoutes;
-		const controllers = this.restControllers;
+		const controllers: IRestApiController[] = this.restControllers;
 
-		controllers.push(new BidsApiController());
-		controllers.push(new DroneApiController());
-		controllers.push(new PutteController());
-		controllers.push(new CaptchaController());
-		controllers.push(new ServiceApiController());
-		controllers.push(new ProductApiController());
+		let injectedControllers = kernel.getAllTagged<IRestApiController>(
+													Interface.RestApiController,
+													Tag.Handler,
+													Tag.ApiController
+											);
 
-		//
-		// Pass the Route object to each controller to assign routes
-		//
-		for (let index in controllers) {
-			let controller = controllers[index];
+		console.log("initRestControllers :: INJECTED ::", injectedControllers.length);
+
+		for (let controller of injectedControllers) {
+			controllers.push(controller);
 			controller.initRoutes(routes);
 		}
 	}

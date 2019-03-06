@@ -4,10 +4,13 @@
  * Proprietary and confidential
  */
 
+import "reflect-metadata";
+import { injectable }             from "inversify";
 import { CachedOffersDb }         from '@db/cached-offers-db';
-import { IApiController }         from '@api/api-controller';
+import { IRestApiController }     from '@api/api-controller';
 
-export class DataCacheController  implements IApiController {
+@injectable()
+export class DataCacheController  implements IRestApiController {
 	cachedOffersDb: CachedOffersDb;
 
 	constructor(public debugMode: boolean = false) {

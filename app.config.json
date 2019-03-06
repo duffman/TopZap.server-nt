@@ -1,0 +1,8 @@
+{
+  "listenHost": "localhost",
+  "listenPort": 8081,
+  "cors": {
+    "credentials": true,
+    "origin": "http://localhost:4200"
+  }
+}

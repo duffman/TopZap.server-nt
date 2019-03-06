@@ -4,6 +4,8 @@
  * Proprietary and confidential
  */
 
+import "reflect-metadata";
+import { injectable }             from "inversify";
 import { IRestApiController }     from "@api/api-controller";
 import { Request }                from "express";
 import { Response }               from "express";
@@ -11,6 +13,7 @@ import { NextFunction }           from "express";
 import { Router }                 from "express";
 import { ApiRoutes }              from "@app/settings/api-routes";
 
+@injectable()
 export class ServiceApiController implements IRestApiController {
 	constructor(public debugMode: boolean = false) {}
 
@@ -20,7 +23,8 @@ export class ServiceApiController implements IRestApiController {
 
 	private apiGetSessionData(req: Request, resp: Response, next: NextFunction): void {
 		let responseData = {
-			key: req.session.id
+			key: req.session.id,
+			numVen: 4
 		};
 
 		resp.json(responseData);

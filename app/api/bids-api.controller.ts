@@ -4,40 +4,50 @@
  * Proprietary and confidential
  */
 
+import "reflect-metadata";
+import { inject, injectable }     from "inversify";
+import { Interface }              from '@root/kernel.config';
 import { Request }                from 'express';
 import { Response }               from 'express';
 import { Router }                 from 'express';
-import { IApiController }         from '@api/api-controller';
+import { IRestApiController }     from '@api/api-controller';
 import { Logger }                 from '@cli/cli.logger';
-import { ISessionBasket }         from '@zapModels/session-basket';
-import { SessionBasket }          from '@zapModels/session-basket';
 import { RestUtils }              from '@api/../utils/rest-utils';
 import { BasketService }          from '@app/services/basket.service';
 import { AnalyticsDb }            from '@db/analytics-db';
 import { ApiRoutes }              from '@app/settings/api-routes';
-import { ServiceBidsPipe }        from '@zapdrone/pipes/drone-bids-pipe';
+import { DroneBidsPipe }          from '@zapdrone/pipes/drone-bids-pipe';
 
-export class BidsApiController implements IApiController{
+@injectable()
+export class BidsApiController implements IRestApiController{
 	debugMode: boolean;
-	basketService: BasketService;
-	bidsPipe: ServiceBidsPipe;
+	bidsPipe: DroneBidsPipe;
 	analyticsDb: AnalyticsDb;
 
 	drone: any;
 	channel: any;
 
-	constructor() {
-		this.analyticsDb = new AnalyticsDb();
+	constructor(
+		@inject("IBasketService") private basketService: BasketService,
+		@inject("IDroneBidsPipe") private droneBidsPipe: DroneBidsPipe
+	) {
+		this.analyticsDb = new AnalyticsDb(); //TODO: INJECT INSTEAD
 
 		console.log("BidsApiController --- XXX");
-		this.basketService = new BasketService();
-		this.bidsPipe = new ServiceBidsPipe();
+
+		droneBidsPipe.startService(true);
 	}
 
 	private apiGetBasket(req: Request, resp: Response): void {
-		console.log("apiGetBasket ::", req.session.id);
+		let data = req.body;
+		let zsid = data.zsid;
+		let sessId = req.session.id;
 
-		this.basketService.getCurrentBasket(req.session.id).then(data => {
+		console.log("apiGetBasket :: BODY ::", data);
+		console.log("apiGetBasket :: ZSID ::", zsid);
+		console.log("apiGetBasket :: sessId ::", sessId);
+
+		this.basketService.getCurrentBasket(zsid).then(data => {
 			resp.json(data);
 		}).catch(err => {
 			Logger.logError("apiGetBasket :: err ::", err);
@@ -47,24 +57,28 @@ export class BidsApiController implements IApiController{
 	private apiAddBasketItem(req: Request, resp: Response): void {
 		let data = req.body;
 		let code = data.code;
+		let zsid = data.zsid;
 
 		console.log("BIDS :: BODY ::", data);
+		console.log("BIDS :: ZSID ::", zsid);
 		console.log("BIDS :: CODE ::", code);
 
-		let res = this.doGetBids(code, req.session.id);
+		let res = this.doGetBids(code, zsid); // req.session.id
 		RestUtils.jsonSuccess(resp, res);
 	}
 
 	private apiDeleteBasketItem(req: Request, resp: Response): void {
 		let data = req.body;
 		let code = data.code;
+		let zsid = data.zsid;
 
 		let sessId = req.session.id;
 
 		console.log("REMOVING ITEM :: BODY ::", data);
-		console.log("REMOVING ITEM ::", code);
+		console.log("REMOVING ITEM :: ZSID ::", zsid);
+		console.log("REMOVING ITEM :: CODE ::", code);
 
-		this.basketService.removeItem(code, sessId).then(res => {
+		this.basketService.removeItem(code, zsid).then(res => {
 			RestUtils.jsonSuccess(resp, true);
 		}).catch(err => {
 			RestUtils.jsonError(resp);
@@ -73,11 +87,13 @@ export class BidsApiController implements IApiController{
 
 	private apiReviewBasket(req: Request, resp: Response): void {
 		let data = req.body;
+		let zsid = data.zsid;
 		let sessId = req.session.id;
 
 		console.log("BASKET :: SESSION ID ::", sessId);
+		console.log("BASKET :: ZSID ::", zsid);
 
-		this.basketService.getReviewData(sessId).then(res => {
+		this.basketService.getReviewData(zsid).then(res => {
 			console.log("apiReviewBasket ::", JSON.stringify(res));
 			resp.json(res);
 
@@ -98,7 +114,8 @@ export class BidsApiController implements IApiController{
 
 		try {
 			Logger.log(`BasketChannelController :: doGetOffers`);
-			this.bidsPipe.getBid(code, sessId);
+			//this.bidsPipe.getBid(code, sessId);
+			this.droneBidsPipe.getBid(code, sessId);
 
 			//let messData = new ChannelMessage(ZapMessageType.GetOffers, {code: code}, sessId);
 
@@ -129,25 +146,3 @@ export class BidsApiController implements IApiController{
 		return result;
 	}
 }
-
-/*
-let test = new BidsApiController();
-
-let jsonData = `{ "success": "true",
-     "code": "0887195000424",
-    "vendorId": 13,
-     "accepted": true,
-     "title": ,
-     offer: '0.13',
-     thumbImg: null,
-     rawData: null };`;
-
-//let data = JSON.parse(jsonData);
-
-
-let vendorOffer = new VendorOfferData("0887195000424", 13, '845 Heroes: 98 Heroes Edition - Nintendo Switch', "0.13");
-
-let cData = new ChannelMessage(ZapMessageType.VendorOffer, vendorOffer, 'KALLEKULA');
-
-test.onNewVendorBid(cData);
-*/

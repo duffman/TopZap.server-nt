@@ -90,9 +90,13 @@ export class ScaledroneClient implements IDroneModule {
 			this.eventEmitter.emit(DroneEvents.Disconnect, data);
 		});
 
-		this.drone.on(DroneEvents.Reconnect, data => {
-			console.log(DroneEvents.Reconnect, data);
-			this.eventEmitter.emit(DroneEvents.Reconnect, data);
+		this.drone.on(DroneEvents.Reconnect, error => {
+			if (!error) {
+				this.openChannel();
+			}
+
+			console.log(DroneEvents.Reconnect, error);
+			this.eventEmitter.emit(DroneEvents.Reconnect, error);
 		});
 	}
 

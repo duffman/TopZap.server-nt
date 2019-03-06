@@ -6,14 +6,17 @@
 
 import { Logger }                 from '@cli/cli.logger';
 import * as fs                    from 'fs';
+import * as path                  from 'path';
 
 export class CliConfigFile {
 	constructor() {}
 
-	public getConfig(configFilename = "/app.config.json"): any {
+	public getConfig(configFilename = "app.config.json"): any {
 		let result = {};
 
-		let configFile = __dirname + configFilename;
+		let rootPath = path.resolve(configFilename, "../");
+		let configFile = path.resolve(rootPath, configFilename);
+
 		Logger.logPurple("Reading config file ::", configFile);
 
 		try {

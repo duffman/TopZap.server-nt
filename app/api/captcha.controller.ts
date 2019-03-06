@@ -4,12 +4,15 @@
  * Proprietary and confidential
  */
 
+import "reflect-metadata";
+import { injectable }             from "inversify";
 import { Request }                from "express";
 import { Response }               from "express";
 import { Router }                 from "express";
 import { IRestApiController }     from '@api/api-controller';
 import { GoogleCaptcha }          from '@components/google-captcha';
 
+@injectable()
 export class CaptchaController implements IRestApiController {
 	debugMode: boolean;
 

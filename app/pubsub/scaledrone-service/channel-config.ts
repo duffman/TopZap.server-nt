@@ -9,6 +9,7 @@ import { IDroneChannel }          from './channel-info';
 export class ChannelNames {
 	public static Basket = "Basket";
 	public static Bids = "Bids";
+	public static BidsTest = "BidsTest";
 	public static Service = "Service";
 }
 
@@ -23,7 +24,8 @@ export class MessagePipes {
 const ChannelDef = [
 	{ name: ChannelNames.Basket, channelID: "wnQpxZuJgaUChUul", secretKey: "z2EWz4zXdNr63YUiwavv5kpdahRYfXxC"},
 	{ name: ChannelNames.Bids, channelID: "0RgtaE9UstNGjTmu", secretKey: "Q8ZcaFTMQTReingz9zNJmKjuVgnVYvYe"},
-	{ name: ChannelNames.Service, channelID: "T4eUrfAVDy7ODb0h", secretKey: "RyoF4UUVHCw6jEU1JtscfhNGaGsJrgF7"},
+	{ name: ChannelNames.BidsTest, channelID: "4EhzRUomhvVajeb1", secretKey: "4ecuAlk2vvMiCGqaw7sVmCM7MIrAa1N4"},
+	{ name: ChannelNames.Service, channelID: "T4eUrfAVDy7ODb0h", secretKey: "RyoF4UUVHCw6jEU1JtscfhNGaGsJrgF7"}
 ];
 
 export class ChannelConfig {

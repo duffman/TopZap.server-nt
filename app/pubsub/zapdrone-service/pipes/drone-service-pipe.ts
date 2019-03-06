@@ -6,4 +6,5 @@
  */
 
 export interface IDroneServicePipe {
+	startService(): Promise<boolean>;
 }

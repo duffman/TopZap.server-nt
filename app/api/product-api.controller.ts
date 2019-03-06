@@ -4,6 +4,8 @@
  * Proprietary and confidential
  */
 
+import "reflect-metadata";
+import { injectable }             from "inversify";
 import { Express, Router }        from "express";
 import { Request, Response }      from "express";
 import { IRestApiController }     from "@api/api-controller";
@@ -15,6 +17,7 @@ import { ProductDataResult }      from '@zapModels/product-data-result';
 import { IProductsController }    from '@app/components/product/products.controller';
 import { ProductsController }     from '@app/components/product/products.controller';
 
+@injectable()
 export class ProductApiController implements IRestApiController {
 	controller: IProductsController;
 	productDb: ProductDb;

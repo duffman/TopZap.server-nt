@@ -4,13 +4,14 @@
  * Proprietary and confidential
  */
 
+import "reflect-metadata";
+import { injectable }             from "inversify";
 import { Request }                from 'express';
 import { Response }               from 'express';
 import { Router }                 from 'express';
 import { IRestApiController }     from "@api/api-controller";
-import { ApiRoutes }              from '@api/../settings/api-routes';
-import { Logger }                 from '@cli/cli.logger';
 
+@injectable()
 export class PutteController implements IRestApiController {
 	constructor(public debugMode: boolean = false) {
 	}
@@ -27,11 +28,3 @@ export class PutteController implements IRestApiController {
 		resp.json(testResp);
 	}
 }
-
-let test = {
-	data: {
-		code: "348950"
-	}
-};
-
-console.log("TESTJSON ::", JSON.stringify(test));
