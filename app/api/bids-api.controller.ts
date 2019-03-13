@@ -16,26 +16,19 @@ import { RestUtils }              from '@api/../utils/rest-utils';
 import { BasketService }          from '@app/services/basket.service';
 import { AnalyticsDb }            from '@db/analytics-db';
 import { ApiRoutes }              from '@app/settings/api-routes';
-import { DroneBidsPipe }          from '@zapdrone/pipes/drone-bids-pipe';
+import { BidsPubsub }             from '@pubsub/bids-pubsub';
 
 @injectable()
 export class BidsApiController implements IRestApiController{
 	debugMode: boolean;
-	bidsPipe: DroneBidsPipe;
 	analyticsDb: AnalyticsDb;
-
-	drone: any;
-	channel: any;
 
 	constructor(
 		@inject("IBasketService") private basketService: BasketService,
-		@inject("IDroneBidsPipe") private droneBidsPipe: DroneBidsPipe
+		@inject("IPubsubController") private bidsPubsub: BidsPubsub
+
 	) {
 		this.analyticsDb = new AnalyticsDb(); //TODO: INJECT INSTEAD
-
-		console.log("BidsApiController --- XXX");
-
-		droneBidsPipe.startService(true);
 	}
 
 	private apiGetBasket(req: Request, resp: Response): void {
@@ -114,29 +107,11 @@ export class BidsApiController implements IRestApiController{
 
 		try {
 			Logger.log(`BasketChannelController :: doGetOffers`);
-			//this.bidsPipe.getBid(code, sessId);
-			this.droneBidsPipe.getBid(code, sessId);
-
-			//let messData = new ChannelMessage(ZapMessageType.GetOffers, {code: code}, sessId);
-
-			/*
-			let messData = new ChannelMessage(ZapMessageType.GetOffers, {code: code}, sessId);
-			this.emitMessage(messData, MessagePipes.GetBid);
-			Logger.logPurple("doGetBids :: CHANNEL-DATA ::", messData);
-			*/
-
-			/* RE-ADD THIS
-			let messData = new ChannelMessage(ZapMessageType.GetOffers, {code: code}, sessId);
-			console.log("BidsApiController :: Emitting ::", messData);
-			this.channel.emitMessage(messData, MessagePipes.GetBid);
-			*/
-
-			/*
-			this.bidsDrone.publish(
-				{room: MessagePipes.GetBid, message: messData }
-			);
-			*/
-
+			this.bidsPubsub.getBid(code, sessId).then(res => {
+				Logger.logPurple("BidsApiController :: doGetBids :: " + code + " ::", sessId);
+			}).catch(err => {
+				Logger.logError("BidsApiController :: err ::", err);
+			});
 		}
 		catch (err) {
 			Logger.logError("doGetBids :: ERROR ::", err);

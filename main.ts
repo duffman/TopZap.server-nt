@@ -26,17 +26,12 @@ import { ServerService }          from "@app/server.service";
 import { Logger }                 from "@cli/cli.logger";
 import { CliConfigFile }          from '@cli/cli.config-file';
 import { WebApp }                 from "@app/webapp";
-import { ZapdroneService }        from "@app/pubsub/zapdrone.service";
 
 @injectable()
 export class Bootstrap implements IZapNode {
 	debugMode: boolean;
 
 	constructor() {
-		//let settings = new AppSettings("127.0.0.1", 8080);
-		//new WebApp(settings);
-
-		//new ZapdroneService();
 		kernel.get<ServerService>("IServerService");
 	}
 

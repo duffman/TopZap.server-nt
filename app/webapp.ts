@@ -16,12 +16,7 @@ import { Router }                 from "express";
 import { IRestApiController }     from "@api/api-controller";
 import { AppSettings }            from "@app/app.settings";
 import { Logger }                 from "@cli/cli.logger";
-import { ScaledroneClient }       from '@scaledrone/scaledrone-client';
-import { ChannelNames }           from '@scaledrone/channel-config';
-import { DroneEvents }            from '@scaledrone/drone-events';
-
-import * as Scaledrone            from 'scaledrone-node';
-import {CliConfigFile} from '@cli/cli.config-file';
+import { CliConfigFile }          from '@cli/cli.config-file';
 
 let RedisConnector = require("connect-redis")(expressSession);
 
@@ -79,8 +74,33 @@ export class WebApp implements IWebApp {
 			listenHost,
 			listenPort,
 			config.cors.credentials,
-			config.cors.origin
+			config.cors.origin,
+			config.useOldCors
 		);
+	}
+
+	private setCors() {
+		let corsOptions = {
+			credentials: this.settings.corsCredentials,
+			origin: this.settings.corsOrigin
+		};
+		this.app.use(cors(corsOptions));
+	}
+
+	private setOldCors() {
+		this.webRoutes.use((req, res, next) => {
+			let origin = req.headers['origin'] || req.headers['Origin'];
+			let or: string = origin ? origin.toString() : "*";
+
+			res.header('Access-Control-Allow-Credentials', "true");
+			res.header('Access-Control-Allow-Origin', or); //req.headers.origin);
+			res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+			res.header('Access-Control-Allow-Headers', 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept');
+			next();
+		});
+
+		this.webRoutes.use(bodyParser.json()); // support json encoded bodies
+		this.webRoutes.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 	}
 
 	public initApp(): void {
@@ -116,12 +136,6 @@ export class WebApp implements IWebApp {
 		//this.app.use(bodyParser.urlencoded({extended: true}));
 
 		Logger.logPurple("this.settings ::", this.settings);
-
-		//cors({credentials: true, withCredentials: true, origin: true});
-//		this.app.use(cors());
-//		this.webRoutes.use(cors());
-		//this.webRoutes.use(session(sessData));
-		/*this.webRoutes.use((req, res, next) => {*/
 
 		let corsOptions = {
 			credentials: this.settings.corsCredentials,
@@ -173,23 +187,6 @@ export class WebApp implements IWebApp {
 
 		this.app.use(this.webRoutes);
 
-		//
-
-		//let client = new ScaledroneClient(ChannelNames.Service);
-		let client = new ScaledroneClient(ChannelNames.Service); //   "RgtaE9UstNGjTmu");
-		let channel = client.subscribe("register");
-
-		let mess = {
-			mess: "kalle"
-		};
-
-		channel.on(DroneEvents.Open, error => {
-			Logger.logPurple("Service Channel Open ::", error);
-		});
-
-		channel.on(DroneEvents.Data, data => {
-			Logger.logPurple("Service Channel Data ::", data);
-		});
 
 		//
 		// Initialize API Controllers
@@ -206,10 +203,10 @@ export class WebApp implements IWebApp {
 		const controllers: IRestApiController[] = this.restControllers;
 
 		let injectedControllers = kernel.getAllTagged<IRestApiController>(
-													Interface.RestApiController,
-													Tag.Handler,
-													Tag.ApiController
-											);
+			Interface.RestApiController,
+			Tag.Handler,
+			Tag.ApiController
+		);
 
 		console.log("initRestControllers :: INJECTED ::", injectedControllers.length);
 

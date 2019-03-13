@@ -15,11 +15,8 @@
       "@app/*": ["./app/*"],
       "@api/*": ["./app/api/*"],
       "@components/*": ["./app/components/*"],
-
+      "@pubsub-lib/*": ["./lib/topzap.pubsub-lib.git/*"],
       "@pubsub/*": ["./app/pubsub/*"],
-      "@scaledrone/*": ["./app/pubsub/scaledrone-service/*"],
-      "@zapdrone/*": ["./app/pubsub/zapdrone-service/*"],
-
       "@core/*": ["./app/core/*"],
       "@cli/*": ["./app/cli/*"],
       "@lib/*": ["./lib/*"],

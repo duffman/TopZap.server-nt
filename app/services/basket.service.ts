@@ -36,12 +36,15 @@ export class BasketService implements IBasketService {
 	}
 
 	public getSessionBasket(sessId: string): Promise<ISessionBasket> {
+		Logger.logPurple("BasketService :: getSessionBasket")
+
 		return new Promise((resolve, reject) => {
 			this.basketSessService.getSessionBasket(sessId).then(basket => {
+				Logger.logPurple("BasketService :: getSessionBasket ::", sessId);
 				resolve(basket);
 
 			}).catch(err => {
-				Logger.logError("getSessionBasket ::", err);
+				Logger.logError("getSessionBasket :: err ::", err);
 				reject(err);
 			});
 		});
@@ -71,8 +74,13 @@ export class BasketService implements IBasketService {
 			return data;
 		}
 
+		console.log("BasketService :: addToBasket :: offerData ::", offerData);
+
 		return new Promise((resolve, reject) => {
 			this.getSessionBasket(sessId).then(sessionBasket => {
+				console.log("getSessionBasket :: offerData :: type ::", typeof offerData);
+				console.log("getSessionBasket :: offerData :: offerData.accepted ::", offerData.accepted);
+
 				if (!offerData.accepted) {
 					console.log("NOT ACCEPTED");
 					return false;
@@ -90,7 +98,11 @@ export class BasketService implements IBasketService {
 				);
 
 				let result = this.addToVendorBasket(sessionBasket, resultItem);
-				this.basketSessService.saveSessionBasket(sessId, sessionBasket);
+				this.basketSessService.saveSessionBasket(sessId, sessionBasket).then(res => {
+					Logger.logPurple("saveSessionBasket :: sessId ::", sessId);
+				}).catch(err => {
+					Logger.logError("saveSessionBasket :: err ::", err);
+				});
 
 				resolve(result);
 

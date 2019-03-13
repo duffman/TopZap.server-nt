@@ -74,6 +74,7 @@ export class SessionService implements ISessionService {
 						UNIX_TIMESTAMP(DATE_ADD(NOW(), INTERVAL ${expiresMinutes} MINUTE)),
 						'${sessionData}')`;
 
+		console.log("saveSession :: query ::", query);
 
 		return new Promise((resolve, reject) => {
 			return this.db.dbQuery(query).then(res => {
@@ -88,6 +89,8 @@ export class SessionService implements ISessionService {
 	public getSession(sessId: string): Promise<any> {
 		let result: any = null;
 		let query = `SELECT * FROM session WHERE sessionId ="${sessId}"`;
+
+		console.log("getSession :: query ::", query);
 
 		return new Promise((resolve, reject) => {
 			this.db.dbQuery(query).then(res => {

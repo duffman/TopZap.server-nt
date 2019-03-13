@@ -27,3 +27,6 @@
 [submodule "lib/node-tsutils"]
 	path = lib/node-tsutils
 	url = https://github.com/duffman/node-tsutils.git
+[submodule "lib/topzap.pubsub-lib.git"]
+	path = lib/topzap.pubsub-lib.git
+	url = https://github.com/duffman/topzap.pubsub-lib.git

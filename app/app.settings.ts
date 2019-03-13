@@ -42,5 +42,6 @@ export class AppSettings implements IAppSettings {
 	constructor(public listenHost: string,
 				public listenPort: number,
 				public corsCredentials: boolean = true,
-				public corsOrigin: string = "") {}
+				public corsOrigin: string = "",
+				public useOldCors = false) {}
 }
