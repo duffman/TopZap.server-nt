@@ -17,6 +17,9 @@ import { ServiceApiController }   from '@api/service-api.controller';
 import { IBasketService }         from '@app/services/basket.service';
 import { BasketService }          from '@app/services/basket.service';
 import { BidsPubsub }             from '@pubsub/bids-pubsub';
+import {IPubsubController} from '@pubsub/pubsub.controller';
+import {IPubsubService, PubsubService} from '@pubsub-lib/pubsub-service';
+import {IPubsubApp, PubsubApp} from '@pubsub/pubsub-app';
 
 let KernelModules = {
 	ApiController      : Symbol("IApiController")
@@ -31,7 +34,9 @@ let Interface = {
 
 	// Controllers
 	RestApiController : "IRestApiController",
-	PubsubController  : "IPubsubController"
+	PubsubController  : "IPubsubController",
+	PubsubApp         : "IPubsubApp",
+	PubsubService     : "IPubsubService"
 };
 
 let Tag = {
@@ -44,7 +49,6 @@ let Tag = {
 
 let kernel = new Container();
 
-
 //
 //
 kernel.bind<IZapNode>             (Interface.ZapNode).to(Bootstrap);
@@ -52,9 +56,9 @@ kernel.bind<IServerService>       (Interface.ServerService).to(ServerService).in
 kernel.bind<IWebApp>              (Interface.WebApp).to(WebApp).inSingletonScope();
 kernel.bind<IProductDb>           (Interface.ProductDb).to(ProductDb).inSingletonScope();
 kernel.bind<IBasketService>       (Interface.BasketService).to(BasketService).inSingletonScope();
-kernel.bind<IBasketService>       (Interface.PubsubController).to(BidsPubsub).inSingletonScope();
-
-
+kernel.bind<IPubsubController>    (Interface.PubsubController).to(BidsPubsub).inSingletonScope();
+kernel.bind<IPubsubService>       (Interface.PubsubService).to(PubsubService).inSingletonScope();
+kernel.bind<IPubsubApp>           (Interface.PubsubApp).to(PubsubApp).inSingletonScope();
 
 //
 // Drone related

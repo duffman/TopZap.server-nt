@@ -12,20 +12,19 @@ import { BasketService }          from '@app/services/basket.service';
 import { ZapMessageType }         from '@zapModels/messages/zap-message-types';
 import { IPubsubController }      from '@pubsub/pubsub.controller';
 import { PubsubService }          from '@pubsub-lib/pubsub-service';
-import {IPubsubMessage, PubsubMessage} from '@pubsub-lib/pubsub-message';
+import { IPubsubMessage }         from '@pubsub-lib/pubsub-message';
+import { PubsubMessage}           from '@pubsub-lib/pubsub-message';
 import { PublishResponse }        from 'pubnub';
-import { Channels }               from '@pubsub-lib/publub-channels';
+import { Channels }               from '@pubsub-lib/pubsub-channels';
 import { Logger }                 from '@cli/cli.logger';
+import { IVendorOfferData }       from '@zapModels/zap-offer.model';
 
 @injectable()
 export class BidsPubsub implements IPubsubController {
-	pubsubService: PubsubService;
-	basketService: BasketService;
-
 	constructor(
-		//@inject(Interface.BasketService) private basketService: BasketService,
+		@inject("IBasketService") private basketService: BasketService,
+		@inject("IPubsubService") private pubsubService: PubsubService
 	) {
-		this.pubsubService = new PubsubService();
 		this.pubsubService.subscribe([Channels.NewBidChannel]);
 		this.basketService = new BasketService();
 
@@ -45,13 +44,27 @@ export class BidsPubsub implements IPubsubController {
 	}
 
 	public onNewVendorBid(message: IPubsubMessage) {
-		let vendorBid = message.data;
+		let messageData = message.data;
+		let vendorBid: IVendorOfferData = messageData.data;
 
 		console.log("onNewVendorBid ::", message);
 		console.log("onNewVendorBid :: data ::", message.data);
 
-		this.basketService.addToBasket(message.sessId, vendorBid.data).then(res => {
+		// Relay New bid message to client
+		let newBidData = {
+					type: "newBid",
+					code: vendorBid.code,
+					accepted: vendorBid.accepted,
+					vendorId: vendorBid.vendorId
+				};
 
+		this.pubsubService.publish(message.sessId, newBidData).then(newBidData => {
+			Logger.logError("newBidData :: " + message.sessId + " ::", newBidData);
+		}).catch(err => {
+			Logger.logError("newBidData :: err ::" + message.sessId + " ::", err);
+		});
+
+		this.basketService.addToBasket(message.sessId, vendorBid).then(res => {
 			this.pubsubService.emitGetBestBasketMessage(message.sessId).then(res => {
 				Logger.logYellow("¤¤¤¤¤¤ emitGetBestBasketMessage :: sessId ::", message.sessId);
 			}).catch(err => {

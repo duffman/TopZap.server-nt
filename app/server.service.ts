@@ -8,8 +8,8 @@
 import "reflect-metadata";
 import {inject, injectable}       from "inversify";
 import { WebApp }                 from '@app/webapp';
-import { Interface }              from '@root/kernel.config';
 import { Logger }                 from '@cli/cli.logger';
+import {PubsubApp} from '@pubsub/pubsub-app';
 
 export interface IServerService {
 }
@@ -17,8 +17,14 @@ export interface IServerService {
 @injectable()
 export class ServerService implements IServerService {
 	constructor(
-		@inject("IWebApp") private webApp: WebApp
+		@inject("IWebApp") private webApp: WebApp,
+		@inject("IPubsubApp") private pubsubApp: PubsubApp
 	) {
 		webApp.initApp();
+		pubsubApp.initApp();
+	}
+
+	private initPubsubService() {
+		Logger.logPurple("****** initPubsubService *******");
 	}
 }

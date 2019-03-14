@@ -9,6 +9,30 @@ export interface IZapOfferResult {
 	vendors:   IVendorOfferData[];
 }
 
+export interface IVendorOffer {
+	code: string,
+	vendorId: number,
+	title: string,
+	offer: number,
+	success: boolean,
+	accepted: boolean,
+	thumbImg: string,
+	rawData: any,
+}
+
+/*
+export interface IVendorOfferData {
+	success: boolean;
+	vendorId: number;
+	accepted: boolean;
+	title: string;
+	code?: string;
+	offer: string;
+	thumbImg: string;
+	rawData:  any;
+}
+*/
+
 export interface IVendorOfferData {
 	vendorId: number;
 	accepted: boolean;
