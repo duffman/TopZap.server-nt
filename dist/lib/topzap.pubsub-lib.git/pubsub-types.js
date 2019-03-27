@@ -1,0 +1,1 @@
+'use strict';Object.defineProperty(exports,'__esModule',{value:true});class PBService{constructor(type,id,data=null,lastPong=new Date()){this.type=type;this.id=id;this.data=data;this.lastPong=lastPong;}}exports.PBService=PBService;var ServiceType;(function(ServiceType){ServiceType.VendorPriceService='priceService';}(ServiceType=exports.ServiceType||(exports.ServiceType={})));

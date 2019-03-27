@@ -17,9 +17,13 @@ import { ServiceApiController }   from '@api/service-api.controller';
 import { IBasketService }         from '@app/services/basket.service';
 import { BasketService }          from '@app/services/basket.service';
 import { BidsPubsub }             from '@pubsub/bids-pubsub';
-import {IPubsubController} from '@pubsub/pubsub.controller';
-import {IPubsubService, PubsubService} from '@pubsub-lib/pubsub-service';
-import {IPubsubApp, PubsubApp} from '@pubsub/pubsub-app';
+import { IPubsubController }      from '@pubsub/pubsub.controller';
+import { IPubsubApp }             from '@pubsub/pubsub-app';
+import { PubsubApp }              from '@pubsub/pubsub-app';
+import { IServiceRegistry }       from '@pubsub/service-registry';
+import { ServiceRegistry }        from '@pubsub/service-registry';
+import { IPubsubCore }            from '@pubsub-lib/pubsub-core';
+import { PubsubCore }             from '@pubsub-lib/pubsub-core';
 
 let KernelModules = {
 	ApiController      : Symbol("IApiController")
@@ -36,7 +40,8 @@ let Interface = {
 	RestApiController : "IRestApiController",
 	PubsubController  : "IPubsubController",
 	PubsubApp         : "IPubsubApp",
-	PubsubService     : "IPubsubService"
+	PubsubCore        : "IPubsubCore",
+	ServiceRegistry   : "IServiceRegistry"
 };
 
 let Tag = {
@@ -57,8 +62,9 @@ kernel.bind<IWebApp>              (Interface.WebApp).to(WebApp).inSingletonScope
 kernel.bind<IProductDb>           (Interface.ProductDb).to(ProductDb).inSingletonScope();
 kernel.bind<IBasketService>       (Interface.BasketService).to(BasketService).inSingletonScope();
 kernel.bind<IPubsubController>    (Interface.PubsubController).to(BidsPubsub).inSingletonScope();
-kernel.bind<IPubsubService>       (Interface.PubsubService).to(PubsubService).inSingletonScope();
+kernel.bind<IPubsubCore>          (Interface.PubsubCore).to(PubsubCore).inSingletonScope();
 kernel.bind<IPubsubApp>           (Interface.PubsubApp).to(PubsubApp).inSingletonScope();
+kernel.bind<IServiceRegistry>     (Interface.ServiceRegistry).to(ServiceRegistry).inSingletonScope();
 
 //
 // Drone related

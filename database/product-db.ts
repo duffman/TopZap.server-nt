@@ -140,7 +140,6 @@ export class ProductDb implements IProductDb {
 				console.log("getProducts :: err ::", err);
 				reject(err);
 			}).then(() => {
-				Logger.logYellow("Promises Done");
 				resolve(result);
 			});
 		});

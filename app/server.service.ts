@@ -11,8 +11,7 @@ import { WebApp }                 from '@app/webapp';
 import { Logger }                 from '@cli/cli.logger';
 import {PubsubApp} from '@pubsub/pubsub-app';
 
-export interface IServerService {
-}
+export interface IServerService {}
 
 @injectable()
 export class ServerService implements IServerService {

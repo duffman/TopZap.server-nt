@@ -11,24 +11,25 @@ import { Interface }              from '@root/kernel.config';
 import { BasketService }          from '@app/services/basket.service';
 import { ZapMessageType }         from '@zapModels/messages/zap-message-types';
 import { IPubsubController }      from '@pubsub/pubsub.controller';
-import { PubsubService }          from '@pubsub-lib/pubsub-service';
 import { IPubsubMessage }         from '@pubsub-lib/pubsub-message';
 import { PubsubMessage}           from '@pubsub-lib/pubsub-message';
 import { PublishResponse }        from 'pubnub';
 import { Channels }               from '@pubsub-lib/pubsub-channels';
 import { Logger }                 from '@cli/cli.logger';
 import { IVendorOfferData }       from '@zapModels/zap-offer.model';
+import { KInt }                   from '@root/kernel-interfaces';
+import { PubsubCore }             from '@pubsub-lib/pubsub-core';
 
 @injectable()
 export class BidsPubsub implements IPubsubController {
 	constructor(
-		@inject("IBasketService") private basketService: BasketService,
-		@inject("IPubsubService") private pubsubService: PubsubService
+		@inject(KInt.IBasketService) private basketService: BasketService,
+		@inject(KInt.IPubsubCore) private pubsubCore: PubsubCore
 	) {
-		this.pubsubService.subscribe([Channels.NewBidChannel]);
+		this.pubsubCore.subscribe([Channels.NewBidChannel]);
 		this.basketService = new BasketService();
 
-		this.pubsubService.onNewBidMessage((msg) => {
+		this.pubsubCore.onNewBidMessage((msg) => {
 			this.onNewVendorBid(msg);
 		});
 	}
@@ -40,7 +41,7 @@ export class BidsPubsub implements IPubsubController {
 	 */
 	public getBid(code: string, sessionId: string): Promise<PublishResponse> {
 		let message = new PubsubMessage(ZapMessageType.GetOffers, {code: code}, sessionId);
-		return this.pubsubService.emitGetBidRequest(code, sessionId);
+		return this.pubsubCore.emitGetBidRequest(code, sessionId);
 	}
 
 	public onNewVendorBid(message: IPubsubMessage) {
@@ -58,14 +59,14 @@ export class BidsPubsub implements IPubsubController {
 					vendorId: vendorBid.vendorId
 				};
 
-		this.pubsubService.publish(message.sessId, newBidData).then(newBidData => {
+		this.pubsubCore.publish(message.sessId, newBidData).then(newBidData => {
 			Logger.logError("newBidData :: " + message.sessId + " ::", newBidData);
 		}).catch(err => {
 			Logger.logError("newBidData :: err ::" + message.sessId + " ::", err);
 		});
 
 		this.basketService.addToBasket(message.sessId, vendorBid).then(res => {
-			this.pubsubService.emitGetBestBasketMessage(message.sessId).then(res => {
+			this.pubsubCore.emitGetBestBasketMessage(message.sessId).then(res => {
 				Logger.logYellow("¤¤¤¤¤¤ emitGetBestBasketMessage :: sessId ::", message.sessId);
 			}).catch(err => {
 				Logger.logError("¤¤¤¤¤¤ emitGetBestBasketMessage :: err ::", err);

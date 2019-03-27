@@ -17,6 +17,8 @@ import { BasketService }          from '@app/services/basket.service';
 import { AnalyticsDb }            from '@db/analytics-db';
 import { ApiRoutes }              from '@app/settings/api-routes';
 import { BidsPubsub }             from '@pubsub/bids-pubsub';
+import {ServiceRegistry} from '@pubsub/service-registry';
+import {ServiceType} from '@pubsub-lib/pubsub-types';
 
 @injectable()
 export class BidsApiController implements IRestApiController{
@@ -25,8 +27,8 @@ export class BidsApiController implements IRestApiController{
 
 	constructor(
 		@inject("IBasketService") private basketService: BasketService,
-		@inject("IPubsubController") private bidsPubsub: BidsPubsub
-
+		@inject("IPubsubController") private bidsPubsub: BidsPubsub,
+		@inject("IServiceRegistry") private serviceRegistry: ServiceRegistry
 	) {
 		this.analyticsDb = new AnalyticsDb(); //TODO: INJECT INSTEAD
 	}
@@ -56,8 +58,19 @@ export class BidsApiController implements IRestApiController{
 		console.log("BIDS :: ZSID ::", zsid);
 		console.log("BIDS :: CODE ::", code);
 
-		let res = this.doGetBids(code, zsid); // req.session.id
-		RestUtils.jsonSuccess(resp, res);
+		let serviceCount = this.serviceRegistry.getServiceCount(ServiceType.VendorPriceService);
+
+		this.doGetBids(code, zsid).then(res => {
+			let payload = {
+				success: true,
+				scount: serviceCount
+			};
+
+			resp.json(payload);
+
+		}).catch(err => {
+			RestUtils.jsonSuccess(resp, false);
+		});
 	}
 
 	private apiDeleteBasketItem(req: Request, resp: Response): void {
@@ -102,22 +115,18 @@ export class BidsApiController implements IRestApiController{
 		routes.post(ApiRoutes.Basket.POST_BASKET_REVIEW,    this.apiReviewBasket.bind(this));
 	}
 
-	public doGetBids(code: string, sessId: string): boolean {
+	public doGetBids(code: string, sessId: string): Promise<boolean> {
 		let result: boolean = true;
 
-		try {
+		return new Promise((resolve, reject) => {
 			Logger.log(`BasketChannelController :: doGetOffers`);
 			this.bidsPubsub.getBid(code, sessId).then(res => {
 				Logger.logPurple("BidsApiController :: doGetBids :: " + code + " ::", sessId);
+				resolve(true);
 			}).catch(err => {
 				Logger.logError("BidsApiController :: err ::", err);
+				resolve(false);
 			});
-		}
-		catch (err) {
-			Logger.logError("doGetBids :: ERROR ::", err);
-			result = false;
-		}
-
-		return result;
+		});
 	}
 }
