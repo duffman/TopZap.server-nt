@@ -93,7 +93,7 @@ export class ProductDb implements IProductDb {
 					model.platformIcon = gpp.parseFromName(model.platformName, true);
 					model.platformImage = gpp.parseFromName(model.platformName, false);
 
-					Logger.logCyan("getGameData() :: Model", model);
+					//Logger.logCyan("getGameData() :: Model", model);
 				}
 
 				resolve(model);
@@ -114,9 +114,13 @@ export class ProductDb implements IProductDb {
 		let scope = this;
 		let result = new Array<IProductData>();
 
+		Logger.logPurple("¤¤¤ getProducts");
+
 		function getProductPromise(code: string): Promise<IProductData> {
 			return new Promise((resolve, reject) => {
 				scope.getGameData(code).then(res => {
+					Logger.logPurple("¤¤¤ getProducts :: getGameData ::", res.code);
+
 					result.push(res);
 					resolve(res);
 

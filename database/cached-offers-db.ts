@@ -6,7 +6,7 @@
 
 // This made total sense while I was drunk, remove this entire class if it ever yields an error...
 
-import { DBKernel }              from '@putteDb/db-kernel';
+import { DBKernel }               from '@putteDb/db-kernel';
 import { IVendorOfferData }       from '@zapModels/zap-offer.model';
 import { VendorOfferData }        from '@zapModels/zap-offer.model';
 import { Logger }                 from '@cli/cli.logger';
@@ -14,6 +14,7 @@ import { Settings }               from '@app/app.settings';
 import { IDbController }          from '@db/db.controller';
 
 export class CachedOffersDb implements IDbController {
+	tableName: string = "cached_offers";
 	db: DBKernel;
 
 	constructor() {
@@ -21,7 +22,7 @@ export class CachedOffersDb implements IDbController {
 	}
 
 	public cacheOffer(data: IVendorOfferData): void {
-		let sql = `INSERT INTO cached_offers (
+		let sql = `INSERT INTO  ${this.tableName} (
 					id,
 					code,
 					vendor_id,

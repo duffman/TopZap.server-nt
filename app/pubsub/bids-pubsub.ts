@@ -17,17 +17,16 @@ import { PublishResponse }        from 'pubnub';
 import { Channels }               from '@pubsub-lib/pubsub-channels';
 import { Logger }                 from '@cli/cli.logger';
 import { IVendorOfferData }       from '@zapModels/zap-offer.model';
-import { KInt }                   from '@root/kernel-interfaces';
 import { PubsubCore }             from '@pubsub-lib/pubsub-core';
 
 @injectable()
 export class BidsPubsub implements IPubsubController {
 	constructor(
-		@inject(KInt.IBasketService) private basketService: BasketService,
-		@inject(KInt.IPubsubCore) private pubsubCore: PubsubCore
+		@inject("IBasketService") private basketService: BasketService,
+		@inject("IPubsubCore") private pubsubCore: PubsubCore
 	) {
 		this.pubsubCore.subscribe([Channels.NewBidChannel]);
-		this.basketService = new BasketService();
+		//this.basketService = new BasketService();
 
 		this.pubsubCore.onNewBidMessage((msg) => {
 			this.onNewVendorBid(msg);
@@ -60,7 +59,7 @@ export class BidsPubsub implements IPubsubController {
 				};
 
 		this.pubsubCore.publish(message.sessId, newBidData).then(newBidData => {
-			Logger.logError("newBidData :: " + message.sessId + " ::", newBidData);
+			Logger.logGreen("newBidData :: " + message.sessId + " ::", newBidData);
 		}).catch(err => {
 			Logger.logError("newBidData :: err ::" + message.sessId + " ::", err);
 		});

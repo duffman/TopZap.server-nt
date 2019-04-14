@@ -8,6 +8,9 @@ import { IBasketModel }           from './basket.model';
 import { BasketModel }            from './basket.model';
 import { IVendorModel }           from '../vendor-model';
 
+//
+// NOTE: it extends IBasketModel and get items from the super class!!
+//
 export interface IVendorBasket extends IBasketModel {
 	vendorId: number;
 	vendorData: IVendorModel;

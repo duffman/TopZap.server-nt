@@ -6,14 +6,20 @@
  */
 
 import "reflect-metadata";
-import { injectable }             from "inversify";
+import { inject, injectable }     from "inversify";
 import { IBasketItem }            from '@zapModels/basket/basket-item.model';
 import { BasketItem }             from '@zapModels/basket/basket-item.model';
 import { IBasketModel }           from '@zapModels/basket/basket.model';
 import { IVendorBasket }          from '@zapModels/basket/vendor-basket.model';
 import { VendorBasketModel }      from '@zapModels/basket/vendor-basket.model';
 import { IVendorOfferData }       from '@zapModels/zap-offer.model';
+
+import { IProdListItem }          from '@zapModels/session-basket';
 import { ISessionBasket }         from '@zapModels/session-basket';
+import { ProdListItem }           from '@zapModels/session-basket';
+import { SessionBasketInfo }      from '@zapModels/session-basket';
+import { SessionFlash }           from '@zapModels/session-basket';
+
 import { SessionBasket }          from '@zapModels/session-basket';
 import { PRandNum }               from '@putte/prand-num';
 import { ProductDb }              from '@db/product-db';
@@ -23,6 +29,8 @@ import { IGameProductData }       from '@zapModels/game-product-model';
 import { Logger}                  from '@cli/cli.logger';
 import { BasketSessionService }   from '@app/services/basket-session.service';
 import { BarcodeParser }          from '@utils/barcode-parser';
+import { Interface }              from '@root/kernel.config';
+import { LoggingService }         from '@app/services/logging.service';
 
 export interface IBasketService {
 }
@@ -30,17 +38,30 @@ export interface IBasketService {
 @injectable()
 export class BasketService implements IBasketService {
 	basketSessService: BasketSessionService;
+	constructor(
+		@inject("ILoggingService") private loggingService: LoggingService
+	//    @inject(Interface.BasketSessionService) private basketSessService: BasketSessionService
+	) {
+		//TODO: remove
+	     this.basketSessService  = new BasketSessionService();
+	}
 
-	constructor() {
-		this.basketSessService = new BasketSessionService();
+	public saveBasketSession(sessId: string, session: ISessionBasket): Promise<boolean> {
+		return new Promise((resolve, reject) => {
+			this.basketSessService.saveSessionBasket(sessId, session).then(res => {
+				resolve(res);
+			}).catch(err => {
+				reject(err);
+			});
+		});
 	}
 
 	public getSessionBasket(sessId: string): Promise<ISessionBasket> {
-		Logger.logPurple("BasketService :: getSessionBasket")
+		this.loggingService.logBasket("getSessionBasket :: sessId", sessId);
 
 		return new Promise((resolve, reject) => {
 			this.basketSessService.getSessionBasket(sessId).then(basket => {
-				Logger.logPurple("BasketService :: getSessionBasket ::", sessId);
+				this.loggingService.logBasket("getSessionBasket", basket);
 				resolve(basket);
 
 			}).catch(err => {
@@ -48,6 +69,36 @@ export class BasketService implements IBasketService {
 				reject(err);
 			});
 		});
+	}
+
+	public clearFlash(sessId: string): Promise<ISessionBasket> {
+		return new Promise((resolve, reject) => {
+			this.basketSessService.getSessionBasket(sessId).then(basket => {
+				basket.flash = new SessionFlash();
+				Logger.logPurple("BasketService :: getSessionBasket ::", sessId);
+
+				return basket;
+
+			}).then(basket => {
+				this.basketSessService.saveSessionBasket(sessId, basket).then(res => {
+					return basket;
+				}).catch (ex => {
+					Logger.logError("clearFlash :: saveSessionBasket :: error ::", ex);
+					//resolve(basket);
+					return basket;
+				});
+
+				return basket;
+
+			}).then(basket => {
+				resolve(basket);
+
+			}).catch(err => {
+				Logger.logError("getSessionBasket :: err ::", err);
+				reject(err);
+			});
+		});
+
 	}
 
 	private ensureBasket(sessionBasket: ISessionBasket): ISessionBasket {
@@ -81,30 +132,57 @@ export class BasketService implements IBasketService {
 				console.log("getSessionBasket :: offerData :: type ::", typeof offerData);
 				console.log("getSessionBasket :: offerData :: offerData.accepted ::", offerData.accepted);
 
+				let itemTitle = prepStr(offerData.title);
+
+				sessionBasket.flash = new SessionFlash();
+
+				// Tag the session with info for new item data
+				sessionBasket.flash.addItemName = itemTitle;
+
 				if (!offerData.accepted) {
 					console.log("NOT ACCEPTED");
-					return false;
+					sessionBasket.info.itemsRejected++;
+					sessionBasket.flash.addItemSuccess = false;
+					//return false; // 2019-02-03
+				} else {
+					sessionBasket.flash.addItemSuccess = true;
+
+					// 2019-04-02
+					if (!offerData.offer) {
+						offerData.offer = "0";
+					}
+
+					let vendorOffer = parseFloat(offerData.offer);
+
+					let resultItem = new BasketItem(
+						PRandNum.randomNum(),
+						1,
+						offerData.code,
+						offerData.vendorId,
+						itemTitle,
+						vendorOffer
+					);
+
+					resultItem.accepted = offerData.accepted;
+					let result = this.addToVendorBasket(sessionBasket, resultItem);
+
+					//
+					// 2019-04-03
+					// Add info for the total number of unique products
+					sessionBasket.info.itemsAccepted = this.getUniqueCount(sessionBasket);
+
+
+					//
+					// TODO: Figure out what to do is session save fails
+					//
+					this.basketSessService.saveSessionBasket(sessId, sessionBasket).then(res => {
+						Logger.logPurple("saveSessionBasket :: sessId ::", sessId);
+					}).catch(err => {
+						Logger.logError("saveSessionBasket :: err ::", err);
+					});
+
+					resolve(result);
 				}
-
-				let vendorOffer = parseFloat(offerData.offer);
-
-				let resultItem = new BasketItem(
-					PRandNum.randomNum(),
-					1,
-					offerData.code,
-					offerData.vendorId,
-					prepStr(offerData.title),
-					vendorOffer
-				);
-
-				let result = this.addToVendorBasket(sessionBasket, resultItem);
-				this.basketSessService.saveSessionBasket(sessId, sessionBasket).then(res => {
-					Logger.logPurple("saveSessionBasket :: sessId ::", sessId);
-				}).catch(err => {
-					Logger.logError("saveSessionBasket :: err ::", err);
-				});
-
-				resolve(result);
 
 			}).catch(err => {
 				Logger.logError("addToBasket ::", err);
@@ -145,7 +223,67 @@ export class BasketService implements IBasketService {
 		return result;
 	}
 
+	/**
+	 * Add item to a separate listing containing all items
+	 * @param {ISessionBasket} sessBasket
+	 * @param {IBasketItem} item
+	 */
+	public addToAll(sessBasket: ISessionBasket, item: IBasketItem): void {
+		this.loggingService.logBasket("Add to all", item);
+
+		if (!sessBasket.allItems) {
+			sessBasket.allItems = new Array<IProdListItem>();
+		}
+
+		let itemExists = false; //TODO: Investigate why this is not working // sessBasket.allItems.find(item => item.code === item.code);
+
+		// 2019-04-11, Manual code lookup
+		for (let tmpItem of sessBasket.allItems) {
+			if (tmpItem.code === item.code) {
+				itemExists = true;
+				break;
+			}
+		}
+
+		if (itemExists) {
+			this.loggingService.logBasket("Add to all :: Item already exist", sessBasket.allItems);
+			return;
+		}
+
+		this.loggingService.logBasket("Add to all", item);
+		Logger.logPurple("Adding to all ::", item);
+
+		sessBasket.allItems.push(
+			new ProdListItem(item.code, item.title)
+		);
+
+		Logger.logPurple("Adding to all ::", item);
+
+	}
+
+	public removeFromAll(sessBasket: ISessionBasket, code: string): void {
+		Logger.logPurple("removeFromAll ::", code);
+		Logger.logPurple("removeFromAll :: BEFORE ::", sessBasket.allItems);
+
+		for (let i = 0; i < sessBasket.allItems.length; i++) {
+			let item = sessBasket.allItems[i];
+
+			if (item.code === item.code) {
+				Logger.logPurple("ITEM FOUND!!!")
+				//sessBasket.allItems = sessBasket.allItems.splice(i, 1);
+				sessBasket.allItems.splice(i, 1);
+				break;
+			}
+		}
+		//sessBasket.allItems = sessBasket.allItems.splice(0, 1);
+		//sessBasket.allItems = sessBasket.allItems.splice(1, 1);
+
+		Logger.logPurple("removeFromAll :: AFTER ::", sessBasket.allItems);
+
+	}
+
 	public addToVendorBasket(sessBasket: ISessionBasket, item: IBasketItem): boolean {
+		this.addToAll(sessBasket, item);
 		let basket = this.getVendorBasket(sessBasket, item.vendorId);
 		let existingItem = basket.items.find(o => o.code === item.code);
 
@@ -191,7 +329,11 @@ export class BasketService implements IBasketService {
 				// Remove all baskets except the first (highest value)
 				if (baskets && baskets.length > 0) {
 					let bestBasket = baskets[0];
-					bestBasket.vendorData = null;
+
+					// 2019-04-02 Change to include vendor
+					// info in the best basket
+					// BEFORE CHANGE: bestBasket.vendorData = null;
+
 					baskets = [bestBasket];
 				}
 
@@ -259,7 +401,7 @@ export class BasketService implements IBasketService {
 	}
 
 	/**
-	 * Extract all barcodes from the session basket
+	 * Get a list of unique barcodes from the session basket
 	 * @param {ISessionBasket} sessionBasket
 	 * @returns {string[]}
 	 */
@@ -285,6 +427,16 @@ export class BasketService implements IBasketService {
 		}
 
 		return result;
+	}
+
+	/**
+	 * Get the total number of unique products
+ 	 * @param {ISessionBasket} sessionBasket
+	 * @returns {number}
+	 */
+	public getUniqueCount(sessionBasket: ISessionBasket): number {
+		let list = this.getBasketCodes(sessionBasket);
+		return (list) ? list.length : 0;
 	}
 
 	/**
@@ -350,6 +502,8 @@ export class BasketService implements IBasketService {
 		for (let vendorBasket of sessBasket.vendorBaskets) {
 			let vendorData = getVendorDataById(vendorBasket.vendorId);
 			vendorBasket.vendorData = vendorData;
+
+			//console.log("Attached vendor data ::", vendorBasket.vendorData);
 		}
 	}
 
@@ -401,7 +555,6 @@ export class BasketService implements IBasketService {
 		}
 
 		function getProdData(code: string, prodData: IProductData[]): IProductData {
-			console.log("getProdData >>>>>");
 			let res: IProductData = null;
 			for (let prod of prodData) {
 				if (prod.code === code) {
@@ -413,7 +566,6 @@ export class BasketService implements IBasketService {
 		}
 
 		function attachProductInfoToItem(sessBasket: ISessionBasket): void {
-			console.log("attachProductInfoToItem >>>>>");
 			scope.ensureBasket(sessBasket);
 
 			for (let vb of sessBasket.vendorBaskets) {
@@ -432,7 +584,7 @@ export class BasketService implements IBasketService {
 				sessBasket = await scope.getFullBasket(sessId);
 
 				if (!sessBasket.vendorBaskets) {
-					console.log("Creating Vendor Array!");
+					Logger.logDebug("Creating Vendor Array!");
 					sessBasket.vendorBaskets = new Array<IVendorBasket>();
 				}
 
@@ -440,13 +592,59 @@ export class BasketService implements IBasketService {
 				sessBasket.productData = prodData;
 				let vendors = await getVendors();
 
-				console.log("getSessionBasket ::", prodData);
-
 				// Sort the basket according to highest basket value
 				sessBasket = scope.sortSessionBasket(sessBasket);
 
+				Logger.logDebug("SESSION BASKET ¤¤¤¤¤¤ ::", sessBasket);
+
+				/*
+				function findEmptyBasket(): boolean {
+					let res = false;
+
+					let index = 0;
+					for (index = 0; index < sessBasket.vendorBaskets.length; index++) {
+						if (sessBasket.vendorBaskets[index].items.length < 1) {
+							sessBasket.vendorBaskets = sessBasket.vendorBaskets.splice(index, 1);
+							res = true;
+							break;
+						}
+					}
+
+					return res;
+				}
+
+				while (true) {
+					console.log("Removing Empty basket");
+					let emptyFound = findEmptyBasket();
+					if (!emptyFound) break;
+				}
+				*/
+
+
+//				for (let index = sessBasket.vendorBaskets.length; index > 0; index--) {
+
+				/*
+				for (let i = 0; i < sessBasket.vendorBaskets.length; i++) {
+					if (sessBasket.vendorBaskets[i].items.length < 1) {
+						console.log("EMPTY BASKET :::", sessBasket.vendorBaskets[i]);
+//						sessBasket.vendorBaskets = sessBasket.vendorBaskets.splice(index, 1);
+					}
+				}
+				*/
+				/*
+				for (let index = sessBasket.vendorBaskets.length; index > 0; index--) {
+					console.log("AAAAA :::", sessBasket.vendorBaskets[index]);
+
+					if (sessBasket.vendorBaskets[index].items.length < 1) {
+						sessBasket.vendorBaskets = sessBasket.vendorBaskets.splice(index, 1);
+					}
+				}
+				*/
+
+
 				// HACK TO ATTACH PROD DATA TO IBasketItem decendant IGameBasketItem
 				attachProductInfoToItem(sessBasket);
+				Logger.logGreen("Products in Session Basket ::", sessBasket);
 
 				//Hack
 				for (let vbasket of sessBasket.vendorBaskets) {
@@ -519,6 +717,9 @@ export class BasketService implements IBasketService {
 					}
 				}
 
+				// 2019-04-14 Remove from all
+				this.removeFromAll(basket, code);
+
 				resolve(result);
 
 			} catch (ex) {
@@ -576,6 +777,9 @@ export class BasketService implements IBasketService {
 				// First Remove unnecessary product data
 				let remRes = this.removeFromVendorBaskets(code, sessionBasket);
 				console.log("Rmmoved From Vendor Baskets ::", remRes);
+
+				// Remove from all items
+				this.removeFromAll(sessionBasket, code);
 
 				return sessionBasket;
 

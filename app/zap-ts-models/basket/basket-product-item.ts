@@ -37,6 +37,7 @@ export interface IBookBasketItem extends IBasketItem {
  * 
  */
 export class GameBasketItem implements IGameBasketItem {
+	accepted:   boolean;
 	zid:        string;
 	code:       string;
 	itemType:   number;

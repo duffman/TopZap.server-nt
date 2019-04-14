@@ -5,7 +5,7 @@
  */
 
 import { SessionService }         from '@app/services/session.service';
-import { ISessionBasket }         from '@zapModels/session-basket';
+import {ISessionBasket, SessionBasketInfo, SessionFlash} from '@zapModels/session-basket';
 import { SessionBasket }          from '@zapModels/session-basket';
 import { Logger }                 from '@cli/cli.logger';
 
@@ -31,6 +31,11 @@ export class BasketSessionService implements IBasketSessionService {
 					result = new SessionBasket();
 				}
 
+				if (!result.info) {
+					result.info = new SessionBasketInfo();
+				}
+
+
 				resolve(result);
 
 			}).catch(err => {
@@ -39,7 +44,11 @@ export class BasketSessionService implements IBasketSessionService {
 		});
 	}
 
+
+
 	public saveSessionBasket(sessId: string, basket: ISessionBasket): Promise<boolean> {
+//		basket.flash = new SessionFlash(); // Reset the flash message
+
 		return new Promise((resolve, reject) => {
 			return this.sessService.saveSession(sessId, basket).then(res => {
 				resolve(res)

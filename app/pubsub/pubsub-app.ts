@@ -15,7 +15,7 @@ import { PubsubPayload }          from '@pubsub-lib/pubsub-message';
 import { ServiceType }            from '@pubsub-lib/pubsub-types';
 import { ServiceRegistry }        from '@pubsub/service-registry';
 import { PubsubCore }             from '@pubsub-lib/pubsub-core';
-import {KInt} from '@root/kernel-interfaces';
+import { LoggingService }         from '@app/services/logging.service';
 
 export interface IPubsubApp {
 	initApp(): void;
@@ -24,8 +24,9 @@ export interface IPubsubApp {
 @injectable()
 export class PubsubApp implements IPubsubApp {
 	constructor(
-		@inject(KInt.IPubsubCore) private pubsubCore: PubsubCore,
-		@inject(KInt.IServiceRegistry) private serviceRegistry: ServiceRegistry
+		@inject("IPubsubCore") private pubsubCore: PubsubCore,
+		@inject("IServiceRegistry") private serviceRegistry: ServiceRegistry,
+		@inject("ILoggingService") private loggingService: LoggingService,
 	) {}
 
 	public initApp() {
@@ -53,7 +54,8 @@ export class PubsubApp implements IPubsubApp {
 	 * @param {IPubsubPayload} payload
 	 */
 	private serviceHello(payload: any) {
-		console.log("******** SERVICE HELLO ::", payload);
+		this.loggingService.logService("hello", payload);
+		//console.log("******** SERVICE HELLO ::", payload);
 		if (payload && payload.type === ServiceType.VendorPriceService) {
 			Logger.logYellow("*** .VendorPriceService ::", payload);
 			this.serviceRegistry.registerService(payload);

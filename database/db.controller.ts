@@ -8,4 +8,5 @@ import { DBKernel }              from '@putteDb/db-kernel';
 
 export interface IDbController {
 	db: DBKernel;
+	tableName: string;
 }

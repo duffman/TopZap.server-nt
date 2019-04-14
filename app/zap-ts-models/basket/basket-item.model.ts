@@ -5,6 +5,7 @@
  */
 
 export interface IBasketItem {
+	accepted:       boolean;
 	zid:            string;
 	itemType:       number
 	code:           string;
@@ -19,6 +20,8 @@ export interface IBasketItem {
 }
 
 export class BasketItem implements IBasketItem {
+	public accepted: boolean;
+
 	constructor(public zid: string,
 				public itemType: number,
 				public code: string = null,
@@ -29,5 +32,6 @@ export class BasketItem implements IBasketItem {
 				public releaseDate: string = null,
 				public thumbImage: string = null,
 				public platformIcon: string = null,
-				public count: number = 1) {}
+				public count: number = 1)
+				 {}
 }

@@ -7,10 +7,8 @@ import { IDbController }          from '@db/db.controller';
 import { DBKernel }              from '@putteDb/db-kernel';
 import { Logger }                 from '@cli/cli.logger';
 
-
-const ZapCounterTable = "zap_counter";
-
 export class AnalyticsDb implements IDbController {
+	tableName: string = "zap_counter";
 	db: DBKernel;
 
 	constructor() {
@@ -39,7 +37,7 @@ export class AnalyticsDb implements IDbController {
 		*/
 
 		function updateRow(): Promise<boolean> {
-			let sql = `UPDATE ${ZapCounterTable} SET zaps=zaps+1 WHERE code='${code}'`;
+			let sql = `UPDATE ${scope.tableName} SET zaps=zaps+1 WHERE code='${code}'`;
 			return new Promise((resolve, reject) => {
 				scope.db.dbQuery(sql).then(res => {
 					resolve(true);
@@ -51,7 +49,7 @@ export class AnalyticsDb implements IDbController {
 		}
 
 		function addRow(): Promise<boolean> {
-			let sql = `INSERT INTO ${ZapCounterTable} (code, zaps, last_zap) VALUES ('${code}', 1, CURRENT_TIMESTAMP)`;
+			let sql = `INSERT INTO ${scope.tableName} (code, zaps, last_zap) VALUES ('${code}', 1, CURRENT_TIMESTAMP)`;
 			return new Promise((resolve, reject) => {
 				scope.db.dbQuery(sql).then(res => {
 					resolve(true);
@@ -64,7 +62,7 @@ export class AnalyticsDb implements IDbController {
 
 
 		async function execute(): Promise<void> {
-			let count = await scope.db.countRows(ZapCounterTable, "code", `='${code}'`);
+			let count = await scope.db.countRows(scope.tableName, "code", `='${code}'`);
 			try {
 				if (count > 0) {
 					await updateRow();

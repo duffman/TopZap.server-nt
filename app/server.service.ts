@@ -10,6 +10,7 @@ import {inject, injectable}       from "inversify";
 import { WebApp }                 from '@app/webapp';
 import { Logger }                 from '@cli/cli.logger';
 import {PubsubApp} from '@pubsub/pubsub-app';
+import {LoggingService} from '@app/services/logging.service';
 
 export interface IServerService {}
 
@@ -17,8 +18,10 @@ export interface IServerService {}
 export class ServerService implements IServerService {
 	constructor(
 		@inject("IWebApp") private webApp: WebApp,
-		@inject("IPubsubApp") private pubsubApp: PubsubApp
+		@inject("IPubsubApp") private pubsubApp: PubsubApp,
+		@inject("ILoggingService") private loggingService: LoggingService,
 	) {
+		loggingService.clear();
 		webApp.initApp();
 		pubsubApp.initApp();
 	}

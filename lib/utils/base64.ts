@@ -1,18 +1,18 @@
 export class Base64 {
-	private PADCHAR: string = '=';
-	private ALPHA: string = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+	private static PADCHAR: string = '=';
+	private static ALPHA: string = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 
-	private getByte(s: string, i: number): number {
+	private static getByte(s: string, i: number): number {
 		const x = s.charCodeAt(i);
 		return x;
 	}
 
-	private getByte64(s: string, i: number): number {
+	private static getByte64(s: string, i: number): number {
 		const idx = this.ALPHA.indexOf(s.charAt(i));
 		return idx;
 	}
 
-	public decode (s: string): string {
+	public static decode (s: string): string {
 		let pads = 0,
 			i, b10, imax = s.length,
 			x = [];
@@ -50,7 +50,7 @@ export class Base64 {
 		return x.join('');
 	}
 
-	public encode(s: string): string {
+	public static encode(s: string): string {
 		s = String(s);
 
 		let i, b10, x = [],

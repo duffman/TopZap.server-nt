@@ -17,8 +17,10 @@ import { BasketService }          from '@app/services/basket.service';
 import { AnalyticsDb }            from '@db/analytics-db';
 import { ApiRoutes }              from '@app/settings/api-routes';
 import { BidsPubsub }             from '@pubsub/bids-pubsub';
-import {ServiceRegistry} from '@pubsub/service-registry';
-import {ServiceType} from '@pubsub-lib/pubsub-types';
+import { ServiceRegistry }        from '@pubsub/service-registry';
+import { ServiceType }            from '@pubsub-lib/pubsub-types';
+import {ISessionBasket, SessionFlash} from '@zapModels/session-basket';
+import {BasketUtils} from '@components/basket/basket-utils';
 
 @injectable()
 export class BidsApiController implements IRestApiController{
@@ -33,9 +35,96 @@ export class BidsApiController implements IRestApiController{
 		this.analyticsDb = new AnalyticsDb(); //TODO: INJECT INSTEAD
 	}
 
+	private getBasketExt(sessId: string, clearFlash: boolean = true): Promise<ISessionBasket> {
+		let resultBasket: ISessionBasket;
+		let scope = this;
+		console.log("******* getBasket ::");
+
+		function clearSessionFlash(sessBasket: ISessionBasket): Promise<ISessionBasket> {
+			return new Promise((resolve, reject) => {
+				sessBasket.flash = new SessionFlash();
+
+				scope.basketService.saveBasketSession(sessId, sessBasket).then(data => {
+					Logger.logYellow("clearFlash :: SessionBasket ::", data);
+					resolve(sessBasket);
+				}).catch(err => {
+					Logger.logError("clearFlash :: error ::", err);
+					reject(err);
+				});
+
+
+				/*
+				scope.basketService.clearFlash(zsid).then(data => {
+					Logger.logYellow("clearFlash :: SessionBasket ::", data);
+					resolve(data);
+				}).catch(err => {
+					Logger.logError("clearFlash :: error ::", err);
+					reject(err);
+				});*/
+			});
+		}
+
+		function getBasket(): Promise<ISessionBasket>  {
+			return new Promise((resolve, reject) => {
+				scope.basketService.getCurrentBasket(sessId).then(data => {
+					resolve(data);
+				}).catch(err => {
+					Logger.logError("apiGetBasket :: err ::", err);
+					reject(err);
+				});
+			});
+		}
+
+		async function execute(): Promise<void> {
+			resultBasket = await getBasket();
+			if (clearFlash) {
+				resultBasket = await clearSessionFlash(resultBasket);
+			}
+		}
+
+		return new Promise((resolve, reject) => {
+			execute().then(res => {
+				resolve(resultBasket);
+
+			}).catch(err => {
+				Logger.logError("BidsApiController :: err ::", err);
+				reject(err);
+			});
+		});
+	}
+
 	private apiGetBasket(req: Request, resp: Response): void {
 		let data = req.body;
 		let zsid = data.zsid;
+		let sessId = req.session.id;
+		let remFlash = data.clearFlash;
+
+		console.log("apiGetBasket :: BODY ::", data);
+		console.log("apiGetBasket :: ZSID ::", zsid);
+		console.log("apiGetBasket :: sessId ::", sessId);
+
+		this.basketService.getCurrentBasket(zsid).then(data => {
+			if (remFlash) {
+				data.flash = new SessionFlash();
+
+				this.basketService.saveBasketSession(sessId, data).then(res => {
+					resp.json(data);
+				}).catch(err => {
+				});
+
+			} else {
+				resp.json(data);
+			}
+
+		}).catch(err => {
+			Logger.logError("apiGetBasket :: err ::", err);
+		});
+	}
+
+	private apiGetBasketE(req: Request, resp: Response): void {
+		let data = req.body;
+		let zsid = data.zsid;
+		let clearFlash = data.clearFlash;
 		let sessId = req.session.id;
 
 		console.log("apiGetBasket :: BODY ::", data);
@@ -43,7 +132,20 @@ export class BidsApiController implements IRestApiController{
 		console.log("apiGetBasket :: sessId ::", sessId);
 
 		this.basketService.getCurrentBasket(zsid).then(data => {
-			resp.json(data);
+			console.log("¤¤¤ BASKET BEFORE :: data ::");
+			BasketUtils.showBasket(data);
+		}).catch(err => {
+			console.log("¤¤¤ BASKET BEFORE :: error ::", err);
+		});
+
+		console.log(" ");
+		console.log(" ");
+		console.log(" ");
+
+		this.getBasketExt(sessId).then(basket => {
+			console.log("¤¤¤ BASKET AFTER :: data ::");
+			BasketUtils.showBasket(basket);
+			resp.json(basket);
 		}).catch(err => {
 			Logger.logError("apiGetBasket :: err ::", err);
 		});

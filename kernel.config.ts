@@ -24,32 +24,36 @@ import { IServiceRegistry }       from '@pubsub/service-registry';
 import { ServiceRegistry }        from '@pubsub/service-registry';
 import { IPubsubCore }            from '@pubsub-lib/pubsub-core';
 import { PubsubCore }             from '@pubsub-lib/pubsub-core';
+import {ILoggingService, LoggingService} from '@app/services/logging.service';
+import {BasketSessionService, IBasketSessionService} from '@app/services/basket-session.service';
 
 let KernelModules = {
 	ApiController      : Symbol("IApiController")
 };
 
 let Interface = {
-	ZapNode           : "IZapNode",
-	ServerService     : "IServerService",
-	WebApp            : "IWebApp",
-	ProductDb         : "IProductDb",
-	BasketService     : "IBasketService",
+	ZapNode                       : "IZapNode",
+	ServerService                 : "IServerService",
+	WebApp                        : "IWebApp",
+	ProductDb                     : "IProductDb",
+	BasketService                 : "IBasketService",
+	BasketSessionService          : "IBasketSessionService",
 
 	// Controllers
-	RestApiController : "IRestApiController",
-	PubsubController  : "IPubsubController",
-	PubsubApp         : "IPubsubApp",
-	PubsubCore        : "IPubsubCore",
-	ServiceRegistry   : "IServiceRegistry"
+	RestApiController             : "IRestApiController",
+	PubsubController              : "IPubsubController",
+	PubsubApp                     : "IPubsubApp",
+	PubsubCore                    : "IPubsubCore",
+	ServiceRegistry               : "IServiceRegistry",
+	LoggingService                : "ILoggingService"
 };
 
 let Tag = {
-	Handler           : "handler",
-	Message           : "message",
-	DataModule        : "data_module",
-	ProtocolManager   : "protocol_manager",
-	ApiController     : "api_controller"
+	Handler                       : "handler",
+	Message                       : "message",
+	DataModule                    : "data_module",
+	ProtocolManager               : "protocol_manager",
+	ApiController                 : "api_controller"
 };
 
 let kernel = new Container();
@@ -60,11 +64,18 @@ kernel.bind<IZapNode>             (Interface.ZapNode).to(Bootstrap);
 kernel.bind<IServerService>       (Interface.ServerService).to(ServerService).inSingletonScope();
 kernel.bind<IWebApp>              (Interface.WebApp).to(WebApp).inSingletonScope();
 kernel.bind<IProductDb>           (Interface.ProductDb).to(ProductDb).inSingletonScope();
+
+kernel.bind<IBasketSessionService>(Interface.BasketSessionService).to(BasketSessionService).inSingletonScope();
 kernel.bind<IBasketService>       (Interface.BasketService).to(BasketService).inSingletonScope();
+
 kernel.bind<IPubsubController>    (Interface.PubsubController).to(BidsPubsub).inSingletonScope();
 kernel.bind<IPubsubCore>          (Interface.PubsubCore).to(PubsubCore).inSingletonScope();
 kernel.bind<IPubsubApp>           (Interface.PubsubApp).to(PubsubApp).inSingletonScope();
 kernel.bind<IServiceRegistry>     (Interface.ServiceRegistry).to(ServiceRegistry).inSingletonScope();
+
+// 2019-04-10 Introducing logging service in order to produce readable logs
+kernel.bind<ILoggingService>     (Interface.LoggingService).to(LoggingService).inSingletonScope();
+
 
 //
 // Drone related

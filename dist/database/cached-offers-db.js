@@ -1,4 +1,4 @@
-'use strict';Object.defineProperty(exports,'__esModule',{value:true});const db_kernel_1=require('../lib/dbcore/db-kernel');const zap_offer_model_1=require('../app/zap-ts-models/zap-offer.model');const cli_logger_1=require('../app/cli/cli.logger');const app_settings_1=require('../app/app.settings');class CachedOffersDb{constructor(){this.db=new db_kernel_1.DBKernel();}cacheOffer(data){let sql=`INSERT INTO cached_offers (
+'use strict';Object.defineProperty(exports,'__esModule',{value:true});const db_kernel_1=require('../lib/dbcore/db-kernel');const zap_offer_model_1=require('../app/zap-ts-models/zap-offer.model');const cli_logger_1=require('../app/cli/cli.logger');const app_settings_1=require('../app/app.settings');class CachedOffersDb{constructor(){this.tableName='cached_offers';this.db=new db_kernel_1.DBKernel();}cacheOffer(data){let sql=`INSERT INTO  ${this.tableName} (
 					id,
 					code,
 					vendor_id,

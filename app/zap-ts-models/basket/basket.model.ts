@@ -4,8 +4,8 @@
  * Proprietary and confidential
  */
 
-import { IBasketItem } from "./basket-item.model";
-import {IVendorModel} from '../vendor-model';
+import { IBasketItem }            from "./basket-item.model";
+import { IVendorModel }           from '../vendor-model';
 
 export interface IBasketModel {
 	items: IBasketItem[];

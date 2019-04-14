@@ -6,6 +6,7 @@
 
 import { DBKernel }               from '@putteDb/db-kernel';
 import { Logger }                 from '@cli/cli.logger';
+import { Base64 }                 from '@utils/base64';
 
 export interface ISessionService {
 	saveSession(sessId: string, data: any, expiresMinutes: number): Promise<boolean>;
@@ -64,6 +65,9 @@ export class SessionService implements ISessionService {
 	public saveSession(sessId: string, data: any, expiresMinutes: number = -1): Promise<boolean> {
 		let sessionData = JSON.stringify(data);
 
+		// 2019-04-12 Added Base64 in order to bypass SQL breaking title problems
+		//sessionData = Base64.encode(sessionData);
+
 		if (expiresMinutes > -1) {
 			expiresMinutes = this.expireMinutes;
 		}
@@ -74,13 +78,13 @@ export class SessionService implements ISessionService {
 						UNIX_TIMESTAMP(DATE_ADD(NOW(), INTERVAL ${expiresMinutes} MINUTE)),
 						'${sessionData}')`;
 
-		console.log("saveSession :: query ::", query);
+		Logger.logDebug("saveSession :: query ::", query);
 
 		return new Promise((resolve, reject) => {
 			return this.db.dbQuery(query).then(res => {
 				resolve(res.success);
 			}).catch(err => {
-				console.log("dbQuery ERR ::", err);
+				Logger.logError("dbQuery ERR ::", err);
 				reject(err);
 			});
 		});
@@ -90,14 +94,16 @@ export class SessionService implements ISessionService {
 		let result: any = null;
 		let query = `SELECT * FROM session WHERE sessionId ="${sessId}"`;
 
-		console.log("getSession :: query ::", query);
+		Logger.logDebug("getSession :: query ::", query);
 
 		return new Promise((resolve, reject) => {
 			this.db.dbQuery(query).then(res => {
 				let row = res.safeGetFirstRow();
 				let data = row.getValAsStr("data");
 
-				console.log("DATA BEFORE PARSE::", data);
+				// 2019-04-12 Added Base64 in order to bypass SQL breaking title problems
+				//data = Base64.decode(data);
+
 
 				data = this.escapeJSON(data);
 

@@ -1,1 +1,1 @@
-'use strict';Object.defineProperty(exports,'__esModule',{value:true});var KInt;(function(KInt){KInt.IPubsubCore='IPubsubCore';KInt.IBasketService='IBasketService';KInt.IServiceRegistry='IServiceRegistry';}(KInt=exports.KInt||(exports.KInt={})));
+'use strict';Object.defineProperty(exports,'__esModule',{value:true});
