@@ -12,7 +12,7 @@
 					'${data.title}',
 					'${data.offer}',
 					CURRENT_TIMESTAMP
-				)`;console.log('SQL ::',sql);this.db.dbQuery(sql).then(res=>{console.log('cacheOffer :: affectedRows ::',res.affectedRows);}).catch(err=>{cli_logger_1.Logger.logError('CachedOffersDb :: cacheOffer :: err ::',err);});}getCachedOffers(code){console.log('########### doGetBids :: >> getCachedOffers');let sql=`
+				)`;this.db.dbQuery(sql).then(res=>{console.log('cacheOffer :: affectedRows ::',res.affectedRows);}).catch(err=>{cli_logger_1.Logger.logError('CachedOffersDb :: cacheOffer :: err ::',err);});}getCachedOffers(code){console.log('########### doGetBids :: >> getCachedOffers');let sql=`
 			SELECT
 				*
 			FROM

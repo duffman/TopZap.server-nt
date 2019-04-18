@@ -54,7 +54,7 @@ export class ProductDb implements IProductDb {
 
 		let sql = generateSql();
 
-		Logger.logGreen("SQL ::", sql);
+		//Logger.logGreen("SQL ::", sql);
 
 		function createGameProductModel(dbRow: SQLTableDataRow): IGameProductData {
 			if (dbRow.isEmpty) {

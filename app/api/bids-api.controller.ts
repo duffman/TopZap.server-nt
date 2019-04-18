@@ -202,11 +202,43 @@ export class BidsApiController implements IRestApiController{
 		console.log("BASKET :: ZSID ::", zsid);
 
 		this.basketService.getReviewData(zsid).then(res => {
-			console.log("apiReviewBasket ::", JSON.stringify(res));
+			//console.log("apiReviewBasket ::", JSON.stringify(res));
 			resp.json(res);
 
 		}).catch(err => {
 			Logger.logError("apiReviewBasket :: err ::", err);
+		});
+	}
+
+	public remBasket(req: Request, resp: Response): void {
+		let code = req.query.code;
+		let sessId = req.query.sessId ? req.query.sessId : req.session.id;
+
+		console.log("Using sessId ::", sessId);
+		console.log("Using code ::", code);
+
+		this.basketService.getSessionBasket(sessId).then(basket => {
+			console.log("All items ::", basket.allItems);
+			let res = JSON.stringify(basket);
+
+			this.basketService.removeFromAll(basket, code);
+
+			resp.json(basket);
+
+		}).catch(err => {
+			console.log("Error getting sessBasket ::", err);
+			resp.json(err);
+			// resp.end(JSON.stringify(err));
+		});
+	}
+
+	private clearBasket(req: Request, resp: Response): void {
+		let sessId = req.session.id;
+
+		this.basketService.clearBasket(sessId).then(res => {
+			resp.json(res);
+		}).catch(err => {
+			resp.json(err);
 		});
 	}
 
@@ -215,6 +247,9 @@ export class BidsApiController implements IRestApiController{
 		routes.post(ApiRoutes.Basket.POST_BASKET_ADD,       this.apiAddBasketItem.bind(this));
 		routes.post(ApiRoutes.Basket.POST_BASKET_DELETE,    this.apiDeleteBasketItem.bind(this));
 		routes.post(ApiRoutes.Basket.POST_BASKET_REVIEW,    this.apiReviewBasket.bind(this));
+		routes.post(ApiRoutes.Basket.POST_BASKET_CLEAR,     this.clearBasket.bind(this));
+
+		routes.get("/brem",    this.remBasket.bind(this));
 	}
 
 	public doGetBids(code: string, sessId: string): Promise<boolean> {

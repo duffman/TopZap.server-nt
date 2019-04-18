@@ -38,8 +38,6 @@ export class CachedOffersDb implements IDbController {
 					CURRENT_TIMESTAMP
 				)`;
 
-		console.log("SQL ::", sql);
-
 		this.db.dbQuery(sql).then(res => {
 			// This is a fire and forget thing, I really had to write that, you SHALL NOT leave a class without comments
 			// and you shall NOT leave your mastercard in the card machine at your local pub!!!

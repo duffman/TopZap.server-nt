@@ -71,6 +71,11 @@ export class BasketService implements IBasketService {
 		});
 	}
 
+	public clearBasket(sessId: string): Promise<ISessionBasket> {
+		return new Promise((resolve, reject) => {
+		});
+	}
+
 	public clearFlash(sessId: string): Promise<ISessionBasket> {
 		return new Promise((resolve, reject) => {
 			this.basketSessService.getSessionBasket(sessId).then(basket => {
@@ -268,18 +273,13 @@ export class BasketService implements IBasketService {
 		for (let i = 0; i < sessBasket.allItems.length; i++) {
 			let item = sessBasket.allItems[i];
 
-			if (item.code === item.code) {
-				Logger.logPurple("ITEM FOUND!!!")
-				//sessBasket.allItems = sessBasket.allItems.splice(i, 1);
+			if (item.code === code) {
 				sessBasket.allItems.splice(i, 1);
 				break;
 			}
 		}
-		//sessBasket.allItems = sessBasket.allItems.splice(0, 1);
-		//sessBasket.allItems = sessBasket.allItems.splice(1, 1);
 
 		Logger.logPurple("removeFromAll :: AFTER ::", sessBasket.allItems);
-
 	}
 
 	public addToVendorBasket(sessBasket: ISessionBasket, item: IBasketItem): boolean {
@@ -641,10 +641,9 @@ export class BasketService implements IBasketService {
 				}
 				*/
 
-
 				// HACK TO ATTACH PROD DATA TO IBasketItem decendant IGameBasketItem
 				attachProductInfoToItem(sessBasket);
-				Logger.logGreen("Products in Session Basket ::", sessBasket);
+				//Logger.logGreen("Products in Session Basket ::", sessBasket);
 
 				//Hack
 				for (let vbasket of sessBasket.vendorBaskets) {
