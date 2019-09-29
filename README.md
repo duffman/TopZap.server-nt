@@ -1,3 +1,3 @@
-# TopZap API Server *New Technology
+# TopZap API Server
 
-Successor of the old API Server
+The Backend WebSocket Engine powering the Angular Website
