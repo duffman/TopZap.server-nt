@@ -26,7 +26,7 @@
     "express-session": "^1.15.6",
     "inversify": "^5.0.1",
     "js-base64": "^2.5.1",
-    "knex": "^0.15.2",
+    "knex": "^0.19.5",
     "mysql": "^2.16.0",
     "pubnub": "^4.22.0",
     "redis": "^2.8.0",
